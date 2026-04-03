@@ -24,3 +24,100 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Logo Animation Keyframes */
+@keyframes logoSpin {
+  0% {
+    transform: rotateY(0deg) rotateZ(0deg);
+  }
+  50% {
+    transform: rotateY(360deg) rotateZ(5deg);
+  }
+  100% {
+    transform: rotateY(0deg) rotateZ(0deg);
+  }
+}
+
+@keyframes logoBob {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes logoGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px rgba(107, 114, 128, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(107, 114, 128, 0.6)) drop-shadow(0 0 20px rgba(156, 163, 175, 0.4));
+  }
+}
+
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  25% {
+    transform: translateY(-4px) scale(1.02);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.05);
+  }
+  75% {
+    transform: translateY(-4px) scale(1.02);
+  }
+}
+
+@keyframes navItemSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glassShine {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Logo Animation Class */
+.logo-animate {
+  animation: logoFloat 3s ease-in-out infinite, logoGlow 2s ease-in-out infinite;
+  display: inline-block;
+  perspective: 1000px;
+}
+
+/* Navbar Animations */
+nav {
+  animation: navItemSlide 0.6s ease-out;
+}
+
+/* Glassmorphism enhancement for tablets and smaller */
+@supports (backdrop-filter: blur(1px)) {
+  .backdrop-blur-xl {
+    backdrop-filter: blur(16px);
+  }
+}
+
+/* Smooth transitions for all interactive elements */
+button, a {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark mode specific navbar styling */
+@media (prefers-color-scheme: dark) {
+  nav {
+    background: radial-gradient(at top, rgba(31, 41, 55, 0.4), rgba(17, 24, 39, 0.2));
+  }
+}
