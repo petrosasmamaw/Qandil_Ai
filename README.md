@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Qandil AI
 
-## Getting Started
+AI-powered personalized learning assistant that adapts to each student's knowledge level, learning style, and local context.
 
-First, run the development server:
+🧠 Problem
 
-```bash
+Education today is one-size-fits-all, but students are not.
+
+Students have different learning speeds
+Different understanding levels
+Different study preferences
+Lack of localized and personalized explanations
+💡 Solution
+
+Qandil AI is an intelligent educational system that:
+
+Analyzes student knowledge through a questionnaire
+Builds a dynamic student profile
+Adapts explanations to the student’s level
+Uses local context and simple analogies
+Supports voice interaction for better accessibility
+✨ Features
+🧑‍🎓 Student Profiling System
+Determines knowledge level & learning style
+🤖 AI Chatbot (Personalized)
+Adapts answers based on student profile
+🎤 Voice Input & Output
+Students can ask and receive answers using voice
+📄 Smart PDF / Course Adaptation
+Converts content into student-friendly explanations
+🌍 Local Context Learning
+Explains concepts using familiar, real-world examples
+🛠 Tech Stack
+Frontend: Next.js, React
+Backend: Node.js / API Routes
+Database: MongoDB / Supabase
+AI Integration: OpenAI / Custom logic
+Voice APIs: (planned or integrated)
+⚙️ How It Works
+Student answers a questionnaire
+System builds a learning profile
+AI chatbot uses this profile to:
+Adjust explanation difficulty
+Use preferred learning style
+System continuously updates the profile
+🚀 Getting Started
+git clone https://github.com/petrosasmamaw/Qandil_Ai.git
+cd Qandil_Ai
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+📸 Demo (Optional)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Add screenshots or demo video here
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+🌍 Impact
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Qandil AI aims to:
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Improve learning outcomes
+Make education accessible
+Personalize learning globally
+Support low-resource environments
+💡 Why This Project is Unique
+Combines AI + personalization + local context
+Not just a chatbot — a learning system
+Adapts dynamically to each student
+Focused on real-world education problems
+📌 Future Improvements
+Full voice assistant integration
+Mobile app version
+Offline learning support
+Advanced AI fine-tuning
