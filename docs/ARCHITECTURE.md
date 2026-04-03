@@ -6,13 +6,14 @@ Qandil AI follows a full-stack architecture:
 Frontend
 Next.js (React)
 Handles:
+Authentication
+Handles:
 UI
 User input
 Chat interface
 Backend
 API routes / Node.js
-Handles:
-Authentication
+
 Profile processing
 AI requests
 Database

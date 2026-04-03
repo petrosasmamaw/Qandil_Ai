@@ -1,15 +1,23 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import { sendChatMessage, getInitialGreeting } from '@/utils/educationalChatService';
 
-export default function ChatBox({ studentProfile, onClose }) {
+export default function ChatBox({ 
+  studentProfile, 
+  onClose, 
+  chatType,                    // 'aiAssistance', 'notes', 'assignmentGuide', 'imageAnalyzer'
+  currentChatId,               // Current chat ID from Redux
+  onAddMessage                 // Callback to save message to DB
+}) {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
+  const dispatch = useDispatch();
 
   // Load initial greeting
   useEffect(() => {
@@ -37,7 +45,12 @@ export default function ChatBox({ studentProfile, onClose }) {
       return;
     }
 
-    // Add user message
+    if (!currentChatId) {
+      setError('Chat not initialized. Please refresh the page.');
+      return;
+    }
+
+    // Add user message to local state
     const userMessage = {
       id: messages.length + 1,
       sender: 'user',
@@ -51,6 +64,16 @@ export default function ChatBox({ studentProfile, onClose }) {
     setLoading(true);
 
     try {
+      // Save user message to database
+      if (onAddMessage) {
+        await onAddMessage({
+          chatId: currentChatId,
+          role: 'user',
+          content: inputValue,
+          fileNames: [],
+        });
+      }
+
       // Prepare conversation history for API (only user messages, excluding AI greeting)
       const conversationHistory = messages
         .filter(msg => msg.sender === 'user')
@@ -66,7 +89,7 @@ export default function ChatBox({ studentProfile, onClose }) {
         inputValue
       );
 
-      // Add AI response
+      // Add AI response to local state
       const aiMessage = {
         id: messages.length + 2,
         sender: 'ai',
@@ -75,6 +98,16 @@ export default function ChatBox({ studentProfile, onClose }) {
       };
 
       setMessages((prev) => [...prev, aiMessage]);
+
+      // Save AI response to database
+      if (onAddMessage) {
+        await onAddMessage({
+          chatId: currentChatId,
+          role: 'assistant',
+          content: response.message,
+          fileNames: [],
+        });
+      }
     } catch (err) {
       setError(err.message || 'Failed to send message');
       console.error('Chat error:', err);

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api";
 
 // Async Thunks
 export const createAssignmentGuideChat = createAsyncThunk(
@@ -8,7 +8,7 @@ export const createAssignmentGuideChat = createAsyncThunk(
   async ({ userId, title }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/assignment-guide-chat/create`,
+        `${BACKEND_URL}/assignment-guide-chat/create`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -63,7 +63,7 @@ export const fetchAssignmentGuideChatById = createAsyncThunk(
   async (chatId, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/assignment-guide-chat/${chatId}`
+        `${BACKEND_URL}/assignment-guide-chat/${chatId}`
       );
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
@@ -79,7 +79,7 @@ export const deleteAssignmentGuideChatThunk = createAsyncThunk(
   async (chatId, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/assignment-guide-chat/${chatId}`,
+        `${BACKEND_URL}/assignment-guide-chat/${chatId}`,
         {
           method: "DELETE",
         }

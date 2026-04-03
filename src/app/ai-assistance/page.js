@@ -152,7 +152,12 @@ export default function AIAssistance() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Main Chat Area */}
           <div className="lg:col-span-3">
-            <ChatBox studentProfile={profile} />
+            <ChatBox 
+              studentProfile={profile}
+              chatType="aiAssistance"
+              currentChatId={currentChatId}
+              onAddMessage={(messageData) => dispatch(addMessageToAIChat(messageData))}
+            />
           </div>
 
           {/* Sidebar - Student Info & Tips */}

@@ -43,7 +43,7 @@ export const fetchNotesChatHistory = createAsyncThunk(
   "notesChat/fetchHistory",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/notes-chat/history/${userId}`);
+      const response = await fetch(`${BACKEND_URL}/notes-chat/history/${userId}`);
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
       return data.data;

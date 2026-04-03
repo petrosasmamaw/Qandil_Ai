@@ -8,6 +8,7 @@ import { fetchProfileByUserId } from '@/store/slices/profileSlice';
 import { processDocument, processTextContent } from '@/utils/documentProcessingService';
 import NoteDisplay from '@/components/NoteDisplay';
 import ChatHistory from '@/components/ChatHistory';
+import ChatBox from '@/components/ChatBox';
 import {
   createNotesChat,
   addMessageToNotesChat,
@@ -207,7 +208,7 @@ export default function NotesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8 flex justify-between items-start">
           <div>
@@ -218,86 +219,112 @@ export default function NotesPage() {
               Upload files or paste text to get personalized study notes for {profile.name} (Grade {profile.grade})
             </p>
           </div>
-          <button
-            onClick={() => setIsHistoryOpen(true)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
-          >
-            📚 History
-          </button>
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-300">
-            ⚠️ {error}
+          <div className="flex gap-3">
+            <button
+              onClick={() => setIsHistoryOpen(true)}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
+            >
+              📚 History
+            </button>
+            <button
+              onClick={async () => {
+                try {
+                  const chatAction = await dispatch(
+                    createNotesChat({
+                      userId: session.user.id,
+                      title: 'New Notes Chat',
+                    })
+                  );
+                  if (chatAction.payload) {
+                    setCurrentChatId(chatAction.payload._id);
+                  }
+                } catch (err) {
+                  console.error('Error creating new notes chat:', err);
+                }
+              }}
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+            >
+              ➕ New Chat
+            </button>
           </div>
-        )}
-
-        {/* Input Mode Toggle */}
-        <div className="mb-8 flex gap-2 border-b border-gray-200 dark:border-gray-700">
-          <button
-            onClick={() => setInputMode('file')}
-            className={`px-6 py-3 font-semibold transition-colors border-b-2 ${
-              inputMode === 'file'
-                ? 'border-blue-600 text-blue-600 dark:text-blue-400'
-                : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300'
-            }`}
-          >
-            📤 Upload Files
-          </button>
-          <button
-            onClick={() => setInputMode('text')}
-            className={`px-6 py-3 font-semibold transition-colors border-b-2 ${
-              inputMode === 'text'
-                ? 'border-blue-600 text-blue-600 dark:text-blue-400'
-                : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300'
-            }`}
-          >
-            ✏️ Paste Text
-          </button>
         </div>
+
+        {/* Main Layout - Content and Chat */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Main Content Area */}
+          <div className="lg:col-span-3">
+            {/* Error Message */}
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-300">
+                ⚠️ {error}
+              </div>
+            )}
+
+            {/* Input Mode Toggle */}
+            <div className="mb-8 flex gap-2 border-b border-gray-200 dark:border-gray-700">
+              <button
+                onClick={() => setInputMode('file')}
+                className={`px-6 py-3 font-semibold transition-colors border-b-2 ${
+                  inputMode === 'file'
+                    ? 'border-blue-600 text-blue-600 dark:text-blue-400'
+                    : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300'
+                }`}
+              >
+                📤 Upload Files
+              </button>
+              <button
+                onClick={() => setInputMode('text')}
+                className={`px-6 py-3 font-semibold transition-colors border-b-2 ${
+                  inputMode === 'text'
+                    ? 'border-blue-600 text-blue-600 dark:text-blue-400'
+                    : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300'
+                }`}
+              >
+                ✏️ Paste Text
+              </button>
+            </div>
 
         {/* File Upload Area */}
-        {inputMode === 'file' && (
-          <div
-            onDragEnter={handleDrag}
-            onDragLeave={handleDrag}
-            onDragOver={handleDrag}
-            onDrop={handleDrop}
-            className={`mb-12 p-12 border-2 border-dashed rounded-lg transition-all cursor-pointer ${
-              dragActive
-                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'
-            }`}
-          >
-            <div className="text-center">
-              <div className="text-6xl mb-4">📤</div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Upload Your Study Materials</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Drag and drop your PDF or Word documents here, or click to browse
-              </p>
-              <input
-                type="file"
-                multiple
-                accept=".pdf,.docx,.doc"
-                onChange={(e) => handleFileUpload(e.target.files)}
-                className="hidden"
-                id="file-input"
-                disabled={processing}
-              />
-              <label
-                htmlFor="file-input"
-                className="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium cursor-pointer transition-colors disabled:opacity-50"
+            {inputMode === 'file' && (
+              <div
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+                className={`mb-12 p-12 border-2 border-dashed rounded-lg transition-all cursor-pointer ${
+                  dragActive
+                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'
+                }`}
               >
-                {processing ? 'Processing...' : 'Choose Files'}
-              </label>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">Supported formats: PDF, DOCX, DOC</p>
-            </div>
-          </div>
-        )}
+                <div className="text-center">
+                  <div className="text-6xl mb-4">📤</div>
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Upload Your Study Materials</h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                    Drag and drop your PDF or Word documents here, or click to browse
+                  </p>
+                  <input
+                    type="file"
+                    multiple
+                    accept=".pdf,.docx,.doc"
+                    onChange={(e) => handleFileUpload(e.target.files)}
+                    className="hidden"
+                    id="file-input"
+                    disabled={processing}
+                  />
+                  <label
+                    htmlFor="file-input"
+                    className="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium cursor-pointer transition-colors disabled:opacity-50"
+                  >
+                    {processing ? 'Processing...' : 'Choose Files'}
+                  </label>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">Supported formats: PDF, DOCX, DOC</p>
+                </div>
+              </div>
+            )}
 
-        {/* Text Input Area */}
-        {inputMode === 'text' && (
+            {/* Text Input Area */}
+            {inputMode === 'text' && (
           <form onSubmit={handleTextSubmit} className="mb-12 bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
             <div className="mb-4">
               <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
@@ -335,62 +362,74 @@ export default function NotesPage() {
           </form>
         )}
 
-        {/* Student Profile Info */}
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-600 dark:text-gray-400">Learning Level</p>
-            <p className="text-lg font-semibold text-gray-900 dark:text-white capitalize">{profile.level}</p>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-600 dark:text-gray-400">Study System</p>
-            <p className="text-lg font-semibold text-gray-900 dark:text-white capitalize">
-              {profile.studySystem.replace(/_/g, ' ')}
-            </p>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-600 dark:text-gray-400">Learning Goal</p>
-            <p className="text-lg font-semibold text-gray-900 dark:text-white capitalize">
-              {profile.goal.replace(/_/g, ' ')}
-            </p>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-600 dark:text-gray-400">Total Notes</p>
-            <p className="text-lg font-semibold text-gray-900 dark:text-white">{notes.length}</p>
-          </div>
-        </div>
-
-        {/* Notes Display */}
-        <div className="space-y-6">
-          {notes.length > 0 ? (
-            <>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Your Generated Notes</h2>
-              {notes.map((note) => (
-                <NoteDisplay
-                  key={note.id}
-                  note={note}
-                  onDelete={handleDeleteNote}
-                  onDownload={handleDownloadNote}
-                />
-              ))}
-            </>
-          ) : (
-            <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-              <div className="text-6xl mb-4">📚</div>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">No notes generated yet</p>
-              <p className="text-sm text-gray-500 dark:text-gray-500">Upload a file or paste text to get started!</p>
+            {/* Student Profile Info */}
+            <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Learning Level</p>
+                <p className="text-lg font-semibold text-gray-900 dark:text-white capitalize">{profile.level}</p>
+              </div>
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Study System</p>
+                <p className="text-lg font-semibold text-gray-900 dark:text-white capitalize">
+                  {profile.studySystem.replace(/_/g, ' ')}
+                </p>
+              </div>
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Learning Goal</p>
+                <p className="text-lg font-semibold text-gray-900 dark:text-white capitalize">
+                  {profile.goal.replace(/_/g, ' ')}
+                </p>
+              </div>
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Notes</p>
+                <p className="text-lg font-semibold text-gray-900 dark:text-white">{notes.length}</p>
+              </div>
             </div>
-          )}
-        </div>
 
-        {/* Info Section */}
-        <div className="mt-12 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3">💡 How It Works</h3>
-          <ol className="text-blue-800 dark:text-blue-400 space-y-2 text-sm">
-            <li>1. Choose to upload files OR paste text content</li>
-            <li>2. AI analyzes the content using your learning profile</li>
-            <li>3. Personalized study notes are generated based on your level and goals</li>
-            <li>4. Download and save your notes for offline study</li>
-          </ol>
+            {/* Notes Display */}
+            <div className="space-y-6">
+              {notes.length > 0 ? (
+                <>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Your Generated Notes</h2>
+                  {notes.map((note) => (
+                    <NoteDisplay
+                      key={note.id}
+                      note={note}
+                      onDelete={handleDeleteNote}
+                      onDownload={handleDownloadNote}
+                    />
+                  ))}
+                </>
+              ) : (
+                <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <div className="text-6xl mb-4">📚</div>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">No notes generated yet</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-500">Upload a file or paste text to get started!</p>
+                </div>
+              )}
+            </div>
+
+            {/* Info Section */}
+            <div className="mt-12 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3">💡 How It Works</h3>
+              <ol className="text-blue-800 dark:text-blue-400 space-y-2 text-sm">
+                <li>1. Choose to upload files OR paste text content</li>
+                <li>2. AI analyzes the content using your learning profile</li>
+                <li>3. Personalized study notes are generated based on your level and goals</li>
+                <li>4. Download and save your notes for offline study</li>
+              </ol>
+            </div>
+          </div>
+
+          {/* Chat Box Sidebar */}
+          <div className="lg:col-span-1">
+            <ChatBox 
+              studentProfile={profile}
+              chatType="notes"
+              currentChatId={currentChatId}
+              onAddMessage={(messageData) => dispatch(addMessageToNotesChat(messageData))}
+            />
+          </div>
         </div>
 
         {/* Chat History Modal */}
