@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api";
 
 // Async Thunks
 export const createNotesChat = createAsyncThunk(
   "notesChat/createChat",
   async ({ userId, title }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/notes-chat/create`, {
+      const response = await fetch(`${BACKEND_URL}/notes-chat/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, title }),
@@ -25,7 +25,7 @@ export const addMessageToNotesChat = createAsyncThunk(
   "notesChat/addMessage",
   async ({ chatId, role, content, fileNames }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/notes-chat/message`, {
+      const response = await fetch(`${BACKEND_URL}/notes-chat/message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chatId, role, content, fileNames }),
@@ -57,7 +57,7 @@ export const fetchNotesChatById = createAsyncThunk(
   "notesChat/fetchChatById",
   async (chatId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/notes-chat/${chatId}`);
+      const response = await fetch(`${BACKEND_URL}/notes-chat/${chatId}`);
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
       return data.data;
@@ -71,7 +71,7 @@ export const deleteNotesChatThunk = createAsyncThunk(
   "notesChat/deleteChat",
   async (chatId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/notes-chat/${chatId}`, {
+      const response = await fetch(`${BACKEND_URL}/notes-chat/${chatId}`, {
         method: "DELETE",
       });
       const data = await response.json();

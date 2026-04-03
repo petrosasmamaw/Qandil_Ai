@@ -28,7 +28,7 @@ export const addMessageToAssignmentGuideChat = createAsyncThunk(
   "assignmentGuideChat/addMessage",
   async ({ chatId, role, content, fileNames }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/assignment-guide-chat/message`, {
+      const response = await fetch(`${BACKEND_URL}/assignment-guide-chat/message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chatId, role, content, fileNames }),
@@ -47,7 +47,7 @@ export const fetchAssignmentGuideChatHistory = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/assignment-guide-chat/history/${userId}`
+        `${BACKEND_URL}/assignment-guide-chat/history/${userId}`
       );
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);

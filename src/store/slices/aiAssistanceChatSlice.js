@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api";
 
 // Async Thunks
 export const createAIAssistanceChat = createAsyncThunk(
   "aiAssistanceChat/createChat",
   async ({ userId, title }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/ai-assistance-chat/create`, {
+      const response = await fetch(`${BACKEND_URL}/ai-assistance-chat/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, title }),
@@ -25,7 +25,7 @@ export const addMessageToAIChat = createAsyncThunk(
   "aiAssistanceChat/addMessage",
   async ({ chatId, role, content, fileNames }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/ai-assistance-chat/message`, {
+      const response = await fetch(`${BACKEND_URL}/ai-assistance-chat/message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chatId, role, content, fileNames }),
@@ -44,7 +44,7 @@ export const fetchAIAssistanceChatHistory = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/ai-assistance-chat/history/${userId}`
+        `${BACKEND_URL}/ai-assistance-chat/history/${userId}`
       );
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
@@ -59,7 +59,7 @@ export const fetchAIAssistanceChatById = createAsyncThunk(
   "aiAssistanceChat/fetchChatById",
   async (chatId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/ai-assistance-chat/${chatId}`);
+      const response = await fetch(`${BACKEND_URL}/ai-assistance-chat/${chatId}`);
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
       return data.data;
@@ -73,7 +73,7 @@ export const deleteAIAssistanceChatThunk = createAsyncThunk(
   "aiAssistanceChat/deleteChat",
   async (chatId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/ai-assistance-chat/${chatId}`, {
+      const response = await fetch(`${BACKEND_URL}/ai-assistance-chat/${chatId}`, {
         method: "DELETE",
       });
       const data = await response.json();

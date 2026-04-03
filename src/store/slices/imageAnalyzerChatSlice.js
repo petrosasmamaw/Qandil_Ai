@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api";
 
 // Async Thunks
 export const createImageAnalyzerChat = createAsyncThunk(
   "imageAnalyzerChat/createChat",
   async ({ userId, title }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/image-analyzer-chat/create`, {
+      const response = await fetch(`${BACKEND_URL}/image-analyzer-chat/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, title }),
@@ -25,7 +25,7 @@ export const addMessageToImageAnalyzerChat = createAsyncThunk(
   "imageAnalyzerChat/addMessage",
   async ({ chatId, role, content, fileNames }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/image-analyzer-chat/message`, {
+      const response = await fetch(`${BACKEND_URL}/image-analyzer-chat/message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chatId, role, content, fileNames }),
@@ -44,7 +44,7 @@ export const fetchImageAnalyzerChatHistory = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/image-analyzer-chat/history/${userId}`
+        `${BACKEND_URL}/image-analyzer-chat/history/${userId}`
       );
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
@@ -59,7 +59,7 @@ export const fetchImageAnalyzerChatById = createAsyncThunk(
   "imageAnalyzerChat/fetchChatById",
   async (chatId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/image-analyzer-chat/${chatId}`);
+      const response = await fetch(`${BACKEND_URL}/image-analyzer-chat/${chatId}`);
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
       return data.data;
@@ -73,7 +73,7 @@ export const deleteImageAnalyzerChatThunk = createAsyncThunk(
   "imageAnalyzerChat/deleteChat",
   async (chatId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/image-analyzer-chat/${chatId}`, {
+      const response = await fetch(`${BACKEND_URL}/image-analyzer-chat/${chatId}`, {
         method: "DELETE",
       });
       const data = await response.json();
