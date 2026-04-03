@@ -23,7 +23,7 @@ const config: runtime.GetPrismaClientConfig = {
       "value": "prisma-client"
     },
     "output": {
-      "value": "C:\\Users\\For you\\OneDrive\\Desktop\\folders\\website\\NEXT_JS_PROJECTS\\qandil-ai\\src\\generated\\prisma",
+      "value": "C:\\Users\\For you\\OneDrive\\Desktop\\folders\\website\\NEXT_JS_PROJECTS\\qandil\\qandil-ai\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -37,7 +37,7 @@ const config: runtime.GetPrismaClientConfig = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\For you\\OneDrive\\Desktop\\folders\\website\\NEXT_JS_PROJECTS\\qandil-ai\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\For you\\OneDrive\\Desktop\\folders\\website\\NEXT_JS_PROJECTS\\qandil\\qandil-ai\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativePath": "../../../prisma",

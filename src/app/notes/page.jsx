@@ -7,6 +7,11 @@ import { useRouter } from 'next/navigation';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
 import { processDocument, processTextContent } from '@/utils/documentProcessingService';
 import NoteDisplay from '@/components/NoteDisplay';
+import ChatHistory from '@/components/ChatHistory';
+import {
+  createNotesChat,
+  addMessageToNotesChat,
+} from '@/store/slices/notesChatSlice';
 
 export default function NotesPage() {
   const [session, setSession] = useState(null);
@@ -18,15 +23,33 @@ export default function NotesPage() {
   const [inputMode, setInputMode] = useState('file'); // 'file' or 'text'
   const [textInput, setTextInput] = useState('');
   const [textTitle, setTextTitle] = useState('');
+  const [currentChatId, setCurrentChatId] = useState(null);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
   const { profile } = useSelector((state) => state.profile);
+  const { currentChat } = useSelector((state) => state.notesChat);
 
   useEffect(() => {
     const initialize = async () => {
       try {
         const { data } = await authClient.getSession();
+
+          // Initialize new notes chat
+          try {
+            const chatAction = await dispatch(
+              createNotesChat({
+                userId: data.user.id,
+                title: 'New Notes Chat',
+              })
+            );
+            if (chatAction.payload) {
+              setCurrentChatId(chatAction.payload._id);
+            }
+          } catch (err) {
+            console.error('Error creating notes chat:', err);
+          }
         if (data?.user) {
           setSession(data);
           await dispatch(fetchProfileByUserId(data.user.id));
@@ -186,13 +209,21 @@ export default function NotesPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent mb-2">
-            📝 AI-Powered Notes Generator
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Upload files or paste text to get personalized study notes for {profile.name} (Grade {profile.grade})
-          </p>
+        <div className="mb-8 flex justify-between items-start">
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent mb-2">
+              📝 AI-Powered Notes Generator
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Upload files or paste text to get personalized study notes for {profile.name} (Grade {profile.grade})
+            </p>
+          </div>
+          <button
+            onClick={() => setIsHistoryOpen(true)}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
+          >
+            📚 History
+          </button>
         </div>
 
         {/* Error Message */}
@@ -361,6 +392,18 @@ export default function NotesPage() {
             <li>4. Download and save your notes for offline study</li>
           </ol>
         </div>
+
+        {/* Chat History Modal */}
+        <ChatHistory
+          userId={session?.user?.id}
+          chatType="notes"
+          onHistorySelect={(chatId) => {
+            setCurrentChatId(chatId);
+            setIsHistoryOpen(false);
+          }}
+          onClose={() => setIsHistoryOpen(false)}
+          isOpen={isHistoryOpen}
+        />
       </div>
     </div>
   );

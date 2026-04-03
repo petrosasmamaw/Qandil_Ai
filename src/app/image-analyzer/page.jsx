@@ -6,12 +6,18 @@ import { fetchProfileByUserId } from '@/store/slices/profileSlice';
 import { authClient } from '@/lib/authClient';
 import { analyzeImage } from '@/utils/imageAnalysisService';
 import ImageAnalysisDisplay from '@/components/ImageAnalysisDisplay';
+import ChatHistory from '@/components/ChatHistory';
+import {
+  createImageAnalyzerChat,
+  addMessageToImageAnalyzerChat,
+} from '@/store/slices/imageAnalyzerChatSlice';
 
 export default function ImageAnalyzerPage() {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.profile.profile);
   const profileLoading = useSelector((state) => state.profile.loading);
   const profileError = useSelector((state) => state.profile.error);
+  const { currentChat } = useSelector((state) => state.imageAnalyzerChat);
 
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -19,6 +25,8 @@ export default function ImageAnalyzerPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [error, setError] = useState('');
   const [dragActive, setDragActive] = useState(false);
+  const [currentChatId, setCurrentChatId] = useState(null);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -27,6 +35,21 @@ export default function ImageAnalyzerPage() {
         if (!data?.user) {
           window.location.href = '/auth/login';
           return;
+
+        // Initialize new image analyzer chat
+        try {
+          const chatAction = await dispatch(
+            createImageAnalyzerChat({
+              userId: data.user.id,
+              title: 'New Image Analysis Chat',
+            })
+          );
+          if (chatAction.payload) {
+            setCurrentChatId(chatAction.payload._id);
+          }
+        } catch (err) {
+          console.error('Error creating image analyzer chat:', err);
+        }
         }
         setSession(data);
         dispatch(fetchProfileByUserId(data.user.id));
@@ -119,11 +142,19 @@ export default function ImageAnalyzerPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white py-12 px-4 md:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-            📸 Image Analyzer
-          </h1>
-          <p className="text-gray-300">Upload an image and get an educational analysis tailored to your learning profile</p>
+        <div className="mb-8 flex justify-between items-start">
+          <div>
+            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              📸 Image Analyzer
+            </h1>
+            <p className="text-gray-300">Upload an image and get an educational analysis tailored to your learning profile</p>
+          </div>
+          <button
+            onClick={() => setIsHistoryOpen(true)}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
+          >
+            📚 History
+          </button>
         </div>
 
         {/* Profile Info Cards */}
@@ -251,6 +282,18 @@ export default function ImageAnalyzerPage() {
             </li>
           </ul>
         </div>
+
+        {/* Chat History Modal */}
+        <ChatHistory
+          userId={session?.user?.id}
+          chatType="imageAnalyzer"
+          onHistorySelect={(chatId) => {
+            setCurrentChatId(chatId);
+            setIsHistoryOpen(false);
+          }}
+          onClose={() => setIsHistoryOpen(false)}
+          isOpen={isHistoryOpen}
+        />
       </div>
     </div>
   );

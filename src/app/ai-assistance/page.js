@@ -5,15 +5,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { authClient } from '@/lib/authClient';
 import { useRouter } from 'next/navigation';
 import ChatBox from '@/components/ChatBox';
+import ChatHistory from '@/components/ChatHistory';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
+import {
+  createAIAssistanceChat,
+  addMessageToAIChat,
+} from '@/store/slices/aiAssistanceChatSlice';
 
 export default function AIAssistance() {
   const [session, setSession] = useState(null);
   const [error, setError] = useState(null);
+  const [currentChatId, setCurrentChatId] = useState(null);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
   const { profile, loading } = useSelector((state) => state.profile);
+  const { currentChat } = useSelector((state) => state.aiAssistanceChat);
 
   useEffect(() => {
     const initializeChat = async () => {
@@ -35,6 +43,21 @@ export default function AIAssistance() {
           return;
         }
 
+
+        // Initialize new chat
+        try {
+          const chatAction = await dispatch(
+            createAIAssistanceChat({
+              userId: data.user.id,
+              title: 'New AI Assistance Chat',
+            })
+          );
+          if (chatAction.payload) {
+            setCurrentChatId(chatAction.payload._id);
+          }
+        } catch (err) {
+          console.error('Error creating chat:', err);
+        }
         if (result.type.endsWith('/rejected')) {
           setError(result.payload || 'Failed to fetch profile');
         }
@@ -86,13 +109,43 @@ export default function AIAssistance() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent mb-2">
-            🤖 Personalized AI Assistance
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Your AI tutor is specialized for your learning level ({profile.level}) and study approach ({profile.studySystem})
-          </p>
+        <div className="mb-8 flex justify-between items-start">
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent mb-2">
+              🤖 Personalized AI Assistance
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Your AI tutor is specialized for your learning level ({profile.level}) and study approach ({profile.studySystem})
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setIsHistoryOpen(true)}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+            >
+              📚 History
+            </button>
+            <button
+              onClick={async () => {
+                try {
+                  const chatAction = await dispatch(
+                    createAIAssistanceChat({
+                      userId: session.user.id,
+                      title: 'New AI Assistance Chat',
+                    })
+                  );
+                  if (chatAction.payload) {
+                    setCurrentChatId(chatAction.payload._id);
+                  }
+                } catch (err) {
+                  console.error('Error creating new chat:', err);
+                }
+              }}
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+            >
+              ➕ New Chat
+            </button>
+          </div>
         </div>
 
         {/* Main Layout - Chat and Info */}
@@ -184,6 +237,18 @@ export default function AIAssistance() {
             </button>
           </div>
         </div>
+
+        {/* Chat History Modal */}
+        <ChatHistory
+          userId={session?.user?.id}
+          chatType="aiAssistance"
+          onHistorySelect={(chatId) => {
+            setCurrentChatId(chatId);
+            setIsHistoryOpen(false);
+          }}
+          onClose={() => setIsHistoryOpen(false)}
+          isOpen={isHistoryOpen}
+        />
       </div>
     </div>
   );

@@ -3,6 +3,10 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/database.js";
 import profileRoutes from "./routes/profileRoutes.js";
+import aiAssistanceChatRoutes from "./routes/aiAssistanceChatRoutes.js";
+import notesChatRoutes from "./routes/notesChatRoutes.js";
+import assignmentGuideChatRoutes from "./routes/assignmentGuideChatRoutes.js";
+import imageAnalyzerChatRoutes from "./routes/imageAnalyzerChatRoutes.js";
 
 dotenv.config();
 
@@ -27,6 +31,10 @@ app.get("/api/health", (req, res) => {
 
 // API Routes
 app.use("/api/profiles", profileRoutes);
+app.use("/api/ai-assistance-chat", aiAssistanceChatRoutes);
+app.use("/api/notes-chat", notesChatRoutes);
+app.use("/api/assignment-guide-chat", assignmentGuideChatRoutes);
+app.use("/api/image-analyzer-chat", imageAnalyzerChatRoutes);
 
 // 404 handler
 app.use((req, res) => {
