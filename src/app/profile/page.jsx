@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { authClient } from '@/lib/authClient';
+import { supabase } from '@/lib/supabase';
 import LearningLevelQuiz from '@/components/LearningLevelQuiz';
 import {
   createProfile,
@@ -39,16 +39,16 @@ export default function ProfilePage() {
   useEffect(() => {
     const getSession = async () => {
       try {
-        const { data } = await authClient.getSession();
-        if (data?.user) {
-          setSession(data);
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          setSession(session);
           setFormData((prev) => ({
             ...prev,
-            userId: data.user.id,
+            userId: session.user.id,
           }));
 
           // Fetch existing profile
-          dispatch(fetchProfileByUserId(data.user.id));
+          dispatch(fetchProfileByUserId(session.user.id));
         } else {
           router.push('/auth/login');
         }

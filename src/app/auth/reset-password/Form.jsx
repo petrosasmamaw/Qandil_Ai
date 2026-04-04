@@ -1,32 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { authClient } from "@/lib/authClient";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export default function ResetPasswordForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [token, setToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
-
-  useEffect(() => {
-    const queryToken = searchParams.get("token");
-    const queryError = searchParams.get("error");
-
-    if (queryError) {
-      setError("Invalid or expired reset link. Please request a new password reset.");
-    } else if (!queryToken) {
-      setError("No reset token found. Please click the link from your reset email.");
-    } else {
-      setToken(queryToken);
-    }
-  }, [searchParams]);
 
   useEffect(() => {
     let strength = 0;
@@ -52,24 +37,15 @@ export default function ResetPasswordForm() {
       return;
     }
 
-    if (!token) {
-      setError("Invalid reset token. Please request a new password reset.");
-      return;
-    }
-
     setLoading(true);
 
     try {
-      const { data, error: resetError } = await authClient.resetPassword({
-        newPassword: newPassword,
-        token: token,
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
       });
 
-      if (resetError) {
-        setError(
-          resetError.message ||
-            "Failed to reset password. The link may have expired. Please request a new one."
-        );
+      if (error) {
+        setError(error.message);
       } else {
         setSuccess(true);
         setTimeout(() => {
@@ -77,10 +53,7 @@ export default function ResetPasswordForm() {
         }, 2000);
       }
     } catch (err) {
-      setError(
-        err?.message ||
-          "Failed to reset password. Please try again or request a new reset link."
-      );
+      setError(err?.message || "Failed to reset password.");
       console.error("Password reset error:", err);
     } finally {
       setLoading(false);
@@ -150,7 +123,7 @@ export default function ResetPasswordForm() {
             </div>
           )}
 
-          {!error && token && (
+          {!error && (
             <form onSubmit={handleSubmit} className="space-y-4">
               <label className="block">
                 <span className="text-sm text-slate-700 dark:text-slate-300">

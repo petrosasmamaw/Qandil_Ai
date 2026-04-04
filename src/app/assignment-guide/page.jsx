@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { authClient } from '@/lib/authClient';
+import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
 import { generateAssignmentGuidance, generateAssignmentGuidanceFromText } from '@/utils/assignmentGuidanceService';
@@ -36,27 +36,35 @@ export default function AssignmentGuidePage() {
   useEffect(() => {
     const initialize = async () => {
       try {
-        const { data } = await authClient.getSession();
-
-          // Initialize new assignment guide chat
-          try {
-            const chatAction = await dispatch(
-              createAssignmentGuideChat({
-                userId: data.user.id,
-                title: 'New Assignment Guidance Chat',
-              })
-            );
-            if (chatAction.payload) {
-              setCurrentChatId(chatAction.payload._id);
-            }
-          } catch (err) {
-            console.error('Error creating assignment guide chat:', err);
-          }
-        if (data?.user) {
-          setSession(data);
-          await dispatch(fetchProfileByUserId(data.user.id));
-        } else {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) {
           router.push('/auth/login');
+          return;
+        }
+
+        setSession(session);
+
+        // Fetch student profile using Redux
+        const result = await dispatch(fetchProfileByUserId(session.user.id));
+        
+        if (result.payload === null) {
+          setError('Profile not found. Please create your profile first.');
+          return;
+        }
+
+        // Initialize new assignment guide chat
+        try {
+          const chatAction = await dispatch(
+            createAssignmentGuideChat({
+              userId: session.user.id,
+              title: 'New Assignment Guidance Chat',
+            })
+          );
+          if (chatAction.payload) {
+            setCurrentChatId(chatAction.payload._id);
+          }
+        } catch (err) {
+          console.error('Error creating assignment guide chat:', err);
         }
       } catch (error) {
         console.error('Error initializing:', error);

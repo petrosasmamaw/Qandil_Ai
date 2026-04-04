@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { authClient } from '@/lib/authClient';
+import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
 import { processDocument, processTextContent } from '@/utils/documentProcessingService';
@@ -36,27 +36,35 @@ export default function NotesPage() {
   useEffect(() => {
     const initialize = async () => {
       try {
-        const { data } = await authClient.getSession();
-
-          // Initialize new notes chat
-          try {
-            const chatAction = await dispatch(
-              createNotesChat({
-                userId: data.user.id,
-                title: 'New Notes Chat',
-              })
-            );
-            if (chatAction.payload) {
-              setCurrentChatId(chatAction.payload._id);
-            }
-          } catch (err) {
-            console.error('Error creating notes chat:', err);
-          }
-        if (data?.user) {
-          setSession(data);
-          await dispatch(fetchProfileByUserId(data.user.id));
-        } else {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) {
           router.push('/auth/login');
+          return;
+        }
+
+        setSession(session);
+
+        // Fetch student profile using Redux
+        const result = await dispatch(fetchProfileByUserId(session.user.id));
+        
+        if (result.payload === null) {
+          setError('Profile not found. Please create your profile first.');
+          return;
+        }
+
+        // Initialize new notes chat
+        try {
+          const chatAction = await dispatch(
+            createNotesChat({
+              userId: session.user.id,
+              title: 'New Notes Chat',
+            })
+          );
+          if (chatAction.payload) {
+            setCurrentChatId(chatAction.payload._id);
+          }
+        } catch (err) {
+          console.error('Error creating notes chat:', err);
         }
       } catch (error) {
         console.error('Error initializing:', error);

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
-import { authClient } from '@/lib/authClient';
+import { supabase } from '@/lib/supabase';
 import { analyzeImage } from '@/utils/imageAnalysisService';
 import ImageAnalysisDisplay from '@/components/ImageAnalysisDisplay';
 import ChatHistory from '@/components/ChatHistory';
@@ -33,16 +33,27 @@ export default function ImageAnalyzerPage() {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const { data } = await authClient.getSession();
-        if (!data?.user) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) {
           window.location.href = '/auth/login';
           return;
+        }
+
+        setSession(session);
+
+        // Fetch student profile using Redux
+        const result = await dispatch(fetchProfileByUserId(session.user.id));
+        
+        if (result.payload === null) {
+          setError('Profile not found. Please create your profile first.');
+          return;
+        }
 
         // Initialize new image analyzer chat
         try {
           const chatAction = await dispatch(
             createImageAnalyzerChat({
-              userId: data.user.id,
+              userId: session.user.id,
               title: 'New Image Analysis Chat',
             })
           );
@@ -52,9 +63,6 @@ export default function ImageAnalyzerPage() {
         } catch (err) {
           console.error('Error creating image analyzer chat:', err);
         }
-        }
-        setSession(data);
-        dispatch(fetchProfileByUserId(data.user.id));
       } catch (error) {
         console.error('Error checking session:', error);
         window.location.href = '/auth/login';
@@ -62,6 +70,7 @@ export default function ImageAnalyzerPage() {
         setLoading(false);
       }
     };
+
     checkSession();
   }, [dispatch]);
 

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/authClient";
+import { supabase } from "@/lib/supabase";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { FiCpu, FiCheck } from "react-icons/fi";
@@ -19,20 +19,25 @@ export default function RegisterForm() {
     setLoading(true);
     setError(null);
     const form = new FormData(e.currentTarget);
-    const body = Object.fromEntries(form.entries());
+    const email = form.get('email');
+    const password = form.get('password');
+    const name = form.get('name');
     try {
-      const resp = await fetch("/api/auth/sign-up/email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(body),
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name,
+          }
+        }
       });
-      const data = await resp.json().catch(() => null);
-      if (!resp.ok || data?.error) {
-        setError(data?.error?.message || data?.message || "Registration failed");
+      if (error) {
+        setError(error.message);
         setLoading(false);
         return;
       }
+      // Redirect to login or show message
       window.location.href = "/auth/login";
     } catch (err) {
       setError(err?.message || "Network error");
@@ -44,10 +49,16 @@ export default function RegisterForm() {
   const handleGitHubLogin = async () => {
     setSocialLoading("github");
     try {
-      await authClient.signIn.social({
-        provider: "github",
-        callbackURL: "/",
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: window.location.origin
+        }
       });
+      if (error) {
+        setError(error.message);
+        setSocialLoading(null);
+      }
     } catch (err) {
       setError(err?.message || "GitHub login failed");
       setSocialLoading(null);
@@ -57,10 +68,16 @@ export default function RegisterForm() {
   const handleGoogleLogin = async () => {
     setSocialLoading("google");
     try {
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/",
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin
+        }
       });
+      if (error) {
+        setError(error.message);
+        setSocialLoading(null);
+      }
     } catch (err) {
       setError(err?.message || "Google login failed");
       setSocialLoading(null);

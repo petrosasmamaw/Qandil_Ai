@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { authClient } from '@/lib/authClient';
+import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import ChatBox from '@/components/ChatBox';
 import ChatHistory from '@/components/ChatHistory';
@@ -28,16 +28,16 @@ export default function AIAssistance() {
     const initializeChat = async () => {
       try {
         // Get session
-        const { data } = await authClient.getSession();
-        if (!data?.user) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) {
           router.push('/auth/login');
           return;
         }
 
-        setSession(data);
+        setSession(session);
 
         // Fetch student profile using Redux
-        const result = await dispatch(fetchProfileByUserId(data.user.id));
+        const result = await dispatch(fetchProfileByUserId(session.user.id));
         
         if (result.payload === null) {
           setError('Profile not found. Please create your profile first.');
@@ -49,7 +49,7 @@ export default function AIAssistance() {
         try {
           const chatAction = await dispatch(
             createAIAssistanceChat({
-              userId: data.user.id,
+              userId: session.user.id,
               title: 'New AI Assistance Chat',
             })
           );

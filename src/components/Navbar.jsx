@@ -3,9 +3,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { signOutAction } from '@/app/actions/auth-actions';
 import { useEffect, useState } from 'react';
-import { authClient } from '@/lib/authClient';
+import { supabase } from '@/lib/supabase';
 
 export const Navbar = () => {
   const pathname = usePathname();
@@ -14,21 +13,18 @@ export const Navbar = () => {
 
   useEffect(() => {
     const getSession = async () => {
-      try {
-        const { data } = await authClient.getSession();
-        setSession(data);
-      } catch (error) {
-        console.error('Error fetching session:', error);
-      } finally {
-        setLoading(false);
-      }
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
+      setLoading(false);
     };
-    
+
     getSession();
-    
-    // Poll for session updates every 5 seconds
-    const interval = setInterval(getSession, 5000);
-    return () => clearInterval(interval);
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const isActive = (href) => {
@@ -100,20 +96,20 @@ export const Navbar = () => {
       <div className="absolute inset-0 bg-gray-400/40 dark:bg-gray-800/40 backdrop-blur-md border-b border-white/30 dark:border-gray-700/30 rounded-bl-2xl rounded-br-2xl"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-16">
           {/* Logo with Animation */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center gap-3 group cursor-pointer focus:outline-none">
-              <div className="logo-animate p-2 bg-white/70 dark:bg-gray-800/70 rounded-full border border-gray-300/50 dark:border-gray-600/50 shadow-md">
+              <div className="logo-animate p-1.5 bg-white/70 dark:bg-gray-800/70 rounded-full border border-gray-300/50 dark:border-gray-600/50 shadow-md">
                 <Image
                   src="/qandil-logo.png"
                   alt="Qandil AI Logo"
-                  width={40}
-                  height={40}
-                  className="transition-transform duration-300 group-hover:scale-110 w-10 h-10"
+                  width={34}
+                  height={34}
+                  className="transition-transform duration-300 group-hover:scale-110 w-8 h-8"
                 />
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-200 bg-clip-text text-transparent transition-all duration-300 group-hover:from-gray-800 group-hover:to-gray-600">
+              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-200 bg-clip-text text-transparent transition-all duration-300 group-hover:from-gray-800 group-hover:to-gray-600">
                 Qandil AI
               </span>
             </Link>
@@ -121,12 +117,12 @@ export const Navbar = () => {
 
           {/* Center Navigation - Glassmorphic Pills */}
           {!loading && session?.user && (
-            <div className="hidden md:flex items-center gap-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg rounded-full px-2 py-2 border border-white/30 dark:border-gray-700/30 shadow-lg">
+            <div className="hidden md:flex items-center gap-1.5 bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg rounded-full px-1.5 py-1.5 border border-white/30 dark:border-gray-700/30 shadow-lg">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 ${
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 ${
                     isActive(item.href)
                       ? 'bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white shadow-lg scale-105'
                       : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/50 dark:hover:bg-gray-600/50'
@@ -145,31 +141,32 @@ export const Navbar = () => {
               <div className="text-sm text-gray-600">Loading...</div>
             ) : session?.user ? (
               <div className="flex items-center gap-3">
-                <div className="hidden md:block px-4 py-2">
+                <div className="hidden md:block px-3.5 py-1.5">
                   <p className="text-sm font-medium bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent">
                     {session.user.name || session.user.email}
                   </p>
                 </div>
-                <form action={signOutAction}>
-                  <button
-                    type="submit"
-                    className="px-6 py-2 rounded-full text-sm font-medium text-red-600 dark:text-red-400 bg-white/50 dark:bg-gray-800/50 border-2 border-red-300 dark:border-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 hover:border-red-400 dark:hover:border-red-500 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
-                  >
-                    Sign Out
-                  </button>
-                </form>
+                <button
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    window.location.href = '/auth/login';
+                  }}
+                  className="px-5 py-1.5 rounded-full text-sm font-medium text-red-600 dark:text-red-400 bg-white/50 dark:bg-gray-800/50 border-2 border-red-300 dark:border-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 hover:border-red-400 dark:hover:border-red-500 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+                >
+                  Sign Out
+                </button>
               </div>
             ) : (
               <div className="flex items-center gap-2">
                 <Link
                   href="/auth/login"
-                  className="px-6 py-2 rounded-full text-sm font-medium text-gray-900 dark:text-gray-100 bg-white/60 dark:bg-gray-700/60 hover:bg-white dark:hover:bg-gray-600 border border-gray-300/50 dark:border-gray-500/50 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                  className="px-5 py-1.5 rounded-full text-sm font-medium text-gray-900 dark:text-gray-100 bg-white/60 dark:bg-gray-700/60 hover:bg-white dark:hover:bg-gray-600 border border-gray-300/50 dark:border-gray-500/50 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/auth/register"
-                  className="px-6 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-300 dark:to-gray-400 hover:from-gray-900 hover:to-black dark:hover:from-gray-200 dark:hover:to-gray-300 text-white dark:text-gray-900 shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                  className="px-5 py-1.5 rounded-full text-sm font-medium bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-300 dark:to-gray-400 hover:from-gray-900 hover:to-black dark:hover:from-gray-200 dark:hover:to-gray-300 text-white dark:text-gray-900 shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
                 >
                   Sign Up
                 </Link>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { authClient } from "@/lib/authClient";
+import { supabase } from "@/lib/supabase";
 
 export default function ForgotPasswordModal({ isOpen, onClose }) {
   const [email, setEmail] = useState("");
@@ -16,13 +16,12 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
     setSuccess(false);
 
     try {
-      const { data, error: resetError } = await authClient.requestPasswordReset({
-        email: email,
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth/reset-password`,
       });
 
-      if (resetError) {
-        setError(resetError.message || "Failed to send reset email. Please check your email and try again.");
+      if (error) {
+        setError(error.message || "Failed to send reset email. Please check your email and try again.");
       } else {
         setSuccess(true);
         setEmail("");
