@@ -6,17 +6,15 @@ import { nextCookies } from "better-auth/next-js";
 import { sendVerificationEmail, sendPasswordResetEmail } from "./email";
 import { getVerificationEmailTemplate, getPasswordResetEmailTemplate } from "./emailTemplates";
 
-console.log("🔧 Initializing Prisma client...");
-console.log("📍 Database URL present:", !!process.env.DATABASE_URL);
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL environment variable is not defined");
+}
 
-const prisma = new PrismaClient({
-  log: ["error", "warn"],
-});
+if (!process.env.BETTER_AUTH_SECRET) {
+  throw new Error("BETTER_AUTH_SECRET environment variable is not defined");
+}
 
-// Test database connection
-prisma.$connect()
-  .then(() => console.log("✓ Database connection successful"))
-  .catch((error) => console.error("❌ Database connection failed:", error));
+const prisma = new PrismaClient();
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, { provider: "postgresql" }),

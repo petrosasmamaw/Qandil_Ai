@@ -1,42 +1,39 @@
 import { auth } from "../../../../lib/auth";
 import { toNextJsHandler } from "better-auth/next-js";
 
-const handler = toNextJsHandler(auth);
+let handler;
+try {
+  handler = toNextJsHandler(auth);
+} catch (error) {
+  console.error("Failed to initialize auth handler:", error);
+}
 
-export const GET = handler.GET;
+export const GET = async (request) => {
+  try {
+    if (!handler) throw new Error("Auth handler not initialized");
+    return handler.GET(request);
+  } catch (error) {
+    console.error("GET error:", error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+};
 
 export const POST = async (request) => {
   try {
-    console.log("🔐 Auth request received:", request.nextUrl.pathname);
+    if (!handler) throw new Error("Auth handler not initialized");
     
-    // Check if DATABASE_URL is set
-    if (!process.env.DATABASE_URL) {
-      console.error("❌ DATABASE_URL is not set in environment variables");
-      return new Response(JSON.stringify({ error: "Database configuration missing" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-
-    // Check if BETTER_AUTH_SECRET is set
-    if (!process.env.BETTER_AUTH_SECRET) {
-      console.error("❌ BETTER_AUTH_SECRET is not set");
-      return new Response(JSON.stringify({ error: "Auth configuration missing" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-
-    console.log("✓ Auth environment variables present");
-    console.log("✓ BETTER_AUTH_URL:", process.env.BETTER_AUTH_URL);
+    console.log("🔐 Auth POST request:", request.nextUrl.pathname);
+    console.log("📍 BETTER_AUTH_URL:", process.env.BETTER_AUTH_URL);
     
-    return handler.POST(request);
+    const response = await handler.POST(request);
+    return response;
   } catch (error) {
-    console.error("❌ Auth route error:", error);
+    console.error("❌ Auth POST error:", error.message, error.stack);
     return new Response(JSON.stringify({ 
-      error: "Internal server error",
-      message: error.message,
-      details: process.env.NODE_ENV === "development" ? error.stack : undefined
+      error: error.message || "Internal server error"
     }), {
       status: 500,
       headers: { "Content-Type": "application/json" }
