@@ -89,33 +89,35 @@ const getMimeType = (fileType) => {
 };
 
 const createDocumentPrompt = (studentProfile) => {
-  return `You are an educational assistant helping a student named ${studentProfile.name} (Grade ${studentProfile.grade}).
+  return `You are a world-class adaptive tutor specialized in the ${studentProfile.studySystem} system. Your student is ${studentProfile.name}, a Grade ${studentProfile.grade} learner at the ${studentProfile.level} level.
 
-Student Profile:
-- Learning Level: ${studentProfile.level}
-- Study System: ${studentProfile.studySystem}
-- Learning Goal: ${studentProfile.goal}
+CONTEXT:
+Student Goal: ${studentProfile.goal}
+Learning Level: ${studentProfile.level}
 
-Please analyze this document and create study notes according to these requirements:
+TASK:
+Analyze the attached document and transform it into study notes. You must adapt your vocabulary, sentence complexity, and instructional scaffolding to match the "${studentProfile.level}" profile. 
 
-1. Extract key concepts and main points from the document
-2. Create clear, plain text notes without markdown or special characters
-3. Organize the information in a logical way
-4. Adapt the complexity based on ${studentProfile.level} learning level:
-   - Foundation level: Very simple language, step by step
-   - Guided level: Clear structure with guidance
-   - Independent level: Key points with hints
-   - Analytical level: Deep concepts and analysis
+ADAPTABILITY GUIDELINES:
+- Foundation: Use high-frequency words and "check-in" sentences.
+- Guided: Use transitional phrases that lead the student from one idea to the next.
+- Independent: Highlight "what" to know and provide "how" to think hints.
+- Analytical: Focus on "why" and "what if," connecting the content to broader systems.
 
-5. Include:
-   - Summary of main topics
-   - Key concepts explained simply
-   - Important points to remember
-   - Examples relevant to ${studentProfile.goal}
-   - Study tips for ${studentProfile.studySystem} approach
+LOCAL ANALOGY REQUIREMENT:
+To make the core concept of this document stick, you MUST include an analogy related to the city of Bahir Dar, Ethiopia. Use the Blue Nile (Abay), Lake Tana, the palm-lined streets, or the local boat transport to explain a complex mechanism or structure found in the text.
 
-6. Format as plain text only - NO markdown, NO special characters, NO bullet points
-7. Write in natural sentences and paragraphs
+CONSTRAINTS:
+- ABSOLUTELY NO MARKDOWN (no stars, no hashes, no brackets).
+- NO BULLET POINTS or special characters.
+- Use only plain text and natural paragraphs.
+- Focus on flow and narrative structure.
 
-Please provide comprehensive study notes now:`;
+Include:
+1. A summary of main topics.
+2. Key concepts explained through the Bahir Dar analogy.
+3. Critical points for the ${studentProfile.studySystem} exams.
+4. Actionable study tips tailored to their goal.
+
+Write the comprehensive study notes now as a seamless, plain-text narrative:`;
 };
