@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/authClient";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import { FiCpu, FiCheck } from "react-icons/fi";
 import Link from "next/link";
 
 export default function RegisterForm() {
@@ -69,7 +70,7 @@ export default function RegisterForm() {
   return (
     <div className="w-full max-w-md p-8 rounded-2xl bg-slate-900 shadow-2xl border border-slate-800">
       <div className="mb-6">
-        <div className="text-4xl mb-3">🤖</div>
+        <div className="text-4xl mb-3 text-blue-400"><FiCpu size={40} /></div>
         <h2 className="text-xl font-bold text-white mb-1">Welcome to Sign Up <span className="text-blue-400">Buddy!</span></h2>
         <p className="text-slate-400 text-sm">Create your account to get started</p>
       </div>

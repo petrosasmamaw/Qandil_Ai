@@ -12,6 +12,7 @@ import {
   clearError,
   clearSuccess,
 } from '@/store/slices/profileSlice';
+import { FiTarget, FiZap, FiBarChart2, FiCheck } from 'react-icons/fi';
 
 export default function ProfilePage() {
   const dispatch = useDispatch();
@@ -155,8 +156,8 @@ export default function ProfilePage() {
         {/* Success Message */}
         {success && (
           <div className="mb-6 p-4 bg-green-50 border-l-4 border-green-600 rounded-lg shadow-sm">
-            <p className="text-green-800 font-medium">
-              ✓ {successMessage}
+            <p className="text-green-800 font-medium flex items-center gap-2">
+              <FiCheck size={18} /> {successMessage}
             </p>
           </div>
         )}
@@ -274,8 +275,8 @@ export default function ProfilePage() {
 
             {/* Level Field - AI Quiz */}
             <div className="bg-gradient-to-br from-green-50 to-yellow-50 p-6 rounded-xl border-2 border-green-200">
-              <label className="block text-sm font-semibold text-gray-900 mb-3">
-                🎯 Learning Level {formData.level !== 'foundation' && `✓ ${formData.level.charAt(0).toUpperCase() + formData.level.slice(1)}`}
+              <label className="block text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <FiTarget size={18} /> Learning Level {formData.level !== 'foundation' && `✓ ${formData.level.charAt(0).toUpperCase() + formData.level.slice(1)}`}
               </label>
               <button
                 type="button"
@@ -284,8 +285,8 @@ export default function ProfilePage() {
               >
                 Take AI Quiz to Determine Level
               </button>
-              <p className="mt-3 text-xs text-gray-600">
-                💡 Quick 5-question quiz to automatically determine your learning level
+              <p className="mt-3 text-xs text-gray-600 flex items-center gap-2">
+                <FiZap size={14} /> Quick 5-question quiz to automatically determine your learning level
               </p>
             </div>
 
@@ -301,7 +302,10 @@ export default function ProfilePage() {
                   {isEditing ? 'Updating...' : 'Creating...'}
                 </span>
               ) : (
-                <span>{isEditing ? '✓ Update Profile' : '✓ Create Profile'}</span>
+                <span className="flex items-center justify-center gap-2">
+                  <FiCheck size={18} />
+                  {isEditing ? 'Update Profile' : 'Create Profile'}
+                </span>
               )}
             </button>
           </form>
@@ -310,8 +314,8 @@ export default function ProfilePage() {
         {/* Profile Info Card */}
         {profile && (
           <div className="mt-8 bg-white rounded-2xl shadow-md p-6 border border-gray-100">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              📊 Profile Information
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <FiBarChart2 size={18} /> Profile Information
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>

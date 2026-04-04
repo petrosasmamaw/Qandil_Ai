@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FiCpu, FiEdit2, FiClipboard } from "react-icons/fi";
 
 export default function Home() {
   return (
@@ -28,26 +29,26 @@ export default function Home() {
         {[
           {
             title: "AI Chat Tutor",
-            icon: "🤖",
+            icon: <FiCpu className="w-12 h-12" />,
             desc: "Chat with a personalized AI tutor available 24/7. Get instant answers tailored to your learning level with adaptive explanations.",
             link: "/ai-assistance"
           },
           {
             title: "Smart Notes",
-            icon: "📝",
+            icon: <FiEdit2 className="w-12 h-12" />,
             desc: "Upload study materials and convert them into personalized study notes. AI generates structured content for your learning system.",
             link: "/notes"
           },
           {
             title: "Assignment Help",
-            icon: "📋",
+            icon: <FiClipboard className="w-12 h-12" />,
             desc: "Get step-by-step guidance on your assignments. AI provides intelligent support tailored to your learning style.",
             link: "/assignment-guide"
           },
         ].map((item, i) => (
           <Link href={item.link} key={i}>
             <div className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer h-full">
-              <div className="text-5xl mb-4">{item.icon}</div>
+              <div className="text-green-600 mb-4">{item.icon}</div>
               <h3 className="text-xl font-semibold mb-3">{item.title}</h3>
               <p className="text-gray-600">{item.desc}</p>
             </div>

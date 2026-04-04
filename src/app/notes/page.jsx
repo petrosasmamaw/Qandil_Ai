@@ -13,6 +13,7 @@ import {
   createNotesChat,
   addMessageToNotesChat,
 } from '@/store/slices/notesChatSlice';
+import { FiFileText, FiBook, FiZap } from 'react-icons/fi';
 
 export default function NotesPage() {
   const [session, setSession] = useState(null);
@@ -213,7 +214,7 @@ export default function NotesPage() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-green-700 to-yellow-500 bg-clip-text text-transparent">
-              📝 Smart Notes
+              <FiFileText size={18} className="text-green-700" /> Smart Notes
             </h1>
             <p className="text-gray-600 mt-1">
               {profile && `Upload or paste content for ${profile.name} (Grade ${profile.grade})`}
@@ -224,7 +225,7 @@ export default function NotesPage() {
               onClick={() => setIsHistoryOpen(true)}
               className="px-4 py-2 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-medium transition-colors"
             >
-              📚 History
+              <FiBook size={18} className="text-green-700" /> History
             </button>
             <button
               onClick={async () => {
@@ -357,7 +358,7 @@ export default function NotesPage() {
               disabled={processing}
               className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
             >
-              {processing ? 'Processing...' : 'Generate Notes 📝'}
+              {processing ? 'Processing...' : 'Generate Notes'}
             </button>
           </form>
         )}
@@ -402,7 +403,7 @@ export default function NotesPage() {
                 </>
               ) : (
                 <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                  <div className="text-6xl mb-4">📚</div>
+                  <div className="text-6xl mb-4 text-blue-400"><FiBook size={60} /></div>
                   <p className="text-gray-600 dark:text-gray-400 mb-4">No notes generated yet</p>
                   <p className="text-sm text-gray-500 dark:text-gray-500">Upload a file or paste text to get started!</p>
                 </div>
@@ -411,7 +412,7 @@ export default function NotesPage() {
 
             {/* Info Section */}
             <div className="mt-12 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3">💡 How It Works</h3>
+              <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2"><FiZap size={18} /> How It Works</h3>
               <ol className="text-blue-800 dark:text-blue-400 space-y-2 text-sm">
                 <li>1. Choose to upload files OR paste text content</li>
                 <li>2. AI analyzes the content using your learning profile</li>

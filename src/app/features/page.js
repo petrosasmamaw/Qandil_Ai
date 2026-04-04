@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { FiMessage, FiGlobe, FiBarChart2, FiSettings, FiLink2, FiTrendingUp, FiMonitor, FiTrendingDown, FiLock, FiSmartphone, FiZap, FiCheck } from 'react-icons/fi';
 
 export const metadata = {
   title: 'Features | Qandil AI',
@@ -10,42 +11,42 @@ export default function Features() {
     {
       title: 'Natural Language Processing',
       description: 'Advanced NLP to understand context and nuance in every conversation',
-      icon: '🗣️',
+      icon: <FiMessage className="w-10 h-10 text-green-600" />,
     },
     {
       title: 'Multi-Language Support',
       description: 'Communicate in your preferred language with seamless translation',
-      icon: '🌍',
+      icon: <FiGlobe className="w-10 h-10 text-green-600" />,
     },
     {
       title: 'Machine Learning',
       description: 'Continuously improving algorithms that learn from interactions',
-      icon: '📊',
+      icon: <FiBarChart2 className="w-10 h-10 text-green-600" />,
     },
     {
       title: 'Real-time Analysis',
       description: 'Instant data processing and analysis at scale',
-      icon: '⚙️',
+      icon: <FiSettings className="w-10 h-10 text-green-600" />,
     },
     {
       title: 'Integration Ready',
       description: 'Easy integration with your existing tools and platforms',
-      icon: '🔗',
+      icon: <FiLink2 className="w-10 h-10 text-green-600" />,
     },
     {
       title: 'Custom Workflows',
       description: 'Create tailored workflows that match your specific needs',
-      icon: '📈',
+      icon: <FiTrendingUp className="w-10 h-10 text-green-600" />,
     },
     {
       title: 'API Access',
       description: 'Powerful REST API for seamless integration and automation',
-      icon: '💻',
+      icon: <FiMonitor className="w-10 h-10 text-green-600" />,
     },
     {
       title: 'Analytics Dashboard',
       description: 'Comprehensive insights into AI performance and usage metrics',
-      icon: '📉',
+      icon: <FiTrendingDown className="w-10 h-10 text-green-600" />,
     },
   ];
 
@@ -53,8 +54,8 @@ export default function Features() {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-teal-100 dark:from-gray-900 dark:to-teal-900">
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            ✨ Powerful Features
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 flex items-center justify-center gap-2">
+            <FiZap className="w-8 h-8 text-green-600" /> Powerful Features
           </h1>
           <p className="text-xl text-gray-700 dark:text-gray-300">
             Discover what makes Qandil AI the ultimate choice for intelligent solutions
@@ -88,7 +89,7 @@ export default function Features() {
             <div className="flex items-center space-x-4">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 rounded-full bg-teal-100 dark:bg-teal-900 flex items-center justify-center">
-                  <span className="text-2xl">🔐</span>
+                  <FiLock className="w-6 h-6 text-teal-600 dark:text-teal-400" />
                 </div>
               </div>
               <div>
@@ -103,7 +104,7 @@ export default function Features() {
             <div className="flex items-center space-x-4">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 rounded-full bg-teal-100 dark:bg-teal-900 flex items-center justify-center">
-                  <span className="text-2xl">📱</span>
+                  <FiSmartphone className="w-6 h-6 text-teal-600 dark:text-teal-400" />
                 </div>
               </div>
               <div>
@@ -118,7 +119,7 @@ export default function Features() {
             <div className="flex items-center space-x-4">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 rounded-full bg-teal-100 dark:bg-teal-900 flex items-center justify-center">
-                  <span className="text-2xl">🚀</span>
+                  <FiZap className="w-6 h-6 text-teal-600 dark:text-teal-400" />
                 </div>
               </div>
               <div>
@@ -156,8 +157,8 @@ export default function Features() {
                 <p className="text-3xl font-bold mb-6">{plan.price}</p>
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-center">
-                      <span className="mr-3">✓</span>
+                    <li key={i} className="flex items-center gap-2">
+                      <FiCheck size={18} className="text-green-600 flex-shrink-0" />
                       {feature}
                     </li>
                   ))}

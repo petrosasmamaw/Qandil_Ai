@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { FiZap, FiCheckCircle } from 'react-icons/fi';
 import { generateLearningLevelQuiz, determineLearningLevel } from '@/utils/geminiService';
 
 export default function LearningLevelQuiz({ profileData, onLevelDetermined, onClose }) {
@@ -139,9 +140,10 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
                 </h3>
 
                 {currentQuestion.hint && (
-                  <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded">
-                    <p className="text-sm text-blue-800 dark:text-blue-300">
-                      💡 Hint: {currentQuestion.hint}
+                  <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded flex items-start gap-2\">
+                    <FiZap size={16} className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-blue-800 dark:text-blue-300\">
+                      Hint: {currentQuestion.hint}
                     </p>
                   </div>
                 )}

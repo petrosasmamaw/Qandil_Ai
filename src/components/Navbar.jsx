@@ -97,7 +97,7 @@ export const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50">
       {/* Glassmorphic navbar background */}
-      <div className="absolute inset-0 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-white/20 dark:border-gray-700/20"></div>
+      <div className="absolute inset-0 bg-gray-400/40 dark:bg-gray-800/40 backdrop-blur-md border-b border-white/30 dark:border-gray-700/30 rounded-bl-2xl rounded-br-2xl"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">

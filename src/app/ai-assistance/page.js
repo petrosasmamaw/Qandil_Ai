@@ -11,6 +11,7 @@ import {
   createAIAssistanceChat,
   addMessageToAIChat,
 } from '@/store/slices/aiAssistanceChatSlice';
+import { FiBook, FiZap, FiFileText, FiCpu, FiCheck, FiCheckCircle } from 'react-icons/fi';
 
 export default function AIAssistance() {
   const [session, setSession] = useState(null);
@@ -113,7 +114,7 @@ export default function AIAssistance() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-green-700 to-yellow-500 bg-clip-text text-transparent">
-              🤖 AI Assistant
+              <FiCpu size={24} className="text-green-700" /> AI Assistant
             </h1>
             <p className="text-gray-600 mt-1">
               {profile && `Tuned for your learning level (${profile.level}) and study approach (${profile.studySystem})`}
@@ -125,7 +126,7 @@ export default function AIAssistance() {
               onClick={() => setIsHistoryOpen(true)}
               className="px-4 py-2 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-medium transition-colors"
             >
-              📚 History
+              <FiBook size={18} className="text-green-700" /> History
             </button>
             <button
               onClick={async () => {
@@ -168,7 +169,7 @@ export default function AIAssistance() {
 
             {/* Profile Widget */}
             <div className="bg-white p-5 rounded-2xl shadow-sm">
-              <h3 className="font-semibold text-green-700 mb-3">📚 Profile</h3>
+              <h3 className="font-semibold text-green-700 mb-3 flex items-center gap-2"><FiBook size={18} /> Profile</h3>
               {profile && (
                 <div className="space-y-2">
                   <p className="text-sm text-gray-600"><span className="font-medium">Name:</span> {profile.name}</p>
@@ -182,14 +183,14 @@ export default function AIAssistance() {
 
             {/* How it works */}
             <div className="bg-green-50 p-5 rounded-2xl shadow-sm">
-              <h3 className="font-semibold text-green-800 mb-3">
-                💡 How it works
+              <h3 className="font-semibold text-green-800 mb-3 flex items-center gap-2">
+                <FiZap size={18} /> How it works
               </h3>
               <ul className="text-sm space-y-2 text-green-700">
-                <li>1️⃣ Ask questions</li>
-                <li>2️⃣ AI adapts to you</li>
-                <li>3️⃣ Get explanations</li>
-                <li>4️⃣ Improve daily</li>
+                <li className="flex items-center gap-2"><FiCheckCircle size={14} /> Ask questions</li>
+                <li className="flex items-center gap-2"><FiCheckCircle size={14} /> AI adapts to you</li>
+                <li className="flex items-center gap-2"><FiCheckCircle size={14} /> Get explanations</li>
+                <li className="flex items-center gap-2"><FiCheckCircle size={14} /> Improve daily</li>
               </ul>
             </div>
 
@@ -199,10 +200,10 @@ export default function AIAssistance() {
                 ✅ Focus
               </h3>
               <ul className="text-sm space-y-1 text-yellow-600">
-                <li>✓ Study help</li>
-                <li>✓ Exams</li>
-                <li>✓ Problem solving</li>
-                <li>✓ Concepts</li>
+                <li className="flex items-center gap-2"><FiCheck size={16} /> Study help</li>
+                <li className="flex items-center gap-2"><FiCheck size={16} /> Exams</li>
+                <li className="flex items-center gap-2"><FiCheck size={16} /> Problem solving</li>
+                <li className="flex items-center gap-2"><FiCheck size={16} /> Concepts</li>
               </ul>
             </div>
 
@@ -211,7 +212,7 @@ export default function AIAssistance() {
               onClick={() => router.push('/profile')}
               className="w-full py-3 rounded-xl bg-gray-200 hover:bg-gray-300 transition-colors font-medium"
             >
-              📝 Update Profile
+              <span className="flex items-center gap-2"><FiFileText size={16} /> Update Profile</span>
             </button>
           </div>
         </div>

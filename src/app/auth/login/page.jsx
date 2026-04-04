@@ -1,4 +1,5 @@
 import LoginForm from "./Form";
+import { FiCpu, FiArrowUpRight } from "react-icons/fi";
 
 export default function LoginPage() {
   return (
@@ -7,15 +8,17 @@ export default function LoginPage() {
         {/* Left: Robot Mascot Section */}
         <div className="hidden lg:flex justify-center items-center">
           <div className="text-center">
-            {/* Robot Character - Using emoji as placeholder */}
-            <div className="text-8xl mb-6 drop-shadow-lg animate-bounce">🤖</div>
+            {/* Robot Character */}
+            <div className="text-8xl mb-6 drop-shadow-lg animate-bounce text-blue-400">
+              <FiCpu size={80} />
+            </div>
             {/* Chat Bubbles */}
             <div className="space-y-4">
               <div className="bg-blue-300 text-blue-900 px-6 py-3 rounded-2xl rounded-tl-none max-w-xs font-semibold shadow-lg">
-                👋 Welcome back!
+                Welcome back!
               </div>
               <div className="bg-white text-blue-900 px-6 py-3 rounded-2xl rounded-br-none max-w-xs font-semibold shadow-lg ml-auto">
-                Let's continue learning 📚
+                Let's continue learning
               </div>
             </div>
           </div>

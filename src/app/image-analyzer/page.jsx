@@ -8,6 +8,7 @@ import { analyzeImage } from '@/utils/imageAnalysisService';
 import ImageAnalysisDisplay from '@/components/ImageAnalysisDisplay';
 import ChatHistory from '@/components/ChatHistory';
 import ChatBox from '@/components/ChatBox';
+import { FiBook } from 'react-icons/fi';
 import {
   createImageAnalyzerChat,
   addMessageToImageAnalyzerChat,
@@ -157,7 +158,7 @@ export default function ImageAnalyzerPage() {
               onClick={() => setIsHistoryOpen(true)}
               className="px-4 py-2 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-medium transition-colors"
             >
-              📚 History
+              <FiBook size={18} className="text-green-700" /> History
             </button>
             <button
               onClick={async () => {

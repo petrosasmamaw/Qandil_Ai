@@ -13,6 +13,7 @@ import {
   createAssignmentGuideChat,
   addMessageToAssignmentGuideChat,
 } from '@/store/slices/assignmentGuideChatSlice';
+import { FiClipboard, FiBook, FiZap, FiFileText, FiCheck } from 'react-icons/fi';
 
 export default function AssignmentGuidePage() {
   const [session, setSession] = useState(null);
@@ -213,7 +214,7 @@ export default function AssignmentGuidePage() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-green-700 to-yellow-500 bg-clip-text text-transparent">
-              📋 Assignment Help
+              <FiClipboard size={18} className="text-green-700" /> Assignment Help
             </h1>
             <p className="text-gray-600 mt-1">
               {profile && `Get guided help for ${profile.name} (Grade ${profile.grade})`}
@@ -224,7 +225,7 @@ export default function AssignmentGuidePage() {
               onClick={() => setIsHistoryOpen(true)}
               className="px-4 py-2 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-medium transition-colors"
             >
-              📚 History
+              <FiBook size={18} className="text-green-700" /> History
             </button>
             <button
               onClick={async () => {
@@ -266,7 +267,7 @@ export default function AssignmentGuidePage() {
                 onClick={() => setInputMode('file')}
                 className={`px-6 py-3 font-semibold transition-colors border-b-2 ${
                   inputMode === 'file'
-                    ? 'border-purple-600 text-purple-600 dark:text-purple-400'
+                    ? 'border-blue-600 text-blue-600 dark:text-blue-400'
                     : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300'
                 }`}
               >
@@ -276,7 +277,7 @@ export default function AssignmentGuidePage() {
                 onClick={() => setInputMode('text')}
                 className={`px-6 py-3 font-semibold transition-colors border-b-2 ${
                   inputMode === 'text'
-                    ? 'border-purple-600 text-purple-600 dark:text-purple-400'
+                    ? 'border-blue-600 text-blue-600 dark:text-blue-400'
                     : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300'
                 }`}
               >
@@ -293,7 +294,7 @@ export default function AssignmentGuidePage() {
                 onDrop={handleDrop}
                 className={`mb-12 p-12 border-2 border-dashed rounded-lg transition-all cursor-pointer ${
                   dragActive
-                    ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                     : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'
                 }`}
               >
@@ -314,7 +315,7 @@ export default function AssignmentGuidePage() {
                   />
                   <label
                     htmlFor="assignment-file-input"
-                    className="inline-block px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium cursor-pointer transition-colors disabled:opacity-50"
+                    className="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium cursor-pointer transition-colors disabled:opacity-50"
                   >
                     {processing ? 'Processing...' : 'Choose Files'}
                   </label>
@@ -335,7 +336,7 @@ export default function AssignmentGuidePage() {
                     value={textTitle}
                     onChange={(e) => setTextTitle(e.target.value)}
                     placeholder="e.g., Write an Essay on Climate Change"
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     disabled={processing}
                   />
                 </div>
@@ -348,16 +349,16 @@ export default function AssignmentGuidePage() {
                     onChange={(e) => setTextInput(e.target.value)}
                     placeholder="Paste your assignment instructions, requirements, or description here..."
                     rows="8"
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                     disabled={processing}
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={processing}
-                  className="w-full px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
+                  className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
                 >
-                  {processing ? 'Generating Guidance...' : 'Get Guidance 📋'}
+                  {processing ? 'Generating Guidance...' : 'Get Guidance'}
                 </button>
               </form>
             )}
@@ -402,7 +403,7 @@ export default function AssignmentGuidePage() {
                 </>
               ) : (
                 <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                  <div className="text-6xl mb-4">📚</div>
+                  <div className="text-6xl mb-4 text-blue-400"><FiBook size={60} /></div>
                   <p className="text-gray-600 dark:text-gray-400 mb-4">No guidances generated yet</p>
                   <p className="text-sm text-gray-500 dark:text-gray-500">Upload an assignment or paste assignment text to get personalized guidance!</p>
                 </div>
@@ -412,7 +413,7 @@ export default function AssignmentGuidePage() {
             {/* Info Sections */}
             <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3">💡 How It Works</h3>
+                <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2"><FiZap size={18} /> How It Works</h3>
                 <ol className="text-blue-800 dark:text-blue-400 space-y-2 text-sm">
                   <li>1. Upload your assignment file OR paste assignment text</li>
                   <li>2. AI analyzes the assignment based on your learning profile</li>
@@ -421,13 +422,13 @@ export default function AssignmentGuidePage() {
                 </ol>
               </div>
 
-              <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-purple-900 dark:text-purple-300 mb-3">📝 What You Get</h3>
-                <ul className="text-purple-800 dark:text-purple-400 space-y-2 text-sm">
-                  <li>✓ Clear understanding of assignment requirements</li>
-                  <li>✓ Step-by-step approach tailored to your learning level</li>
-                  <li>✓ Guidance questions to help you think critically</li>
-                  <li>✓ Tips based on your study system and learning goals</li>
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2"><FiFileText size={18} /> What You Get</h3>
+                <ul className="text-blue-800 dark:text-blue-400 space-y-2 text-sm">
+                  <li className="flex items-center gap-2"><FiCheck size={16} /> Clear understanding of assignment requirements</li>
+                  <li className="flex items-center gap-2"><FiCheck size={16} /> Step-by-step approach tailored to your learning level</li>
+                  <li className="flex items-center gap-2"><FiCheck size={16} /> Guidance questions to help you think critically</li>
+                  <li className="flex items-center gap-2"><FiCheck size={16} /> Tips based on your study system and learning goals</li>
                 </ul>
               </div>
             </div>

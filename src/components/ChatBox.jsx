@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { sendChatMessage, getInitialGreeting } from '@/utils/educationalChatService';
+import { FiAward, FiZap } from 'react-icons/fi';
 
 export default function ChatBox({ 
   studentProfile, 
@@ -121,7 +122,7 @@ export default function ChatBox({
       {/* Header */}
       <div className="bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-gray-800 text-white p-4 flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold">🎓 Educational AI Tutor</h3>
+          <h3 className="text-lg font-semibold flex items-center gap-2"><FiAward size={20} /> Educational AI Tutor</h3>
           <p className="text-sm text-gray-300">Personalized learning assistant for {studentProfile.name}</p>
         </div>
         {onClose && (
@@ -212,9 +213,10 @@ export default function ChatBox({
             {loading ? '...' : 'Send'}
           </button>
         </form>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-          💡 This AI tutor is designed to help with your educational journey based on your learning profile.
-        </p>
+        <div className="flex items-start gap-2 mt-2 p-2 bg-blue-50 dark:bg-blue-950 rounded text-xs text-blue-800 dark:text-blue-300\">
+          <FiZap size={14} className="flex-shrink-0 mt-0.5" />
+          <p>This AI tutor is designed to help with your educational journey based on your learning profile.</p>
+        </div>
       </div>
     </div>
   );
