@@ -6,7 +6,17 @@ import { nextCookies } from "better-auth/next-js";
 import { sendVerificationEmail, sendPasswordResetEmail } from "./email";
 import { getVerificationEmailTemplate, getPasswordResetEmailTemplate } from "./emailTemplates";
 
-const prisma = new PrismaClient();
+console.log("🔧 Initializing Prisma client...");
+console.log("📍 Database URL present:", !!process.env.DATABASE_URL);
+
+const prisma = new PrismaClient({
+  log: ["error", "warn"],
+});
+
+// Test database connection
+prisma.$connect()
+  .then(() => console.log("✓ Database connection successful"))
+  .catch((error) => console.error("❌ Database connection failed:", error));
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, { provider: "postgresql" }),
