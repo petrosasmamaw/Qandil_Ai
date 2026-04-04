@@ -140,20 +140,22 @@ export default function ImageAnalyzerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white py-12 px-4 md:px-8">
+    <main className="min-h-screen bg-gradient-to-br from-green-50 via-white to-yellow-50 p-6 text-gray-800">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8 flex justify-between items-start">
+        {/* HEADER */}
+        <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              📸 Image Analyzer
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-700 to-yellow-500 bg-clip-text text-transparent">
+              🖼️ Image Analyzer
             </h1>
-            <p className="text-gray-300">Upload an image and get an educational analysis tailored to your learning profile</p>
+            <p className="text-gray-600 mt-1">
+              {profile && `Upload images for intelligent analysis for ${profile.name}`}
+            </p>
           </div>
           <div className="flex gap-3">
             <button
               onClick={() => setIsHistoryOpen(true)}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
+              className="px-4 py-2 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-medium transition-colors"
             >
               📚 History
             </button>
@@ -173,16 +175,16 @@ export default function ImageAnalyzerPage() {
                   console.error('Error creating new image analyzer chat:', err);
                 }
               }}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+              className="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium transition-colors"
             >
               ➕ New Chat
             </button>
           </div>
         </div>
 
-        {/* Main Layout - Content and Chat */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-          {/* Main Content Area */}
+        {/* LAYOUT */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* MAIN CONTENT */}
           <div className="lg:col-span-3">
 
             {/* Profile Info Cards */}
@@ -277,6 +279,6 @@ export default function ImageAnalyzerPage() {
           isOpen={isHistoryOpen}
         />
       </div>
-    </div>
+    </main>
   );
 }

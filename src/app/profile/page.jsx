@@ -138,14 +138,14 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4">
+    <main className="min-h-screen bg-gradient-to-br from-green-50 via-white to-yellow-50 py-12 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent mb-2">
-            {isEditing ? 'Update Your Profile' : 'Create Your Profile'}
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-green-700 to-yellow-500 bg-clip-text text-transparent mb-2">
+            👤 {isEditing ? 'Update Profile' : 'Create Profile'}
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600">
             {isEditing
               ? 'Update your learning preferences and goals'
               : 'Set up your learning profile to get started'}
@@ -154,8 +154,8 @@ export default function ProfilePage() {
 
         {/* Success Message */}
         {success && (
-          <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-            <p className="text-green-800 dark:text-green-300 font-medium">
+          <div className="mb-6 p-4 bg-green-50 border-l-4 border-green-600 rounded-lg shadow-sm">
+            <p className="text-green-800 font-medium">
               ✓ {successMessage}
             </p>
           </div>
@@ -163,14 +163,14 @@ export default function ProfilePage() {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-600 rounded-lg shadow-sm">
             <div className="flex justify-between items-start">
-              <p className="text-red-800 dark:text-red-300 font-medium">
+              <p className="text-red-800 font-medium">
                 ✕ {error}
               </p>
               <button
                 onClick={() => dispatch(clearError())}
-                className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
+                className="text-red-600 hover:text-red-800"
               >
                 ✕
               </button>
@@ -178,157 +178,165 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Name Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
-              Full Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-              minLength="2"
-              className="w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 transition-all"
-              placeholder="Enter your full name"
-            />
-          </div>
+        {/* Form Card */}
+        <div className="bg-white rounded-2xl shadow-md p-8 border border-gray-100">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Name Field */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
+                Full Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                minLength="2"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+                placeholder="Enter your full name"
+              />
+            </div>
 
-          {/* Grade Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
-              Grade (9-12)
-            </label>
-            <select
-              name="grade"
-              value={formData.grade}
-              onChange={handleInputChange}
-              required
-              className="w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 transition-all"
-            >
-              <option value={9}>9</option>
-              <option value={10}>10</option>
-              <option value={11}>11</option>
-              <option value={12}>12</option>
-            </select>
-          </div>
+            {/* Grade Field */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
+                Grade (9-12)
+              </label>
+              <select
+                name="grade"
+                value={formData.grade}
+                onChange={handleInputChange}
+                required
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+              >
+                <option value={9}>Grade 9</option>
+                <option value={10}>Grade 10</option>
+                <option value={11}>Grade 11</option>
+                <option value={12}>Grade 12</option>
+              </select>
+            </div>
 
-          {/* Study System Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
-              Study System
-            </label>
-            <select
-              name="studySystem"
-              value={formData.studySystem}
-              onChange={handleInputChange}
-              required
-              className="w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 transition-all"
-            >
-              <option value="theoretical">Theoretical</option>
-              <option value="conceptual">Conceptual</option>
-              <option value="exam_oriented">Exam Oriented</option>
-              <option value="problem_solving">Problem Solving</option>
-              <option value="mixed">Mixed</option>
-            </select>
-          </div>
+            {/* Study System Field */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
+                Study System
+              </label>
+              <select
+                name="studySystem"
+                value={formData.studySystem}
+                onChange={handleInputChange}
+                required
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+              >
+                <option value="theoretical">Theoretical</option>
+                <option value="conceptual">Conceptual</option>
+                <option value="exam_oriented">Exam Oriented</option>
+                <option value="problem_solving">Problem Solving</option>
+                <option value="mixed">Mixed</option>
+              </select>
+            </div>
 
-          {/* Goal Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
-              Learning Goal
-            </label>
-            <select
-              name="goal"
-              value={formData.goal}
-              onChange={handleInputChange}
-              required
-              className="w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 transition-all"
-            >
-              <option value="pass_exam">Pass Exam</option>
-              <option value="high_grades">High Grades</option>
-              <option value="deep_understanding">Deep Understanding</option>
-              <option value="quick_revision">Quick Revision</option>
-            </select>
-          </div>
+            {/* Goal Field */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
+                Learning Goal
+              </label>
+              <select
+                name="goal"
+                value={formData.goal}
+                onChange={handleInputChange}
+                required
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+              >
+                <option value="pass_exam">Pass Exam</option>
+                <option value="high_grades">High Grades</option>
+                <option value="deep_understanding">Deep Understanding</option>
+                <option value="quick_revision">Quick Revision</option>
+              </select>
+            </div>
 
-          {/* Preferred Language Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
-              Preferred Language
-            </label>
-            <input
-              type="text"
-              name="preferredLanguage"
-              value={formData.preferredLanguage}
-              onChange={handleInputChange}
-              maxLength="10"
-              className="w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 transition-all"
-              placeholder="en, ar, etc."
-            />
-          </div>
+            {/* Preferred Language Field */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
+                Preferred Language
+              </label>
+              <input
+                type="text"
+                name="preferredLanguage"
+                value={formData.preferredLanguage}
+                onChange={handleInputChange}
+                maxLength="10"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+                placeholder="en, ar, fr..."
+              />
+            </div>
 
-          {/* Level Field - AI Quiz */}
-          <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
-              Learning Level {formData.level !== 'foundation' && `✓ ${formData.level.charAt(0).toUpperCase() + formData.level.slice(1)}`}
-            </label>
+            {/* Level Field - AI Quiz */}
+            <div className="bg-gradient-to-br from-green-50 to-yellow-50 p-6 rounded-xl border-2 border-green-200">
+              <label className="block text-sm font-semibold text-gray-900 mb-3">
+                🎯 Learning Level {formData.level !== 'foundation' && `✓ ${formData.level.charAt(0).toUpperCase() + formData.level.slice(1)}`}
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowQuiz(true)}
+                className="w-full px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-lg active:scale-95"
+              >
+                Take AI Quiz to Determine Level
+              </button>
+              <p className="mt-3 text-xs text-gray-600">
+                💡 Quick 5-question quiz to automatically determine your learning level
+              </p>
+            </div>
+
+            {/* Submit Button */}
             <button
-              type="button"
-              onClick={() => setShowQuiz(true)}
-              className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+              type="submit"
+              disabled={loading}
+              className="w-full px-6 py-3 bg-gradient-to-r from-yellow-500 to-green-600 hover:from-yellow-600 hover:to-green-700 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              🎯 Test Learning Level with AI Quiz
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+                  {isEditing ? 'Updating...' : 'Creating...'}
+                </span>
+              ) : (
+                <span>{isEditing ? '✓ Update Profile' : '✓ Create Profile'}</span>
+              )}
             </button>
-            <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
-              Take a quick 5-question quiz to determine your learning level automatically
-            </p>
-          </div>
+          </form>
+        </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full px-6 py-3 bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-300 dark:to-gray-400 hover:from-gray-900 hover:to-black dark:hover:from-gray-200 dark:hover:to-gray-300 text-white dark:text-gray-900 font-semibold rounded-lg transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-          >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <div className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white dark:border-gray-900"></div>
-                {isEditing ? 'Updating...' : 'Creating...'}
-              </span>
-            ) : (
-              <span>{isEditing ? 'Update Profile' : 'Create Profile'}</span>
-            )}
-          </button>
-        </form>
-
-        {/* Profile Info */}
+        {/* Profile Info Card */}
         {profile && (
-          <div className="mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              Profile Information
+          <div className="mt-8 bg-white rounded-2xl shadow-md p-6 border border-gray-100">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              📊 Profile Information
             </h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <p className="text-gray-600 dark:text-gray-400">Profile ID</p>
-                <p className="text-gray-900 dark:text-white font-mono text-xs break-all">
-                  {profile._id}
-                </p>
+                <p className="text-gray-600 font-medium">Name</p>
+                <p className="text-gray-900 font-semibold mt-1">{profile.name}</p>
               </div>
               <div>
-                <p className="text-gray-600 dark:text-gray-400">Created</p>
-                <p className="text-gray-900 dark:text-white">
-                  {new Date(profile.createdAt).toLocaleDateString()}
-                </p>
+                <p className="text-gray-600 font-medium">Grade</p>
+                <p className="text-gray-900 font-semibold mt-1">Grade {profile.grade}</p>
               </div>
               <div>
-                <p className="text-gray-600 dark:text-gray-400">Last Updated</p>
-                <p className="text-gray-900 dark:text-white">
-                  {new Date(profile.updatedAt).toLocaleDateString()}
-                </p>
+                <p className="text-gray-600 font-medium">Learning Level</p>
+                <p className="text-green-600 font-semibold mt-1 capitalize">{profile.level}</p>
+              </div>
+              <div>
+                <p className="text-gray-600 font-medium">Study System</p>
+                <p className="text-gray-900 font-semibold mt-1 capitalize">{profile.studySystem.replace(/_/g, ' ')}</p>
+              </div>
+              <div>
+                <p className="text-gray-600 font-medium">Goal</p>
+                <p className="text-gray-900 font-semibold mt-1 capitalize">{profile.goal.replace(/_/g, ' ')}</p>
+              </div>
+              <div>
+                <p className="text-gray-600 font-medium">Last Updated</p>
+                <p className="text-gray-900 font-semibold mt-1">{new Date(profile.updatedAt).toLocaleDateString()}</p>
               </div>
             </div>
           </div>
@@ -343,6 +351,6 @@ export default function ProfilePage() {
           />
         )}
       </div>
-    </div>
+    </main>
   );
 }

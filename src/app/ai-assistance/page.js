@@ -106,22 +106,24 @@ export default function AIAssistance() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8 px-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Page Header */}
-        <div className="mb-8 flex justify-between items-start">
+    <main className="min-h-screen bg-gradient-to-br from-green-50 via-white to-yellow-50 p-6">
+      <div className="max-w-7xl mx-auto">
+
+        {/* HEADER */}
+        <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent mb-2">
-              🤖 Personalized AI Assistance
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-700 to-yellow-500 bg-clip-text text-transparent">
+              🤖 AI Assistant
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              Your AI tutor is specialized for your learning level ({profile.level}) and study approach ({profile.studySystem})
+            <p className="text-gray-600 mt-1">
+              {profile && `Tuned for your learning level (${profile.level}) and study approach (${profile.studySystem})`}
             </p>
           </div>
+
           <div className="flex gap-3">
             <button
               onClick={() => setIsHistoryOpen(true)}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+              className="px-4 py-2 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-medium transition-colors"
             >
               📚 History
             </button>
@@ -141,17 +143,18 @@ export default function AIAssistance() {
                   console.error('Error creating new chat:', err);
                 }
               }}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+              className="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium transition-colors"
             >
               ➕ New Chat
             </button>
           </div>
         </div>
 
-        {/* Main Layout - Chat and Info */}
+        {/* LAYOUT */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Main Chat Area */}
-          <div className="lg:col-span-3">
+
+          {/* CHAT AREA */}
+          <div className="lg:col-span-3 bg-white rounded-2xl shadow-md p-6 flex flex-col h-[75vh]">
             <ChatBox 
               studentProfile={profile}
               chatType="aiAssistance"
@@ -160,83 +163,53 @@ export default function AIAssistance() {
             />
           </div>
 
-          {/* Sidebar - Student Info & Tips */}
+          {/* SIDEBAR */}
           <div className="space-y-4">
-            {/* Student Profile Widget */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">📚 Your Profile</h3>
-              <div className="space-y-3 text-sm">
-                <div>
-                  <p className="text-gray-600 dark:text-gray-400">Name</p>
-                  <p className="font-semibold text-gray-900 dark:text-white">{profile.name}</p>
+
+            {/* Profile Widget */}
+            <div className="bg-white p-5 rounded-2xl shadow-sm">
+              <h3 className="font-semibold text-green-700 mb-3">📚 Profile</h3>
+              {profile && (
+                <div className="space-y-2">
+                  <p className="text-sm text-gray-600"><span className="font-medium">Name:</span> {profile.name}</p>
+                  <p className="text-sm text-gray-600"><span className="font-medium">Grade:</span> {profile.grade}</p>
+                  <p className="text-sm text-gray-600"><span className="font-medium">Level:</span> <span className="capitalize text-green-600 font-semibold">{profile.level}</span></p>
+                  <p className="text-sm text-gray-600"><span className="font-medium">Study:</span> <span className="capitalize">{profile.studySystem.replace(/_/g, ' ')}</span></p>
+                  <p className="text-sm text-gray-600"><span className="font-medium">Goal:</span> <span className="capitalize">{profile.goal.replace(/_/g, ' ')}</span></p>
                 </div>
-                <div>
-                  <p className="text-gray-600 dark:text-gray-400">Grade</p>
-                  <p className="font-semibold text-gray-900 dark:text-white">{profile.grade}</p>
-                </div>
-                <div>
-                  <p className="text-gray-600 dark:text-gray-400">Learning Level</p>
-                  <p className="font-semibold text-blue-600 dark:text-blue-400 capitalize">
-                    {profile.level}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-600 dark:text-gray-400">Study System</p>
-                  <p className="font-semibold text-gray-900 dark:text-white capitalize">
-                    {profile.studySystem.replace(/_/g, ' ')}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-600 dark:text-gray-400">Goal</p>
-                  <p className="font-semibold text-gray-900 dark:text-white capitalize">
-                    {profile.goal.replace(/_/g, ' ')}
-                  </p>
-                </div>
-              </div>
+              )}
             </div>
 
-            {/* How It Works */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 border border-blue-200 dark:border-blue-800">
-              <h3 className="font-semibold text-blue-900 dark:text-blue-300 mb-3">💡 How It Works</h3>
-              <ol className="text-sm text-blue-800 dark:text-blue-400 space-y-2">
-                <li className="flex gap-2">
-                  <span className="font-bold">1️⃣</span>
-                  <span>Ask any educational question</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="font-bold">2️⃣</span>
-                  <span>AI adapts to your learning level</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="font-bold">3️⃣</span>
-                  <span>Get personalized explanations</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="font-bold">4️⃣</span>
-                  <span>Learn and improve continuously</span>
-                </li>
-              </ol>
-            </div>
-
-            {/* Educational Focus */}
-            <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border border-green-200 dark:border-green-800">
-              <h3 className="font-semibold text-green-900 dark:text-green-300 mb-3">✅ Educational Focus</h3>
-              <p className="text-sm text-green-800 dark:text-green-400">
-                This AI tutor is designed specifically for academic learning and skill development. Topics covered include:
-              </p>
-              <ul className="text-sm text-green-800 dark:text-green-400 mt-3 space-y-1">
-                <li>✓ Academic subjects</li>
-                <li>✓ Study techniques</li>
-                <li>✓ Exam preparation</li>
-                <li>✓ Problem solving</li>
-                <li>✓ Concept explanations</li>
+            {/* How it works */}
+            <div className="bg-green-50 p-5 rounded-2xl shadow-sm">
+              <h3 className="font-semibold text-green-800 mb-3">
+                💡 How it works
+              </h3>
+              <ul className="text-sm space-y-2 text-green-700">
+                <li>1️⃣ Ask questions</li>
+                <li>2️⃣ AI adapts to you</li>
+                <li>3️⃣ Get explanations</li>
+                <li>4️⃣ Improve daily</li>
               </ul>
             </div>
 
-            {/* Update Profile */}
+            {/* Focus */}
+            <div className="bg-yellow-50 p-5 rounded-2xl shadow-sm">
+              <h3 className="font-semibold text-yellow-700 mb-3">
+                ✅ Focus
+              </h3>
+              <ul className="text-sm space-y-1 text-yellow-600">
+                <li>✓ Study help</li>
+                <li>✓ Exams</li>
+                <li>✓ Problem solving</li>
+                <li>✓ Concepts</li>
+              </ul>
+            </div>
+
+            {/* Update Profile Button */}
             <button
               onClick={() => router.push('/profile')}
-              className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-medium transition-colors"
+              className="w-full py-3 rounded-xl bg-gray-200 hover:bg-gray-300 transition-colors font-medium"
             >
               📝 Update Profile
             </button>
@@ -255,6 +228,6 @@ export default function AIAssistance() {
           isOpen={isHistoryOpen}
         />
       </div>
-    </div>
+    </main>
   );
 }
