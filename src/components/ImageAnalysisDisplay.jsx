@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiCheck, FiClipboard, FiDownload, FiCamera, FiStar } from 'react-icons/fi';
+import { FiCheck, FiClipboard, FiDownload, FiCamera, FiStar, FiZap } from 'react-icons/fi';
 
 export default function ImageAnalysisDisplay({ analysis, onDelete }) {
   const [copied, setCopied] = useState(false);

@@ -208,7 +208,15 @@ export default function NotesPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-green-50 via-white to-yellow-50 p-6">
+    <main 
+      className="min-h-screen p-6 text-gray-800"
+      style={{
+        background: `
+          linear-gradient(135deg, rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9)),
+          url('https://i.pinimg.com/736x/de/0a/0e/de0a0eb1dd6af97630c3a6b90d162701.jpg') center/cover fixed
+        `,
+      }}
+    >
       <div className="max-w-7xl mx-auto">
         {/* HEADER */}
         <div className="flex justify-between items-center mb-8">

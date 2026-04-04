@@ -139,14 +139,22 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-green-50 via-white to-yellow-50 py-12 px-4">
+    <main 
+      className="min-h-screen py-12 px-4 text-gray-800"
+      style={{
+        background: `
+          linear-gradient(135deg, rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9)),
+          url('https://i.pinimg.com/736x/4b/8d/4f/4b8d4f848eb1385772e2fa5cd8c1dd38.jpg') center/cover fixed
+        `,
+      }}
+    >
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-green-700 to-yellow-500 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent mb-2">
             👤 {isEditing ? 'Update Profile' : 'Create Profile'}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-700 dark:text-gray-300">
             {isEditing
               ? 'Update your learning preferences and goals'
               : 'Set up your learning profile to get started'}
@@ -294,7 +302,7 @@ export default function ProfilePage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-6 py-3 bg-gradient-to-r from-yellow-500 to-green-600 hover:from-yellow-600 hover:to-green-700 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
