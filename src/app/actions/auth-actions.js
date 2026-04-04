@@ -1,7 +1,8 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-import { headers, redirect } from "next/headers";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function signOutAction() {
   const headersList = await headers();

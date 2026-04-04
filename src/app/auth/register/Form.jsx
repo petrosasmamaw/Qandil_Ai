@@ -67,55 +67,90 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="w-full max-w-md p-8 rounded-xl bg-transparent backdrop-blur-md border border-white/10 dark:border-slate-800/40 shadow-sm">
-      <h1 className="text-2xl font-bold mb-4 text-slate-900 dark:text-slate-100">Create account</h1>
-      {error && <p className="text-red-500 mb-2 text-sm">{error}</p>}
+    <div className="w-full max-w-md p-8 rounded-2xl bg-slate-900 shadow-2xl border border-slate-800">
+      <div className="mb-6">
+        <div className="text-4xl mb-3">🤖</div>
+        <h2 className="text-xl font-bold text-white mb-1">Welcome to Sign Up <span className="text-blue-400">Buddy!</span></h2>
+        <p className="text-slate-400 text-sm">Create your account to get started</p>
+      </div>
+
+      {error && <p className="text-red-400 mb-4 text-sm bg-red-900/20 p-3 rounded-lg border border-red-800">{error}</p>}
+      
       <form onSubmit={handleSubmit} className="space-y-4">
-        <label className="block">
-          <span className="text-sm text-slate-700 dark:text-slate-300">Name</span>
-          <input name="name" type="text" required className="mt-1 block w-full rounded-md border px-3 py-2 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
+        <div>
+          <input 
+            name="name" 
+            type="text" 
+            required 
+            placeholder="Enter your name"
+            className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" 
+          />
+        </div>
+        <div>
+          <input 
+            name="email" 
+            type="email" 
+            required 
+            placeholder="Enter your email"
+            className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" 
+          />
+        </div>
+        <div>
+          <input 
+            name="password" 
+            type="password" 
+            required 
+            placeholder="Enter your password"
+            className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" 
+          />
+        </div>
+
+        <label className="flex items-center gap-3 text-sm text-slate-300">
+          <input type="checkbox" required className="rounded w-4 h-4 bg-slate-800 border-slate-700 text-blue-500 focus:ring-blue-500" />
+          I agree to <Link href="#" className="text-blue-400 hover:text-blue-300">Terms of Conditions</Link> and <Link href="#" className="text-blue-400 hover:text-blue-300">Privacy Policy</Link>
         </label>
-        <label className="block">
-          <span className="text-sm text-slate-700 dark:text-slate-300">Email</span>
-          <input name="email" type="email" required className="mt-1 block w-full rounded-md border px-3 py-2 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-        </label>
-        <label className="block">
-          <span className="text-sm text-slate-700 dark:text-slate-300">Password</span>
-          <input name="password" type="password" required className="mt-1 block w-full rounded-md border px-3 py-2 dark:bg-slate-800 dark:border-slate-700 dark:text-white" />
-        </label>
-        <button type="submit" disabled={loading} className="w-full py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white font-medium transition-colors">
-          {loading ? 'Creating...' : 'Create account'}
+
+        <button 
+          type="submit" 
+          disabled={loading} 
+          className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 text-white font-semibold transition-all"
+        >
+          {loading ? 'Creating...' : 'Sign Up'}
         </button>
       </form>
 
       <div className="mt-6 flex items-center gap-3">
-        <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
-        <div className="text-sm text-slate-500 dark:text-slate-400">Or continue with</div>
-        <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+        <div className="flex-1 h-px bg-slate-700" />
+        <div className="text-sm text-slate-400">Or continue with</div>
+        <div className="flex-1 h-px bg-slate-700" />
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3">
         <button 
           onClick={handleGoogleLogin}
           disabled={socialLoading !== null}
-          className="w-full py-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium flex items-center justify-center gap-2 disabled:opacity-50"
+          className="w-full py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-medium flex items-center justify-center gap-2 disabled:opacity-50 transition-colors"
         >
           <FcGoogle size={20} /> {socialLoading === "google" ? "..." : "Google"}
         </button>
         <button 
           onClick={handleGitHubLogin}
           disabled={socialLoading !== null}
-          className="w-full py-2.5 rounded-lg bg-slate-900 dark:bg-slate-700 text-white hover:bg-slate-800 dark:hover:bg-slate-600 transition-colors font-medium flex items-center justify-center gap-2 disabled:opacity-50"
+          className="w-full py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-medium flex items-center justify-center gap-2 disabled:opacity-50 transition-colors"
         >
           <FaGithub size={20} /> {socialLoading === "github" ? "..." : "GitHub"}
         </button>
       </div>
 
-      <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
+      <div className="mt-6 text-center text-sm text-slate-400">
         Already have an account?{" "}
-        <Link href="/auth/login" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
+        <Link href="/auth/login" className="text-blue-400 hover:text-blue-300 font-medium">
           Sign in
         </Link>
+      </div>
+
+      <div className="mt-4 text-center text-xs text-slate-500">
+        <Link href="#" className="hover:text-slate-400">Terms of Service</Link> · <Link href="#" className="hover:text-slate-400">Privacy Policy</Link>
       </div>
     </div>
   );
