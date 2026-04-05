@@ -8,13 +8,7 @@ export const getSupabaseClient = () => {
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
     if (!supabaseUrl || !supabaseAnonKey) {
-      // During build time, environment variables might not be available
-      // Provide fallback values or delay the error
-      if (typeof window === 'undefined') {
-        console.warn('Supabase environment variables not available during build')
-        return null
-      }
-      throw new Error('Missing Supabase environment variables')
+      throw new Error(`Missing Supabase environment variables. URL: ${!!supabaseUrl}, Key: ${!!supabaseAnonKey}`)
     }
 
     supabaseClient = createClient(supabaseUrl, supabaseAnonKey)
@@ -27,10 +21,6 @@ export const getSupabaseClient = () => {
 export const supabase = new Proxy({}, {
   get(target, prop) {
     const client = getSupabaseClient()
-    if (!client) {
-      // Return a no-op function during build time
-      return () => Promise.resolve({ data: null, error: null })
-    }
     const value = client[prop]
     if (typeof value === 'function') {
       return value.bind(client)
