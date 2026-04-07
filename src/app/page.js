@@ -243,17 +243,17 @@ export default function Home() {
             { title: t('home.builtForEthiopia'), desc: t('home.builtForEthiopiaDesc') },
             { title: t('home.learnByUnderstanding'), desc: t('home.learnByUnderstandingDesc') },
           ].map((item, i) => (
-            <div key={i} className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md dark:hover:shadow-lg transition">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{item.title}</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">{item.desc}</p>
+            <div key={i} className="backdrop-blur-md bg-white/80 dark:bg-gray-800/60 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-105 border-l-4 border-blue-500 dark:border-blue-400">
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-2 text-lg">{item.title}</h3>
+              <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* WHO IT'S FOR */}
-      <section className="px-6 md:px-16 py-16 bg-white dark:bg-gray-800 transition-colors duration-300">
-        <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white">{t('home.whoItFor')}</h2>
+      <section className="px-6 md:px-16 py-16 backdrop-blur-sm bg-white/60 dark:bg-gray-900/60 transition-colors duration-300 border-t border-white/20 dark:border-gray-700/30">
+        <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white drop-shadow-lg">{t('home.whoItFor')}</h2>
 
         <div className="grid md:grid-cols-3 gap-8 mt-10">
           {[
@@ -261,32 +261,35 @@ export default function Home() {
             { user: t('home.examPrep'), desc: t('home.examPrepDesc') },
             { user: t('home.independentLearners'), desc: t('home.independentLearnersDesc') },
           ].map((item, i) => (
-            <div key={i} className="p-6 border border-gray-300 dark:border-gray-600 rounded-xl text-center hover:shadow-md dark:hover:shadow-lg transition dark:bg-gray-700">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{item.user}</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">{item.desc}</p>
+            <div key={i} className="backdrop-blur-md bg-white/80 dark:bg-gray-800/60 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-105 border-l-4 border-purple-500 dark:border-purple-400 text-center">
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-2 text-lg">{item.user}</h3>
+              <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* CTA */}
-      <section className="text-center px-6 py-20 bg-green-600 dark:bg-green-700 text-white transition-colors duration-300">
-        <h2 className="text-4xl font-bold">
-          {t('home.learnSmarter')}
-        </h2>
-        <p className="mt-4 text-green-100 dark:text-green-50">
-          {t('home.joinStudentsEthiopia')}
-        </p>
+      <section className="text-center px-6 py-20 backdrop-blur-sm bg-gradient-to-r from-green-600/90 dark:from-green-700/90 to-green-500/90 dark:to-green-600/90 text-white transition-colors duration-300 border-t border-white/20 dark:border-gray-700/30 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.05) 10px, rgba(255,255,255,.05) 20px)` }}></div>
+        <div className="relative z-10">
+          <h2 className="text-4xl font-bold drop-shadow-lg">
+            {t('home.learnSmarter')}
+          </h2>
+          <p className="mt-4 text-green-100 dark:text-green-50 drop-shadow">
+            {t('home.joinStudentsEthiopia')}
+          </p>
 
-        <Link href="/profile">
-          <button className="mt-8 bg-white dark:bg-gray-100 text-green-600 dark:text-green-700 px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 dark:hover:bg-gray-200 transition">
-            {t('home.getStarted')}
-          </button>
-        </Link>
+          <Link href="/profile">
+            <button className="mt-8 backdrop-blur-sm bg-white/95 dark:bg-gray-100/90 text-green-600 dark:text-green-700 px-8 py-3 rounded-xl font-semibold hover:bg-white dark:hover:bg-gray-100 transition-all hover:scale-105 shadow-lg">
+              {t('home.getStarted')}
+            </button>
+          </Link>
+        </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="text-center py-8 text-gray-500 dark:text-gray-400 text-sm bg-white dark:bg-gray-900 transition-colors duration-300">
+      <footer className="text-center py-8 backdrop-blur-sm bg-white/70 dark:bg-gray-900/80 text-gray-600 dark:text-gray-400 text-sm transition-colors duration-300 border-t border-white/20 dark:border-gray-700/30">
         © {new Date().getFullYear()} QandilAI. {t('home.empoweringStudents')}
       </footer>
 
