@@ -8,6 +8,7 @@ import { analyzeImage } from '@/utils/imageAnalysisService';
 import ImageAnalysisDisplay from '@/components/ImageAnalysisDisplay';
 import ChatHistory from '@/components/ChatHistory';
 import ChatBox from '@/components/ChatBox';
+import { useTranslation } from '@/hooks/useTranslation';
 import { FiBook } from 'react-icons/fi';
 import {
   createImageAnalyzerChat,
@@ -15,11 +16,13 @@ import {
 } from '@/store/slices/imageAnalyzerChatSlice';
 
 export default function ImageAnalyzerPage() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.profile.profile);
   const profileLoading = useSelector((state) => state.profile.loading);
   const profileError = useSelector((state) => state.profile.error);
   const { currentChat } = useSelector((state) => state.imageAnalyzerChat);
+  const theme = useSelector((state) => state.theme?.mode || 'light');
 
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,7 +31,27 @@ export default function ImageAnalyzerPage() {
   const [error, setError] = useState('');
   const [dragActive, setDragActive] = useState(false);
   const [currentChatId, setCurrentChatId] = useState(null);
+  const [isDark, setIsDark] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+
+  // Listen for theme changes
+  useEffect(() => {
+    const updateTheme = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    
+    updateTheme();
+    window.addEventListener('themechange', updateTheme);
+    
+    // Also watch for class changes on html element
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    
+    return () => {
+      window.removeEventListener('themechange', updateTheme);
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -45,7 +68,7 @@ export default function ImageAnalyzerPage() {
         const result = await dispatch(fetchProfileByUserId(session.user.id));
         
         if (result.payload === null) {
-          setError('Profile not found. Please create your profile first.');
+          setError(t('imageAnalyzer.setupDescription'));
           return;
         }
 
@@ -54,7 +77,7 @@ export default function ImageAnalyzerPage() {
           const chatAction = await dispatch(
             createImageAnalyzerChat({
               userId: session.user.id,
-              title: 'New Image Analysis Chat',
+              title: t('imageAnalyzer.newChatTitle'),
             })
           );
           if (chatAction.payload) {
@@ -128,11 +151,28 @@ export default function ImageAnalyzerPage() {
   };
 
   if (loading || profileLoading) {
+    const isDarkMode = theme === 'dark' || isDark;
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
+      <div 
+        className="min-h-screen flex items-center justify-center"
+        style={{
+          backgroundColor: isDarkMode ? '#0a0a0a' : '#ffffff',
+          background: isDarkMode 
+            ? 'linear-gradient(135deg, rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9))'
+            : 'linear-gradient(135deg, rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9))',
+        }}
+      >
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-300">Loading your profile...</p>
+          <div 
+            className="rounded-full h-12 w-12 border-b-2 mx-auto mb-4 animate-spin"
+            style={{ borderColor: isDarkMode ? '#3b82f6' : '#3b82f6' }}
+          ></div>
+          <p 
+            className=""
+            style={{ color: isDarkMode ? '#d1d5db' : '#666666' }}
+          >
+            Loading your profile...
+          </p>
         </div>
       </div>
     );
@@ -151,12 +191,13 @@ export default function ImageAnalyzerPage() {
 
   return (
     <main 
-      className="min-h-screen p-6 text-gray-800"
+      className="min-h-screen p-6 text-gray-800 dark:text-gray-100"
       style={{
         background: `
-          linear-gradient(135deg, rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9)),
+          linear-gradient(135deg, ${document.documentElement.classList.contains('dark') ? 'rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9)' : 'rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9)'}),
           url('https://i.pinimg.com/736x/de/0a/0e/de0a0eb1dd6af97630c3a6b90d162701.jpg') center/cover fixed
         `,
+        backgroundColor: document.documentElement.classList.contains('dark') ? '#0a0a0a' : '#ffffff'
       }}
     >
       <div className="max-w-7xl mx-auto">

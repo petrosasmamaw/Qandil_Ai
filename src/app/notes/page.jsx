@@ -9,6 +9,7 @@ import { processDocument, processTextContent } from '@/utils/documentProcessingS
 import NoteDisplay from '@/components/NoteDisplay';
 import ChatHistory from '@/components/ChatHistory';
 import ChatBox from '@/components/ChatBox';
+import { useTranslation } from '@/hooks/useTranslation';
 import {
   createNotesChat,
   addMessageToNotesChat,
@@ -16,6 +17,7 @@ import {
 import { FiFileText, FiBook, FiZap } from 'react-icons/fi';
 
 export default function NotesPage() {
+  const { t } = useTranslation();
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
@@ -27,11 +29,32 @@ export default function NotesPage() {
   const [textTitle, setTextTitle] = useState('');
   const [currentChatId, setCurrentChatId] = useState(null);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
   const { profile } = useSelector((state) => state.profile);
   const { currentChat } = useSelector((state) => state.notesChat);
+  const theme = useSelector((state) => state.theme?.mode || 'light');
+
+  // Listen for theme changes
+  useEffect(() => {
+    const updateTheme = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    
+    updateTheme();
+    window.addEventListener('themechange', updateTheme);
+    
+    // Also watch for class changes on html element
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    
+    return () => {
+      window.removeEventListener('themechange', updateTheme);
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     const initialize = async () => {
@@ -48,7 +71,7 @@ export default function NotesPage() {
         const result = await dispatch(fetchProfileByUserId(session.user.id));
         
         if (result.payload === null) {
-          setError('Profile not found. Please create your profile first.');
+          setError(t('notes.profileNotCreated'));
           return;
         }
 
@@ -57,7 +80,7 @@ export default function NotesPage() {
           const chatAction = await dispatch(
             createNotesChat({
               userId: session.user.id,
-              title: 'New Notes Chat',
+              title: t('notes.newChatTitle'),
             })
           );
           if (chatAction.payload) {
@@ -78,11 +101,31 @@ export default function NotesPage() {
   }, [router, dispatch]);
 
   if (loading) {
+    const isDarkMode = theme === 'dark' || isDark;
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <div 
+        className="min-h-screen flex items-center justify-center"
+        style={{
+          backgroundColor: isDarkMode ? '#0a0a0a' : '#ffffff',
+          background: isDarkMode 
+            ? 'linear-gradient(135deg, rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9))'
+            : 'linear-gradient(135deg, rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9))',
+        }}
+      >
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-gray-100"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading notes...</p>
+          <div 
+            className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2"
+            style={{
+              borderColor: isDarkMode ? '#ededed' : '#171717',
+              borderTopColor: isDarkMode ? '#ededed' : '#171717',
+            }}
+          ></div>
+          <p 
+            className="mt-4"
+            style={{ color: isDarkMode ? '#a0a0a0' : '#666666' }}
+          >
+            {t('notes.loading')}
+          </p>
         </div>
       </div>
     );
@@ -93,12 +136,12 @@ export default function NotesPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
-            <p className="text-yellow-800 dark:text-yellow-300">Please create your profile first to use the Notes feature.</p>
+            <p className="text-yellow-800 dark:text-yellow-300">{t('notes.profileNotCreated')}</p>
             <button
               onClick={() => router.push('/profile')}
               className="mt-4 px-6 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors"
             >
-              Create Profile
+              {t('notes.profileRequired')}
             </button>
           </div>
         </div>
@@ -116,7 +159,7 @@ export default function NotesPage() {
       try {
         // Validate file type
         if (!file.type.includes('pdf') && !file.type.includes('word') && !file.type.includes('document')) {
-          setError('Please upload PDF or DOC files only');
+          setError(t('notes.invalidFileType'));
           continue;
         }
 
@@ -134,7 +177,7 @@ export default function NotesPage() {
 
         setNotes((prev) => [newNote, ...prev]);
       } catch (err) {
-        setError(err.message || 'Failed to process document');
+        setError(err.message || t('notes.failedProcess'));
         console.error('Upload error:', err);
       }
     }
@@ -146,12 +189,12 @@ export default function NotesPage() {
     e.preventDefault();
 
     if (!textInput.trim()) {
-      setError('Please enter some text');
+      setError(t('notes.emptyText'));
       return;
     }
 
     if (!textTitle.trim()) {
-      setError('Please enter a title for your notes');
+      setError(t('notes.emptyTitle'));
       return;
     }
 
@@ -175,7 +218,7 @@ export default function NotesPage() {
       setTextInput('');
       setTextTitle('');
     } catch (err) {
-      setError(err.message || 'Failed to process text');
+      setError(err.message || t('notes.failedTextProcess'));
       console.error('Text submission error:', err);
     } finally {
       setProcessing(false);
@@ -217,12 +260,13 @@ export default function NotesPage() {
 
   return (
     <main 
-      className="min-h-screen p-6 text-gray-800"
+      className="min-h-screen p-6 text-gray-800 dark:text-gray-100"
       style={{
         background: `
-          linear-gradient(135deg, rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9)),
+          linear-gradient(135deg, ${document.documentElement.classList.contains('dark') ? 'rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9)' : 'rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9)'}),
           url('https://i.pinimg.com/736x/de/0a/0e/de0a0eb1dd6af97630c3a6b90d162701.jpg') center/cover fixed
         `,
+        backgroundColor: document.documentElement.classList.contains('dark') ? '#0a0a0a' : '#ffffff'
       }}
     >
       <div className="max-w-7xl mx-auto">
@@ -230,10 +274,10 @@ export default function NotesPage() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-green-700 to-yellow-500 bg-clip-text text-transparent">
-              <FiFileText size={18} className="text-green-700" /> Smart Notes
+              <FiFileText size={18} className="text-green-700" /> {t('notes.title')}
             </h1>
             <p className="text-gray-600 mt-1">
-              {profile && `Upload or paste content for ${profile.name} (Grade ${profile.grade})`}
+              {profile && `${t('notes.uploadFor')} ${profile.name} (${t('notes.gradeText')} ${profile.grade})`}
             </p>
           </div>
           <div className="flex gap-3">
@@ -241,7 +285,7 @@ export default function NotesPage() {
               onClick={() => setIsHistoryOpen(true)}
               className="px-4 py-2 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-medium transition-colors"
             >
-              <FiBook size={18} className="text-green-700" /> History
+              <FiBook size={18} className="text-green-700" /> {t('notes.history')}
             </button>
             <button
               onClick={async () => {
@@ -249,7 +293,7 @@ export default function NotesPage() {
                   const chatAction = await dispatch(
                     createNotesChat({
                       userId: session.user.id,
-                      title: 'New Notes Chat',
+                      title: t('notes.newChatTitle'),
                     })
                   );
                   if (chatAction.payload) {
@@ -261,7 +305,7 @@ export default function NotesPage() {
               }}
               className="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium transition-colors"
             >
-              ➕ New Chat
+              ➕ {t('notes.newChat')}
             </button>
           </div>
         </div>
@@ -287,7 +331,7 @@ export default function NotesPage() {
                     : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300'
                 }`}
               >
-                📤 Upload Files
+                📤 {t('notes.uploadFiles')}
               </button>
               <button
                 onClick={() => setInputMode('text')}
@@ -297,7 +341,7 @@ export default function NotesPage() {
                     : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300'
                 }`}
               >
-                ✏️ Paste Text
+                ✏️ {t('notes.pasteText')}
               </button>
             </div>
 
@@ -316,9 +360,9 @@ export default function NotesPage() {
               >
                 <div className="text-center">
                   <div className="text-6xl mb-4">📤</div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Upload Your Study Materials</h3>
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{t('notes.uploadMaterials')}</h3>
                   <p className="text-gray-600 dark:text-gray-400 mb-4">
-                    Drag and drop your PDF or Word documents here, or click to browse
+                    {t('notes.dragDropDescription')}
                   </p>
                   <input
                     type="file"
@@ -333,9 +377,9 @@ export default function NotesPage() {
                     htmlFor="file-input"
                     className="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium cursor-pointer transition-colors disabled:opacity-50"
                   >
-                    {processing ? 'Processing...' : 'Choose Files'}
+                    {processing ? t('notes.processing') : t('notes.chooseFiles')}
                   </label>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">Supported formats: PDF, DOCX, DOC</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">{t('notes.supportedFormats')}</p>
                 </div>
               </div>
             )}
@@ -345,25 +389,25 @@ export default function NotesPage() {
           <form onSubmit={handleTextSubmit} className="mb-12 bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
             <div className="mb-4">
               <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                Title for Your Notes
+                {t('notes.titleForNotes')}
               </label>
               <input
                 type="text"
                 value={textTitle}
                 onChange={(e) => setTextTitle(e.target.value)}
-                placeholder="e.g., Biology Chapter 5: Cells"
+                placeholder={t('notes.titlePlaceholder')}
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled={processing}
               />
             </div>
             <div className="mb-4">
               <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                Paste Your Study Material
+                {t('notes.pasteContent')}
               </label>
               <textarea
                 value={textInput}
                 onChange={(e) => setTextInput(e.target.value)}
-                placeholder="Paste your study material, notes, or any text content here..."
+                placeholder={t('notes.contentPlaceholder')}
                 rows="8"
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 disabled={processing}

@@ -9,6 +9,7 @@ import { generateAssignmentGuidance, generateAssignmentGuidanceFromText } from '
 import AssignmentGuidanceDisplay from '@/components/AssignmentGuidanceDisplay';
 import ChatHistory from '@/components/ChatHistory';
 import ChatBox from '@/components/ChatBox';
+import { useTranslation } from '@/hooks/useTranslation';
 import {
   createAssignmentGuideChat,
   addMessageToAssignmentGuideChat,
@@ -16,6 +17,7 @@ import {
 import { FiClipboard, FiBook, FiZap, FiFileText, FiCheck } from 'react-icons/fi';
 
 export default function AssignmentGuidePage() {
+  const { t } = useTranslation();
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
@@ -27,11 +29,32 @@ export default function AssignmentGuidePage() {
   const [textTitle, setTextTitle] = useState('');
   const [currentChatId, setCurrentChatId] = useState(null);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
   const { profile } = useSelector((state) => state.profile);
   const { currentChat } = useSelector((state) => state.assignmentGuideChat);
+  const theme = useSelector((state) => state.theme?.mode || 'light');
+
+  // Listen for theme changes
+  useEffect(() => {
+    const updateTheme = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    
+    updateTheme();
+    window.addEventListener('themechange', updateTheme);
+    
+    // Also watch for class changes on html element
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    
+    return () => {
+      window.removeEventListener('themechange', updateTheme);
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     const initialize = async () => {
@@ -48,7 +71,7 @@ export default function AssignmentGuidePage() {
         const result = await dispatch(fetchProfileByUserId(session.user.id));
         
         if (result.payload === null) {
-          setError('Profile not found. Please create your profile first.');
+          setError(t('assignmentGuide.setupDescription'));
           return;
         }
 
@@ -57,7 +80,7 @@ export default function AssignmentGuidePage() {
           const chatAction = await dispatch(
             createAssignmentGuideChat({
               userId: session.user.id,
-              title: 'New Assignment Guidance Chat',
+              title: t('assignmentGuide.newChatTitle'),
             })
           );
           if (chatAction.payload) {
@@ -78,11 +101,31 @@ export default function AssignmentGuidePage() {
   }, [router, dispatch]);
 
   if (loading) {
+    const isDarkMode = theme === 'dark' || isDark;
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <div 
+        className="min-h-screen flex items-center justify-center"
+        style={{
+          backgroundColor: isDarkMode ? '#0a0a0a' : '#ffffff',
+          background: isDarkMode 
+            ? 'linear-gradient(135deg, rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9))'
+            : 'linear-gradient(135deg, rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9))',
+        }}
+      >
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-gray-100"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading assignment guide...</p>
+          <div 
+            className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2"
+            style={{
+              borderColor: isDarkMode ? '#ededed' : '#171717',
+              borderTopColor: isDarkMode ? '#ededed' : '#171717',
+            }}
+          ></div>
+          <p 
+            className="mt-4"
+            style={{ color: isDarkMode ? '#a0a0a0' : '#666666' }}
+          >
+            Loading assignment guide...
+          </p>
         </div>
       </div>
     );
@@ -217,12 +260,13 @@ export default function AssignmentGuidePage() {
 
   return (
     <main 
-      className="min-h-screen p-6 text-gray-800"
+      className="min-h-screen p-6 text-gray-800 dark:text-gray-100"
       style={{
         background: `
-          linear-gradient(135deg, rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9)),
+          linear-gradient(135deg, ${document.documentElement.classList.contains('dark') ? 'rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9)' : 'rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9)'}),
           url('https://i.pinimg.com/736x/de/0a/0e/de0a0eb1dd6af97630c3a6b90d162701.jpg') center/cover fixed
         `,
+        backgroundColor: document.documentElement.classList.contains('dark') ? '#0a0a0a' : '#ffffff'
       }}
     >
       <div className="max-w-7xl mx-auto">
@@ -249,7 +293,7 @@ export default function AssignmentGuidePage() {
                   const chatAction = await dispatch(
                     createAssignmentGuideChat({
                       userId: session.user.id,
-                      title: 'New Assignment Guidance Chat',
+                      title: t('assignmentGuide.newChatTitle'),
                     })
                   );
                   if (chatAction.payload) {
