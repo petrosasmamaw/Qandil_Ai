@@ -6,14 +6,7 @@ import { fetchProfileByUserId } from '@/store/slices/profileSlice';
 import { supabase } from '@/lib/supabase';
 import { analyzeImage } from '@/utils/imageAnalysisService';
 import ImageAnalysisDisplay from '@/components/ImageAnalysisDisplay';
-import ChatHistory from '@/components/ChatHistory';
-import ChatBox from '@/components/ChatBox';
 import { useTranslation } from '@/hooks/useTranslation';
-import { FiBook } from 'react-icons/fi';
-import {
-  createImageAnalyzerChat,
-  addMessageToImageAnalyzerChat,
-} from '@/store/slices/imageAnalyzerChatSlice';
 
 export default function ImageAnalyzerPage() {
   const { t } = useTranslation();
@@ -21,7 +14,6 @@ export default function ImageAnalyzerPage() {
   const profile = useSelector((state) => state.profile.profile);
   const profileLoading = useSelector((state) => state.profile.loading);
   const profileError = useSelector((state) => state.profile.error);
-  const { currentChat } = useSelector((state) => state.imageAnalyzerChat);
   const theme = useSelector((state) => state.theme?.mode || 'light');
 
   const [session, setSession] = useState(null);
@@ -30,9 +22,7 @@ export default function ImageAnalyzerPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [error, setError] = useState('');
   const [dragActive, setDragActive] = useState(false);
-  const [currentChatId, setCurrentChatId] = useState(null);
   const [isDark, setIsDark] = useState(false);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   // Listen for theme changes
   useEffect(() => {
@@ -72,20 +62,7 @@ export default function ImageAnalyzerPage() {
           return;
         }
 
-        // Initialize new image analyzer chat
-        try {
-          const chatAction = await dispatch(
-            createImageAnalyzerChat({
-              userId: session.user.id,
-              title: t('imageAnalyzer.newChatTitle'),
-            })
-          );
-          if (chatAction.payload) {
-            setCurrentChatId(chatAction.payload._id);
-          }
-        } catch (err) {
-          console.error('Error creating image analyzer chat:', err);
-        }
+
       } catch (error) {
         console.error('Error checking session:', error);
         window.location.href = '/auth/login';
@@ -127,7 +104,7 @@ export default function ImageAnalyzerPage() {
 
   const handleImageUpload = async (file) => {
     if (!file.type.startsWith('image/')) {
-      setError('Please upload an image file');
+      setError(t('imageAnalyzer.invalidImageFile'));
       return;
     }
 
@@ -138,7 +115,7 @@ export default function ImageAnalyzerPage() {
       const result = await analyzeImage(file, profile);
       setImageAnalysis(result);
     } catch (err) {
-      setError(err.message || 'Failed to analyze image');
+      setError(err.message || t('imageAnalyzer.failedAnalysis'));
       console.error('Image analysis error:', err);
     } finally {
       setAnalyzing(false);
@@ -171,7 +148,7 @@ export default function ImageAnalyzerPage() {
             className=""
             style={{ color: isDarkMode ? '#d1d5db' : '#666666' }}
           >
-            Loading your profile...
+            {t('imageAnalyzer.loadingProfileMsg')}
           </p>
         </div>
       </div>
@@ -182,8 +159,8 @@ export default function ImageAnalyzerPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-400 mb-4">Failed to load your profile</p>
-          <p className="text-gray-400">Please make sure you have completed your profile setup</p>
+          <p className="text-red-400 mb-4">{t('imageAnalyzer.profileErrorMsg')}</p>
+          <p className="text-gray-400">{t('imageAnalyzer.profileSetupReminder')}</p>
         </div>
       </div>
     );
@@ -205,63 +182,36 @@ export default function ImageAnalyzerPage() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-green-700 to-yellow-500 bg-clip-text text-transparent">
-              🖼️ Image Analyzer
+              🖼️ {t('imageAnalyzer.title')}
             </h1>
             <p className="text-gray-600 mt-1">
-              {profile && `Upload images for intelligent analysis for ${profile.name}`}
+              {profile && `${t('imageAnalyzer.uploadAnalysisFor')} ${profile.name}`}
             </p>
           </div>
-          <div className="flex gap-3">
-            <button
-              onClick={() => setIsHistoryOpen(true)}
-              className="px-4 py-2 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-medium transition-colors"
-            >
-              <FiBook size={18} className="text-green-700" /> History
-            </button>
-            <button
-              onClick={async () => {
-                try {
-                  const chatAction = await dispatch(
-                    createImageAnalyzerChat({
-                      userId: session.user.id,
-                      title: 'New Image Analysis Chat',
-                    })
-                  );
-                  if (chatAction.payload) {
-                    setCurrentChatId(chatAction.payload._id);
-                  }
-                } catch (err) {
-                  console.error('Error creating new image analyzer chat:', err);
-                }
-              }}
-              className="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium transition-colors"
-            >
-              ➕ New Chat
-            </button>
-          </div>
+          <div>
         </div>
 
         {/* LAYOUT */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           {/* MAIN CONTENT */}
-          <div className="lg:col-span-3">
+          <div>
 
             {/* Profile Info Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-8">
               <div className="bg-gradient-to-br from-blue-900 to-blue-800 p-4 rounded-lg border border-blue-700">
-                <p className="text-blue-300 text-sm font-semibold">Student Name</p>
+                <p className="text-blue-300 text-sm font-semibold">{t('imageAnalyzer.studentNameCard')}</p>
                 <p className="text-white font-bold text-lg">{profile?.name}</p>
               </div>
               <div className="bg-gradient-to-br from-cyan-900 to-cyan-800 p-4 rounded-lg border border-cyan-700">
-                <p className="text-cyan-300 text-sm font-semibold">Learning Level</p>
+                <p className="text-cyan-300 text-sm font-semibold">{t('imageAnalyzer.learningLevelCard')}</p>
                 <p className="text-white font-bold text-lg capitalize">{profile?.level}</p>
               </div>
               <div className="bg-gradient-to-br from-purple-900 to-purple-800 p-4 rounded-lg border border-purple-700">
-                <p className="text-purple-300 text-sm font-semibold">Study System</p>
+                <p className="text-purple-300 text-sm font-semibold">{t('imageAnalyzer.studySystemCard')}</p>
                 <p className="text-white font-bold text-lg">{profile?.studySystem}</p>
               </div>
               <div className="bg-gradient-to-br from-orange-900 to-orange-800 p-4 rounded-lg border border-orange-700">
-                <p className="text-orange-300 text-sm font-semibold">Learning Goal</p>
+                <p className="text-orange-300 text-sm font-semibold">{t('imageAnalyzer.learningGoalCard')}</p>
                 <p className="text-white font-bold text-lg">{profile?.goal}</p>
               </div>
             </div>
@@ -291,9 +241,9 @@ export default function ImageAnalyzerPage() {
                     <span className="text-5xl">🖼️</span>
                   </div>
                   <p className="text-xl font-semibold mb-2">
-                    {analyzing ? 'Analyzing image...' : 'Drop your image here or click to upload'}
+                    {analyzing ? t('imageAnalyzer.analyzingText') : t('imageAnalyzer.dropImagePrompt')}
                   </p>
-                  <p className="text-gray-400 text-sm">Supported formats: PNG, JPG, GIF, WebP</p>
+                  <p className="text-gray-400 text-sm">{t('imageAnalyzer.supportedImageFormats')}</p>
                   {analyzing && (
                     <div className="mt-4 flex justify-center">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
@@ -314,29 +264,7 @@ export default function ImageAnalyzerPage() {
               />
             )}
           </div>
-
-          {/* Chat Box Sidebar */}
-          <div className="lg:col-span-1">
-            <ChatBox 
-              studentProfile={profile}
-              chatType="imageAnalyzer"
-              currentChatId={currentChatId}
-              onAddMessage={(messageData) => dispatch(addMessageToImageAnalyzerChat(messageData))}
-            />
-          </div>
         </div>
-
-        {/* Chat History Modal */}
-        <ChatHistory
-          userId={session?.user?.id}
-          chatType="imageAnalyzer"
-          onHistorySelect={(chatId) => {
-            setCurrentChatId(chatId);
-            setIsHistoryOpen(false);
-          }}
-          onClose={() => setIsHistoryOpen(false)}
-          isOpen={isHistoryOpen}
-        />
       </div>
     </main>
   );

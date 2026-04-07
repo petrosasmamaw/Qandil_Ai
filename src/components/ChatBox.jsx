@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { sendChatMessage, getInitialGreeting } from '@/utils/educationalChatService';
+import { translations } from '@/utils/translations';
 import { FiAward, FiZap } from 'react-icons/fi';
 
 export default function ChatBox({ 
@@ -19,6 +20,14 @@ export default function ChatBox({
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const dispatch = useDispatch();
+  
+  // Get language from Redux
+  const language = useSelector((state) => state.theme?.language || 'eng');
+  
+  // Translation helper function
+  const t = (key) => {
+    return key.split('.').reduce((obj, k) => obj && obj[k], translations[language]) || key;
+  };
 
   // Load initial greeting
   useEffect(() => {
@@ -42,12 +51,12 @@ export default function ChatBox({
     e.preventDefault();
 
     if (!inputValue.trim()) {
-      setError('Please type a message');
+      setError(t('common.typeMessage'));
       return;
     }
 
     if (!currentChatId) {
-      setError('Chat not initialized. Please refresh the page.');
+      setError(t('common.chatNotInitialized'));
       return;
     }
 
@@ -110,7 +119,7 @@ export default function ChatBox({
         });
       }
     } catch (err) {
-      setError(err.message || 'Failed to send message');
+      setError(err.message || t('common.failedToSend'));
       console.error('Chat error:', err);
     } finally {
       setLoading(false);
@@ -122,8 +131,8 @@ export default function ChatBox({
       {/* Header */}
       <div className="bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-gray-800 text-white p-4 flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold flex items-center gap-2"><FiAward size={20} /> Educational AI Tutor</h3>
-          <p className="text-sm text-gray-300">Personalized learning assistant for {studentProfile.name}</p>
+          <h3 className="text-lg font-semibold flex items-center gap-2"><FiAward size={20} /> {t('common.educationalAiTutor')}</h3>
+          <p className="text-sm text-gray-300">{t('common.personalizedAssistant')} {studentProfile.name}</p>
         </div>
         {onClose && (
           <button
@@ -178,7 +187,7 @@ export default function ChatBox({
             <div className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg rounded-bl-none px-4 py-3">
               <div className="flex items-center gap-2">
                 <div className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-gray-600 dark:border-gray-400"></div>
-                <span className="text-sm">Thinking...</span>
+                <span className="text-sm">{t('common.thinking')}</span>
               </div>
             </div>
           </div>
@@ -201,7 +210,7 @@ export default function ChatBox({
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Ask your educational question..."
+            placeholder={t('common.askQuestion')}
             disabled={loading}
             className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
           />
@@ -210,12 +219,12 @@ export default function ChatBox({
             disabled={loading || !inputValue.trim()}
             className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? '...' : 'Send'}
+            {loading ? '...' : t('common.send')}
           </button>
         </form>
-        <div className="flex items-start gap-2 mt-2 p-2 bg-blue-50 dark:bg-blue-950 rounded text-xs text-blue-800 dark:text-blue-300\">
+        <div className="flex items-start gap-2 mt-2 p-2 bg-blue-50 dark:bg-blue-950 rounded text-xs text-blue-800 dark:text-blue-300">
           <FiZap size={14} className="flex-shrink-0 mt-0.5" />
-          <p>This AI tutor is designed to help with your educational journey based on your learning profile.</p>
+          <p>{t('common.tutorDescription')}</p>
         </div>
       </div>
     </div>

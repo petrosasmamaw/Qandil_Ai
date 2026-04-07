@@ -7,13 +7,7 @@ import { useRouter } from 'next/navigation';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
 import { generateAssignmentGuidance, generateAssignmentGuidanceFromText } from '@/utils/assignmentGuidanceService';
 import AssignmentGuidanceDisplay from '@/components/AssignmentGuidanceDisplay';
-import ChatHistory from '@/components/ChatHistory';
-import ChatBox from '@/components/ChatBox';
 import { useTranslation } from '@/hooks/useTranslation';
-import {
-  createAssignmentGuideChat,
-  addMessageToAssignmentGuideChat,
-} from '@/store/slices/assignmentGuideChatSlice';
 import { FiClipboard, FiBook, FiZap, FiFileText, FiCheck } from 'react-icons/fi';
 
 export default function AssignmentGuidePage() {
@@ -27,14 +21,11 @@ export default function AssignmentGuidePage() {
   const [inputMode, setInputMode] = useState('file'); // 'file' or 'text'
   const [textInput, setTextInput] = useState('');
   const [textTitle, setTextTitle] = useState('');
-  const [currentChatId, setCurrentChatId] = useState(null);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
   const { profile } = useSelector((state) => state.profile);
-  const { currentChat } = useSelector((state) => state.assignmentGuideChat);
   const theme = useSelector((state) => state.theme?.mode || 'light');
 
   // Listen for theme changes
@@ -75,20 +66,7 @@ export default function AssignmentGuidePage() {
           return;
         }
 
-        // Initialize new assignment guide chat
-        try {
-          const chatAction = await dispatch(
-            createAssignmentGuideChat({
-              userId: session.user.id,
-              title: t('assignmentGuide.newChatTitle'),
-            })
-          );
-          if (chatAction.payload) {
-            setCurrentChatId(chatAction.payload._id);
-          }
-        } catch (err) {
-          console.error('Error creating assignment guide chat:', err);
-        }
+
       } catch (error) {
         console.error('Error initializing:', error);
         router.push('/auth/login');
@@ -124,7 +102,7 @@ export default function AssignmentGuidePage() {
             className="mt-4"
             style={{ color: isDarkMode ? '#a0a0a0' : '#666666' }}
           >
-            Loading assignment guide...
+            {t('assignmentGuide.loading')}
           </p>
         </div>
       </div>
@@ -136,12 +114,12 @@ export default function AssignmentGuidePage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
-            <p className="text-yellow-800 dark:text-yellow-300">Please create your profile first to use the Assignment Guide feature.</p>
+            <p className="text-yellow-800 dark:text-yellow-300">{t('assignmentGuide.profileNotCreated')}</p>
             <button
               onClick={() => router.push('/profile')}
               className="mt-4 px-6 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors"
             >
-              Create Profile
+              {t('assignmentGuide.profileRequired')}
             </button>
           </div>
         </div>
@@ -159,7 +137,7 @@ export default function AssignmentGuidePage() {
       try {
         // Validate file type
         if (!file.type.includes('pdf') && !file.type.includes('word') && !file.type.includes('document')) {
-          setError('Please upload PDF or DOC files only');
+          setError(t('assignmentGuide.invalidFileType'));
           continue;
         }
 
@@ -177,7 +155,7 @@ export default function AssignmentGuidePage() {
 
         setGuidances((prev) => [newGuidance, ...prev]);
       } catch (err) {
-        setError(err.message || 'Failed to generate guidance');
+        setError(err.message || t('assignmentGuide.failedGenMessage'));
         console.error('Upload error:', err);
       }
     }
@@ -189,12 +167,12 @@ export default function AssignmentGuidePage() {
     e.preventDefault();
 
     if (!textInput.trim()) {
-      setError('Please enter your assignment');
+      setError(t('assignmentGuide.emptyAssignmentMessage'));
       return;
     }
 
     if (!textTitle.trim()) {
-      setError('Please enter a title for your assignment');
+      setError(t('assignmentGuide.emptyTitleMessage'));
       return;
     }
 
@@ -274,46 +252,19 @@ export default function AssignmentGuidePage() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-green-700 to-yellow-500 bg-clip-text text-transparent">
-              <FiClipboard size={18} className="text-green-700" /> Assignment Help
+              <FiClipboard size={18} className="text-green-700" /> {t('assignmentGuide.titleDisplay')}
             </h1>
             <p className="text-gray-600 mt-1">
-              {profile && `Get guided help for ${profile.name} (Grade ${profile.grade})`}
+              {profile && `${t('assignmentGuide.getGuidedHelp')} ${profile.name} (${t('profile.grade')} ${profile.grade})`}
             </p>
           </div>
-          <div className="flex gap-3">
-            <button
-              onClick={() => setIsHistoryOpen(true)}
-              className="px-4 py-2 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-medium transition-colors"
-            >
-              <FiBook size={18} className="text-green-700" /> History
-            </button>
-            <button
-              onClick={async () => {
-                try {
-                  const chatAction = await dispatch(
-                    createAssignmentGuideChat({
-                      userId: session.user.id,
-                      title: t('assignmentGuide.newChatTitle'),
-                    })
-                  );
-                  if (chatAction.payload) {
-                    setCurrentChatId(chatAction.payload._id);
-                  }
-                } catch (err) {
-                  console.error('Error creating new assignment guide chat:', err);
-                }
-              }}
-              className="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium transition-colors"
-            >
-              ➕ New Chat
-            </button>
-          </div>
+          <div></div>
         </div>
 
         {/* LAYOUT */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           {/* MAIN CONTENT */}
-          <div className="lg:col-span-3">
+          <div>
             {/* Error Message */}
             {error && (
               <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-300">
@@ -331,7 +282,7 @@ export default function AssignmentGuidePage() {
                     : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300'
                 }`}
               >
-                📤 Upload Files
+                📤 {t('assignmentGuide.uploadFiles')}
               </button>
               <button
                 onClick={() => setInputMode('text')}
@@ -341,7 +292,7 @@ export default function AssignmentGuidePage() {
                     : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300'
                 }`}
               >
-                ✏️ Paste Assignment
+                ✏️ {t('assignmentGuide.pasteText')}
               </button>
             </div>
 
@@ -360,9 +311,9 @@ export default function AssignmentGuidePage() {
               >
                 <div className="text-center">
                   <div className="text-6xl mb-4">📤</div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Upload Your Assignment</h3>
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{t('assignmentGuide.uploadMaterials')}</h3>
                   <p className="text-gray-600 dark:text-gray-400 mb-4">
-                    Drag and drop your assignment PDF or Word document here to get personalized guidance
+                    {t('assignmentGuide.dragDropDescription')}
                   </p>
                   <input
                     type="file"
@@ -377,9 +328,9 @@ export default function AssignmentGuidePage() {
                     htmlFor="assignment-file-input"
                     className="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium cursor-pointer transition-colors disabled:opacity-50"
                   >
-                    {processing ? 'Processing...' : 'Choose Files'}
+                    {processing ? t('assignmentGuide.processing') : t('assignmentGuide.chooseFiles')}
                   </label>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">Supported formats: PDF, DOCX, DOC</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">{t('assignmentGuide.supportedFormats')}</p>
                 </div>
               </div>
             )}
@@ -389,25 +340,25 @@ export default function AssignmentGuidePage() {
               <form onSubmit={handleTextSubmit} className="mb-12 bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
                 <div className="mb-4">
                   <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                    Assignment Title
+                    {t('assignmentGuide.titleForAssignment')}
                   </label>
                   <input
                     type="text"
                     value={textTitle}
                     onChange={(e) => setTextTitle(e.target.value)}
-                    placeholder="e.g., Write an Essay on Climate Change"
+                    placeholder={t('assignmentGuide.titlePlaceholder')}
                     className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     disabled={processing}
                   />
                 </div>
                 <div className="mb-4">
                   <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                    Paste Your Assignment Details
+                    {t('assignmentGuide.pasteContent')}
                   </label>
                   <textarea
                     value={textInput}
                     onChange={(e) => setTextInput(e.target.value)}
-                    placeholder="Paste your assignment instructions, requirements, or description here..."
+                    placeholder={t('assignmentGuide.contentPlaceholder')}
                     rows="8"
                     className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                     disabled={processing}
@@ -418,7 +369,7 @@ export default function AssignmentGuidePage() {
                   disabled={processing}
                   className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
                 >
-                  {processing ? 'Generating Guidance...' : 'Get Guidance'}
+                  {processing ? t('assignmentGuide.processingText') : t('assignmentGuide.generateButton')}
                 </button>
               </form>
             )}
@@ -426,17 +377,17 @@ export default function AssignmentGuidePage() {
             {/* Student Profile Info */}
             <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                <p className="text-sm text-gray-600 dark:text-gray-400">Learning Level</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t('profile.level')}</p>
                 <p className="text-lg font-semibold text-gray-900 dark:text-white capitalize">{profile.level}</p>
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                <p className="text-sm text-gray-600 dark:text-gray-400">Study System</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t('profile.studySystem')}</p>
                 <p className="text-lg font-semibold text-gray-900 dark:text-white capitalize">
                   {profile.studySystem.replace(/_/g, ' ')}
                 </p>
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                <p className="text-sm text-gray-600 dark:text-gray-400">Learning Goal</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t('profile.goal')}</p>
                 <p className="text-lg font-semibold text-gray-900 dark:text-white capitalize">
                   {profile.goal.replace(/_/g, ' ')}
                 </p>
@@ -451,7 +402,7 @@ export default function AssignmentGuidePage() {
             <div className="space-y-6">
               {guidances.length > 0 ? (
                 <>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Your Assignment Guidances</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t('assignmentGuide.guidanceGenerated')}</h2>
                   {guidances.map((guidance) => (
                     <AssignmentGuidanceDisplay
                       key={guidance.id}
@@ -464,8 +415,8 @@ export default function AssignmentGuidePage() {
               ) : (
                 <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                   <div className="text-6xl mb-4 text-blue-400"><FiBook size={60} /></div>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">No guidances generated yet</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-500">Upload an assignment or paste assignment text to get personalized guidance!</p>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">{t('assignmentGuide.guidanceNotFound')}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-500">{t('assignmentGuide.guidanceNotFoundDesc')}</p>
                 </div>
               )}
             </div>
@@ -473,7 +424,7 @@ export default function AssignmentGuidePage() {
             {/* Info Sections */}
             <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2"><FiZap size={18} /> How It Works</h3>
+                <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2"><FiZap size={18} /> {t('assignmentGuide.helpTitle')}</h3>
                 <ol className="text-blue-800 dark:text-blue-400 space-y-2 text-sm">
                   <li>1. Upload your assignment file OR paste assignment text</li>
                   <li>2. AI analyzes the assignment based on your learning profile</li>
@@ -483,7 +434,7 @@ export default function AssignmentGuidePage() {
               </div>
 
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2"><FiFileText size={18} /> What You Get</h3>
+                <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2"><FiFileText size={18} /> {t('assignmentGuide.whatYouGet')}</h3>
                 <ul className="text-blue-800 dark:text-blue-400 space-y-2 text-sm">
                   <li className="flex items-center gap-2"><FiCheck size={16} /> Clear understanding of assignment requirements</li>
                   <li className="flex items-center gap-2"><FiCheck size={16} /> Step-by-step approach tailored to your learning level</li>
@@ -494,28 +445,7 @@ export default function AssignmentGuidePage() {
             </div>
           </div>
 
-          {/* SIDEBAR */}
-          <div className="lg:col-span-1">
-            <ChatBox 
-              studentProfile={profile}
-              chatType="assignmentGuide"
-              currentChatId={currentChatId}
-              onAddMessage={(messageData) => dispatch(addMessageToAssignmentGuideChat(messageData))}
-            />
-          </div>
         </div>
-
-        {/* Chat History Modal */}
-        <ChatHistory
-          userId={session?.user?.id}
-          chatType="assignmentGuide"
-          onHistorySelect={(chatId) => {
-            setCurrentChatId(chatId);
-            setIsHistoryOpen(false);
-          }}
-          onClose={() => setIsHistoryOpen(false)}
-          isOpen={isHistoryOpen}
-        />
       </div>
     </main>
   );

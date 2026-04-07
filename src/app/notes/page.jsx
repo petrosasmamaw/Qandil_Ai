@@ -7,13 +7,7 @@ import { useRouter } from 'next/navigation';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
 import { processDocument, processTextContent } from '@/utils/documentProcessingService';
 import NoteDisplay from '@/components/NoteDisplay';
-import ChatHistory from '@/components/ChatHistory';
-import ChatBox from '@/components/ChatBox';
 import { useTranslation } from '@/hooks/useTranslation';
-import {
-  createNotesChat,
-  addMessageToNotesChat,
-} from '@/store/slices/notesChatSlice';
 import { FiFileText, FiBook, FiZap } from 'react-icons/fi';
 
 export default function NotesPage() {
@@ -27,14 +21,11 @@ export default function NotesPage() {
   const [inputMode, setInputMode] = useState('file'); // 'file' or 'text'
   const [textInput, setTextInput] = useState('');
   const [textTitle, setTextTitle] = useState('');
-  const [currentChatId, setCurrentChatId] = useState(null);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
   const { profile } = useSelector((state) => state.profile);
-  const { currentChat } = useSelector((state) => state.notesChat);
   const theme = useSelector((state) => state.theme?.mode || 'light');
 
   // Listen for theme changes
@@ -75,20 +66,7 @@ export default function NotesPage() {
           return;
         }
 
-        // Initialize new notes chat
-        try {
-          const chatAction = await dispatch(
-            createNotesChat({
-              userId: session.user.id,
-              title: t('notes.newChatTitle'),
-            })
-          );
-          if (chatAction.payload) {
-            setCurrentChatId(chatAction.payload._id);
-          }
-        } catch (err) {
-          console.error('Error creating notes chat:', err);
-        }
+
       } catch (error) {
         console.error('Error initializing:', error);
         router.push('/auth/login');
@@ -280,40 +258,13 @@ export default function NotesPage() {
               {profile && `${t('notes.uploadFor')} ${profile.name} (${t('notes.gradeText')} ${profile.grade})`}
             </p>
           </div>
-          <div className="flex gap-3">
-            <button
-              onClick={() => setIsHistoryOpen(true)}
-              className="px-4 py-2 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-medium transition-colors"
-            >
-              <FiBook size={18} className="text-green-700" /> {t('notes.history')}
-            </button>
-            <button
-              onClick={async () => {
-                try {
-                  const chatAction = await dispatch(
-                    createNotesChat({
-                      userId: session.user.id,
-                      title: t('notes.newChatTitle'),
-                    })
-                  );
-                  if (chatAction.payload) {
-                    setCurrentChatId(chatAction.payload._id);
-                  }
-                } catch (err) {
-                  console.error('Error creating new notes chat:', err);
-                }
-              }}
-              className="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium transition-colors"
-            >
-              ➕ {t('notes.newChat')}
-            </button>
-          </div>
+          <div></div>
         </div>
 
         {/* LAYOUT */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           {/* MAIN CONTENT */}
-          <div className="lg:col-span-3">
+          <div>
             {/* Error Message */}
             {error && (
               <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-300">
@@ -482,28 +433,7 @@ export default function NotesPage() {
             </div>
           </div>
 
-          {/* SIDEBAR */}
-          <div className="lg:col-span-1">
-            <ChatBox 
-              studentProfile={profile}
-              chatType="notes"
-              currentChatId={currentChatId}
-              onAddMessage={(messageData) => dispatch(addMessageToNotesChat(messageData))}
-            />
-          </div>
         </div>
-
-        {/* Chat History Modal */}
-        <ChatHistory
-          userId={session?.user?.id}
-          chatType="notes"
-          onHistorySelect={(chatId) => {
-            setCurrentChatId(chatId);
-            setIsHistoryOpen(false);
-          }}
-          onClose={() => setIsHistoryOpen(false)}
-          isOpen={isHistoryOpen}
-        />
       </div>
     </main>
   );
