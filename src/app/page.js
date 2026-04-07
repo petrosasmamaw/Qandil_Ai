@@ -49,7 +49,7 @@ export default function Home() {
   const backgroundStyle = {
     backgroundImage: isDark
       ? `
-        linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(25, 40, 70, 0.93) 50%, rgba(15, 23, 42, 0.95) 100%),
+        linear-gradient(135deg, rgba(15, 23, 42, 0.65) 0%, rgba(25, 40, 70, 0.63) 50%, rgba(15, 23, 42, 0.65) 100%),
         url('https://images.openai.com/static-rsc-4/UhK-ZnGnaOc26fOHcPEMngdrJMi0lBmw_eKNkaDh38qqO6xopIWrT3GyMD_7F0bUEwvEgsSxHAA7F9eZ0sIsr6zwzCbSZXRwDuam2ZAsT_4kprqEa4D6b_95yr-58SC2Fzcww7u8K9AFRoRHVUJ2ItNncyjWPfYYxDDhB96QIwwOEW1mvB1bi6CkXIYSZjje?purpose=inline')
       `
       : `
@@ -115,7 +115,7 @@ export default function Home() {
           },
         ].map((item, i) => (
           <Link href={item.link} key={i}>
-            <div className="backdrop-blur-md bg-white/85 dark:bg-gray-800/70 p-6 rounded-2xl shadow-lg dark:shadow-2xl hover:shadow-xl dark:hover:shadow-2xl transition-all hover:scale-105 cursor-pointer h-full border border-white/20 dark:border-gray-700/30">
+            <div className="backdrop-blur-md bg-white/85 dark:bg-gray-800/20 p-6 rounded-2xl shadow-lg dark:shadow-2xl hover:shadow-xl dark:hover:shadow-2xl transition-all hover:scale-105 cursor-pointer h-full border border-white/20 dark:border-gray-700/30">
               <div className="text-green-600 dark:text-green-400 mb-4">{item.icon}</div>
               <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">{item.title}</h3>
               <p className="text-gray-700 dark:text-gray-300">{item.desc}</p>
@@ -125,7 +125,7 @@ export default function Home() {
       </section>
 
       {/* COMPREHENSIVE FEATURES */}
-      <section className="px-6 md:px-16 py-16 backdrop-blur-sm bg-white/60 dark:bg-gray-900/60 transition-colors duration-300 border-t border-white/20 dark:border-gray-700/30">
+      <section className="px-6 md:px-16 py-16 backdrop-blur-sm bg-white/60 dark:bg-gray-900/20 transition-colors duration-300 border-t border-white/20 dark:border-gray-700/30">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white drop-shadow-lg">{t('home.powerfulFeatures')}</h2>
           <p className="mt-2 text-gray-700 dark:text-gray-300">{t('home.discoverFeatures')}</p>
@@ -167,7 +167,7 @@ export default function Home() {
                 icon: <FiTrendingUp className="w-10 h-10 text-green-600 dark:text-green-400" />,
               },
             ].map((feature, i) => (
-              <div key={i} className="backdrop-blur-md bg-white/80 dark:bg-gray-800/60 p-8 rounded-2xl shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all border-l-4 border-green-500 dark:border-green-400 hover:scale-105">
+              <div key={i} className="backdrop-blur-md bg-white/80 dark:bg-gray-800/20 p-8 rounded-2xl shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all border-l-4 border-green-500 dark:border-green-400 hover:scale-105">
                 <div className="mb-4">{feature.icon}</div>
                 <h4 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">{feature.title}</h4>
                 <p className="text-gray-700 dark:text-gray-300">{feature.description}</p>
@@ -202,7 +202,7 @@ export default function Home() {
                 icon: <FiImage className="w-10 h-10 text-teal-600 dark:text-teal-400" />,
               },
             ].map((feature, i) => (
-              <div key={i} className="backdrop-blur-md bg-white/80 dark:bg-gray-800/60 p-8 rounded-2xl shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all border-l-4 border-teal-500 dark:border-teal-400 hover:scale-105">
+              <div key={i} className="backdrop-blur-md bg-white/80 dark:bg-gray-800/20 p-8 rounded-2xl shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all border-l-4 border-teal-500 dark:border-teal-400 hover:scale-105">
                 <div className="mb-4">{feature.icon}</div>
                 <h4 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">{feature.title}</h4>
                 <p className="text-gray-700 dark:text-gray-300 text-sm">{feature.description}</p>
@@ -213,7 +213,7 @@ export default function Home() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="px-6 md:px-16 py-16 backdrop-blur-sm bg-white/60 dark:bg-gray-900/60 transition-colors duration-300 border-t border-white/20 dark:border-gray-700/30">
+      <section className="px-6 md:px-16 py-16 backdrop-blur-sm bg-white/60 dark:bg-gray-900/20 transition-colors duration-300 border-t border-white/20 dark:border-gray-700/30">
         <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white drop-shadow-lg">{t('home.howItWorks')}</h2>
 
         <div className="grid md:grid-cols-3 gap-10 mt-10">
@@ -222,7 +222,7 @@ export default function Home() {
             { step: t('home.takeQuiz'), desc: t('home.takeQuizDesc') },
             { step: t('home.learnWithAI'), desc: t('home.learnWithAIDesc') },
           ].map((step, i) => (
-            <div key={i} className="text-center backdrop-blur-md bg-white/70 dark:bg-gray-800/50 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
+            <div key={i} className="text-center backdrop-blur-md bg-white/70 dark:bg-gray-800/20 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
               <div className="text-4xl font-bold bg-gradient-to-r from-green-600 to-green-500 dark:from-green-400 dark:to-green-300 bg-clip-text text-transparent mb-4">
                 {i + 1}
               </div>
@@ -234,7 +234,7 @@ export default function Home() {
       </section>
 
       {/* WHY CHOOSE */}
-      <section className="px-6 md:px-16 py-16 backdrop-blur-sm bg-white/60 dark:bg-gray-900/60 transition-colors duration-300 border-t border-white/20 dark:border-gray-700/30">
+      <section className="px-6 md:px-16 py-16 backdrop-blur-sm bg-white/60 dark:bg-gray-900/20 transition-colors duration-300 border-t border-white/20 dark:border-gray-700/30">
         <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white drop-shadow-lg">{t('home.whyChoose')}</h2>
 
         <div className="grid md:grid-cols-3 gap-8 mt-10">
@@ -243,7 +243,7 @@ export default function Home() {
             { title: t('home.builtForEthiopia'), desc: t('home.builtForEthiopiaDesc') },
             { title: t('home.learnByUnderstanding'), desc: t('home.learnByUnderstandingDesc') },
           ].map((item, i) => (
-            <div key={i} className="backdrop-blur-md bg-white/80 dark:bg-gray-800/60 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-105 border-l-4 border-blue-500 dark:border-blue-400">
+            <div key={i} className="backdrop-blur-md bg-white/80 dark:bg-gray-800/20 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-105 border-l-4 border-blue-500 dark:border-blue-400">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-2 text-lg">{item.title}</h3>
               <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{item.desc}</p>
             </div>
@@ -252,7 +252,7 @@ export default function Home() {
       </section>
 
       {/* WHO IT'S FOR */}
-      <section className="px-6 md:px-16 py-16 backdrop-blur-sm bg-white/60 dark:bg-gray-900/60 transition-colors duration-300 border-t border-white/20 dark:border-gray-700/30">
+      <section className="px-6 md:px-16 py-16 backdrop-blur-sm bg-white/60 dark:bg-gray-900/20 transition-colors duration-300 border-t border-white/20 dark:border-gray-700/30">
         <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white drop-shadow-lg">{t('home.whoItFor')}</h2>
 
         <div className="grid md:grid-cols-3 gap-8 mt-10">
@@ -261,7 +261,7 @@ export default function Home() {
             { user: t('home.examPrep'), desc: t('home.examPrepDesc') },
             { user: t('home.independentLearners'), desc: t('home.independentLearnersDesc') },
           ].map((item, i) => (
-            <div key={i} className="backdrop-blur-md bg-white/80 dark:bg-gray-800/60 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-105 border-l-4 border-purple-500 dark:border-purple-400 text-center">
+            <div key={i} className="backdrop-blur-md bg-white/80 dark:bg-gray-800/20 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-105 border-l-4 border-purple-500 dark:border-purple-400 text-center">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-2 text-lg">{item.user}</h3>
               <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{item.desc}</p>
             </div>
