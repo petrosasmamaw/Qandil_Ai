@@ -188,7 +188,6 @@ export default function ImageAnalyzerPage() {
               {profile && `${t('imageAnalyzer.uploadAnalysisFor')} ${profile.name}`}
             </p>
           </div>
-          <div>
         </div>
 
         {/* LAYOUT */}
