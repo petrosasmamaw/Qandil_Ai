@@ -35,13 +35,9 @@ export default function RootLayout({ children }) {
                 if (theme === 'dark') {
                   document.documentElement.classList.add('dark');
                   document.documentElement.style.colorScheme = 'dark';
-                  document.body.style.backgroundColor = '#0a0a0a';
-                  document.body.style.color = '#ededed';
                 } else {
                   document.documentElement.classList.remove('dark');
                   document.documentElement.style.colorScheme = 'light';
-                  document.body.style.backgroundColor = '#ffffff';
-                  document.body.style.color = '#171717';
                 }
               })();
             `,

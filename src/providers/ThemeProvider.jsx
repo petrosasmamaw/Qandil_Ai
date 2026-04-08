@@ -31,9 +31,7 @@ export function ThemeProvider({ children }) {
       htmlElement.classList.add('dark');
       htmlElement.style.colorScheme = 'dark';
       
-      // Apply dark mode styles to body and all elements
-      bodyElement.style.backgroundColor = '#0a0a0a';
-      bodyElement.style.color = '#ededed';
+      // Keep body styling controlled by CSS so pages can show background images
       bodyElement.classList.add('dark-mode');
       
       // Apply to entire document
@@ -47,9 +45,7 @@ export function ThemeProvider({ children }) {
       htmlElement.classList.remove('dark');
       htmlElement.style.colorScheme = 'light';
       
-      // Apply light mode styles
-      bodyElement.style.backgroundColor = '#ffffff';
-      bodyElement.style.color = '#171717';
+      // Keep body styling controlled by CSS so pages can show background images
       bodyElement.classList.remove('dark-mode');
       
       // Apply to entire document

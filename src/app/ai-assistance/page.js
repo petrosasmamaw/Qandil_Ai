@@ -208,7 +208,7 @@ export default function AIAssistance() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 
           {/* CHAT AREA */}
-          <div className="lg:col-span-3 bg-white rounded-2xl shadow-md p-6 flex flex-col h-[75vh]">
+          <div className="lg:col-span-3 bg-white/90 dark:bg-slate-900/60 dark:backdrop-blur-md rounded-2xl shadow-lg dark:shadow-lg p-6 flex flex-col h-[75vh] border dark:border-blue-400/30">
             <ChatBox 
               studentProfile={profile}
               chatType="aiAssistance"
@@ -221,25 +221,25 @@ export default function AIAssistance() {
           <div className="space-y-4">
 
             {/* Profile Widget */}
-            <div className="bg-white p-5 rounded-2xl shadow-sm">
-              <h3 className="font-semibold text-green-700 mb-3 flex items-center gap-2"><FiBook size={18} /> {t('aiAssistance.profile')}</h3>
+            <div className="bg-white/90 dark:bg-slate-900/60 dark:backdrop-blur-md p-5 rounded-2xl shadow-md dark:shadow-md border dark:border-blue-400/30">
+              <h3 className="font-semibold text-green-700 dark:text-green-300 mb-3 flex items-center gap-2"><FiBook size={18} /> {t('aiAssistance.profile')}</h3>
               {profile && (
                 <div className="space-y-2">
-                  <p className="text-sm text-gray-600"><span className="font-medium">{t('aiAssistance.nameLabel')}:</span> {profile.name}</p>
-                  <p className="text-sm text-gray-600"><span className="font-medium">{t('aiAssistance.gradeLabel')}:</span> {profile.grade}</p>
-                  <p className="text-sm text-gray-600"><span className="font-medium">{t('aiAssistance.levelLabel')}:</span> <span className="capitalize text-green-600 font-semibold">{profile.level}</span></p>
-                  <p className="text-sm text-gray-600"><span className="font-medium">{t('aiAssistance.studyLabel')}:</span> <span className="capitalize">{profile.studySystem.replace(/_/g, ' ')}</span></p>
-                  <p className="text-sm text-gray-600"><span className="font-medium">{t('aiAssistance.goalLabel')}:</span> <span className="capitalize">{profile.goal.replace(/_/g, ' ')}</span></p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300"><span className="font-medium">{t('aiAssistance.nameLabel')}:</span> {profile.name}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300"><span className="font-medium">{t('aiAssistance.gradeLabel')}:</span> {profile.grade}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300"><span className="font-medium">{t('aiAssistance.levelLabel')}:</span> <span className="capitalize text-green-600 dark:text-green-400 font-semibold">{profile.level}</span></p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300"><span className="font-medium">{t('aiAssistance.studyLabel')}:</span> <span className="capitalize">{profile.studySystem.replace(/_/g, ' ')}</span></p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300"><span className="font-medium">{t('aiAssistance.goalLabel')}:</span> <span className="capitalize">{profile.goal.replace(/_/g, ' ')}</span></p>
                 </div>
               )}
             </div>
 
             {/* How it works */}
-            <div className="bg-green-50 p-5 rounded-2xl shadow-sm">
-              <h3 className="font-semibold text-green-800 mb-3 flex items-center gap-2">
+            <div className="bg-green-50/90 dark:bg-green-500/15 dark:backdrop-blur-md p-5 rounded-2xl shadow-md dark:shadow-md border dark:border-green-400/30">
+              <h3 className="font-semibold text-green-800 dark:text-green-300 mb-3 flex items-center gap-2">
                 <FiZap size={18} /> {t('aiAssistance.howItWorks')}
               </h3>
-              <ul className="text-sm space-y-2 text-green-700">
+              <ul className="text-sm space-y-2 text-green-700 dark:text-green-200">
                 <li className="flex items-center gap-2"><FiCheckCircle size={14} /> {t('aiAssistance.askQuestions')}</li>
                 <li className="flex items-center gap-2"><FiCheckCircle size={14} /> {t('aiAssistance.aiAdapts')}</li>
                 <li className="flex items-center gap-2"><FiCheckCircle size={14} /> {t('aiAssistance.getExplanations')}</li>
@@ -248,11 +248,11 @@ export default function AIAssistance() {
             </div>
 
             {/* Focus */}
-            <div className="bg-yellow-50 p-5 rounded-2xl shadow-sm">
-              <h3 className="font-semibold text-yellow-700 mb-3">
+            <div className="bg-yellow-50/90 dark:bg-yellow-500/15 dark:backdrop-blur-md p-5 rounded-2xl shadow-md dark:shadow-md border dark:border-yellow-400/30">
+              <h3 className="font-semibold text-yellow-700 dark:text-yellow-300 mb-3">
                 ✅ {t('aiAssistance.focus')}
               </h3>
-              <ul className="text-sm space-y-1 text-yellow-600">
+              <ul className="text-sm space-y-1 text-yellow-600 dark:text-yellow-200">
                 <li className="flex items-center gap-2"><FiCheck size={16} /> {t('aiAssistance.studyHelp')}</li>
                 <li className="flex items-center gap-2"><FiCheck size={16} /> {t('aiAssistance.exams')}</li>
                 <li className="flex items-center gap-2"><FiCheck size={16} /> {t('aiAssistance.problemSolving')}</li>
@@ -263,7 +263,7 @@ export default function AIAssistance() {
             {/* Update Profile Button */}
             <button
               onClick={() => router.push('/profile')}
-              className="w-full py-3 rounded-xl bg-gray-200 hover:bg-gray-300 transition-colors font-medium"
+              className="w-full py-3 rounded-xl bg-gray-200 dark:bg-slate-700/60 dark:backdrop-blur-sm dark:border dark:border-blue-400/30 hover:bg-gray-300 dark:hover:bg-slate-700/80 transition-colors font-medium text-gray-900 dark:text-white"
             >
               <span className="flex items-center gap-2"><FiFileText size={16} /> {t('aiAssistance.updateProfile')}</span>
             </button>

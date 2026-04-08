@@ -12,12 +12,6 @@ html.dark {
   color-scheme: dark;
 }
 
-html.dark,
-html.dark body,
-html.dark * {
-  color-scheme: dark !important;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -35,33 +29,6 @@ body {
 body.dark-mode {
   background-color: #0a0a0a !important;
   color: #ededed !important;
-}
-
-/* Apply dark mode to all elements globally */
-html.dark body,
-html.dark main,
-html.dark nav,
-html.dark section,
-html.dark div,
-html.dark article,
-html.dark header,
-html.dark footer {
-  background-color: var(--background);
-  color: var(--foreground);
-}
-
-/* Dark mode text colors */
-html.dark h1,
-html.dark h2,
-html.dark h3,
-html.dark h4,
-html.dark h5,
-html.dark h6,
-html.dark p,
-html.dark span,
-html.dark a,
-html.dark label {
-  color: var(--foreground);
 }
 
 /* Dark mode disabled transitions for specific animations */
@@ -150,38 +117,9 @@ html.dark label {
   perspective: 1000px;
 }
 
-/* Dark mode global overrides */
-html.dark {
-  background-color: #0a0a0a !important;
-}
-
+/* Dark mode keeps page backgrounds visible while preserving readability */
 html.dark body {
-  background-color: #0a0a0a !important;
-  color: #ededed !important;
-}
-
-html.dark .text-gray-800 {
-  color: #ededed !important;
-}
-
-html.dark .text-gray-600 {
-  color: #a0a0a0 !important;
-}
-
-html.dark .text-gray-400 {
-  color: #707070 !important;
-}
-
-html.dark .bg-white {
-  background-color: #1a1a1a !important;
-}
-
-html.dark .bg-gray-50 {
-  background-color: #0f0f0f !important;
-}
-
-html.dark .border-gray-300 {
-  border-color: #404040 !important;
+  color: #ededed;
 }
 
 /* Navbar Animations */

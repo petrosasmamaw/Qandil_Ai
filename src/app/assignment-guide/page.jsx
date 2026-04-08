@@ -337,7 +337,7 @@ export default function AssignmentGuidePage() {
 
             {/* Text Input Area */}
             {inputMode === 'text' && (
-              <form onSubmit={handleTextSubmit} className="mb-12 bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+              <form onSubmit={handleTextSubmit} className="mb-12 bg-white/90 dark:bg-slate-900/60 dark:backdrop-blur-md rounded-lg p-6 border border-gray-200 dark:border-blue-400/30 shadow-md dark:shadow-lg">
                 <div className="mb-4">
                   <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     {t('assignmentGuide.titleForAssignment')}

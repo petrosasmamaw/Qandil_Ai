@@ -115,6 +115,7 @@ export const Navbar = () => {
                   alt="Qandil AI Logo"
                   width={34}
                   height={34}
+                  loading="eager"
                   className="transition-transform duration-300 group-hover:scale-110 w-8 h-8"
                 />
               </div>

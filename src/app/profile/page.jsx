@@ -21,14 +21,12 @@ export default function ProfilePage() {
   const { profile, loading, error, success, successMessage } = useSelector(
     (state) => state.profile
   );
-  const theme = useSelector((state) => state.theme?.mode || 'light');
   const language = useSelector((state) => state.theme?.language || 'eng');
   const t = (key) => key.split('.').reduce((obj, k) => obj && obj[k], translations[language]) || key;
 
   const [session, setSession] = useState(null);
   const [sessionLoading, setSessionLoading] = useState(true);
   const [showQuiz, setShowQuiz] = useState(false);
-  const [isDark, setIsDark] = useState(false);
   const [formData, setFormData] = useState({
     userId: '',
     name: '',
@@ -39,25 +37,6 @@ export default function ProfilePage() {
     goal: 'pass_exam',
   });
   const [isEditing, setIsEditing] = useState(false);
-
-  // Listen for theme changes
-  useEffect(() => {
-    const updateTheme = () => {
-      setIsDark(document.documentElement.classList.contains('dark'));
-    };
-    
-    updateTheme();
-    window.addEventListener('themechange', updateTheme);
-    
-    // Also watch for class changes on html element
-    const observer = new MutationObserver(updateTheme);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    
-    return () => {
-      window.removeEventListener('themechange', updateTheme);
-      observer.disconnect();
-    };
-  }, []);
 
   // Fetch session
   useEffect(() => {
@@ -172,29 +151,11 @@ export default function ProfilePage() {
   };
 
   if (sessionLoading) {
-    const isDarkMode = theme === 'dark' || isDark;
     return (
-      <div 
-        className="min-h-screen flex items-center justify-center"
-        style={{
-          backgroundColor: isDarkMode ? '#0a0a0a' : '#ffffff',
-          background: isDarkMode 
-            ? 'linear-gradient(135deg, rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9))'
-            : 'linear-gradient(135deg, rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9))',
-        }}
-      >
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-emerald-50 to-teal-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
         <div className="text-center">
-          <div 
-            className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2"
-            style={{
-              borderColor: isDarkMode ? '#ededed' : '#171717',
-              borderTopColor: isDarkMode ? '#ededed' : '#171717',
-            }}
-          ></div>
-          <p 
-            className="mt-4"
-            style={{ color: isDarkMode ? '#a0a0a0' : '#666666' }}
-          >
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-2 border-slate-800 dark:border-slate-200 border-t-transparent"></div>
+          <p className="mt-4 text-slate-600 dark:text-slate-300">
             {t('profile.loadingProfile')}
           </p>
         </div>
@@ -207,17 +168,19 @@ export default function ProfilePage() {
   }
 
   return (
-    <main 
-      className="min-h-screen py-12 px-4 text-gray-800 dark:text-gray-100"
-      style={{
-        background: `
-          linear-gradient(135deg, ${document.documentElement.classList.contains('dark') ? 'rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9)' : 'rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9)'}),
-          url('https://i.pinimg.com/736x/4b/8d/4f/4b8d4f848eb1385772e2fa5cd8c1dd38.jpg') center/cover fixed
-        `,
-        backgroundColor: document.documentElement.classList.contains('dark') ? '#0a0a0a' : '#ffffff'
-      }}
-    >
-      <div className="max-w-2xl mx-auto">
+    <main className="relative min-h-screen py-12 px-4 text-gray-800 dark:text-gray-100 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-emerald-50 to-teal-50 dark:hidden" />
+      <div
+        className="absolute inset-0 hidden dark:block bg-cover bg-center bg-no-repeat bg-fixed"
+        style={{
+          backgroundImage: "url('/dark-tech-bg.svg')",
+          filter: 'blur(2px)',
+          transform: 'scale(1.03)',
+        }}
+      />
+      <div className="absolute inset-0 hidden dark:block bg-slate-950/72" />
+
+      <div className="relative z-10 max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent mb-2">
@@ -232,8 +195,8 @@ export default function ProfilePage() {
 
         {/* Success Message */}
         {success && (
-          <div className="mb-6 p-4 bg-green-50 border-l-4 border-green-600 rounded-lg shadow-sm">
-            <p className="text-green-800 font-medium flex items-center gap-2">
+          <div className="mb-6 p-4 rounded-lg shadow-sm border-l-4 border-green-500 bg-green-50/95 dark:bg-green-500/10 dark:border-green-400 backdrop-blur-lg border border-green-200/70 dark:border-green-400/35">
+            <p className="text-green-800 dark:text-green-200 font-medium flex items-center gap-2">
               <FiCheck size={18} /> {successMessage}
             </p>
           </div>
@@ -241,14 +204,14 @@ export default function ProfilePage() {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-600 rounded-lg shadow-sm">
+          <div className="mb-6 p-4 rounded-lg shadow-sm border-l-4 border-red-600 dark:border-red-400 bg-red-50/95 dark:bg-red-500/10 backdrop-blur-lg border border-red-200/70 dark:border-red-400/35">
             <div className="flex justify-between items-start">
-              <p className="text-red-800 font-medium">
+              <p className="text-red-800 dark:text-red-200 font-medium">
                 ✕ {error}
               </p>
               <button
                 onClick={() => dispatch(clearError())}
-                className="text-red-600 hover:text-red-800"
+                className="text-red-600 dark:text-red-300 hover:text-red-800 dark:hover:text-red-100"
               >
                 ✕
               </button>
@@ -257,11 +220,11 @@ export default function ProfilePage() {
         )}
 
         {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-md p-8 border border-gray-100">
+        <div className="rounded-2xl shadow-xl p-8 border border-gray-100 bg-white/90 backdrop-blur-md dark:bg-white/8 dark:border-white/20">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name Field */}
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
                 {t('profile.fullNameLabel')}
               </label>
               <input
@@ -271,14 +234,14 @@ export default function ProfilePage() {
                 onChange={handleInputChange}
                 required
                 minLength="2"
-                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all dark:bg-white/10 dark:border-white/20 dark:text-white dark:placeholder-gray-300"
                 placeholder={t('profile.fullNamePlaceholder')}
               />
             </div>
 
             {/* Grade Field */}
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
                 {t('profile.gradeSelectLabel')}
               </label>
               <select
@@ -286,7 +249,7 @@ export default function ProfilePage() {
                 value={formData.grade}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all dark:bg-white/10 dark:border-white/20 dark:text-white"
               >
                 <option value={9}>{t('profile.grade9')}</option>
                 <option value={10}>{t('profile.grade10')}</option>
@@ -297,7 +260,7 @@ export default function ProfilePage() {
 
             {/* {t('profile.studySystem')} Field */}
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
                 Study System
               </label>
               <select
@@ -305,7 +268,7 @@ export default function ProfilePage() {
                 value={formData.studySystem}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all dark:bg-white/10 dark:border-white/20 dark:text-white"
               >
                 <option value="theoretical">{t('profile.sysTheoretical')}</option>
                 <option value="conceptual">{t('profile.sysConceptual')}</option>
@@ -317,7 +280,7 @@ export default function ProfilePage() {
 
             {/* Goal Field */}
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
                 {t('profile.goal')}
               </label>
               <select
@@ -325,7 +288,7 @@ export default function ProfilePage() {
                 value={formData.goal}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all dark:bg-white/10 dark:border-white/20 dark:text-white"
               >
                 <option value="pass_exam">{t('profile.goalPassExam')}</option>
                 <option value="high_grades">{t('profile.goalHighGrades')}</option>
@@ -336,7 +299,7 @@ export default function ProfilePage() {
 
             {/* {t('profile.preferredLangLabel')} Field */}
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
                 Preferred Language
               </label>
               <input
@@ -345,14 +308,14 @@ export default function ProfilePage() {
                 value={formData.preferredLanguage}
                 onChange={handleInputChange}
                 maxLength="10"
-                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all dark:bg-white/10 dark:border-white/20 dark:text-white dark:placeholder-gray-300"
                 placeholder={t('profile.preferredLangPlaceholder')}
               />
             </div>
 
             {/* Level Field - AI Quiz */}
-            <div className="bg-gradient-to-br from-green-50 to-yellow-50 p-6 rounded-xl border-2 border-green-200">
-              <label className="block text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+            <div className="bg-gradient-to-br from-green-50 to-yellow-50 dark:from-green-500/12 dark:to-yellow-400/10 p-6 rounded-xl border-2 border-green-200 dark:border-green-300/30 backdrop-blur-sm">
+              <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
                 <FiTarget size={18} /> {t('profile.level')} {formData.level !== 'foundation' && `✓ ${formData.level.charAt(0).toUpperCase() + formData.level.slice(1)}`}
               </label>
               <button
@@ -362,7 +325,7 @@ export default function ProfilePage() {
               >
                 {t('profile.takeQuizBtn')}
               </button>
-              <p className="mt-3 text-xs text-gray-600 flex items-center gap-2">
+              <p className="mt-3 text-xs text-gray-600 dark:text-gray-300 flex items-center gap-2">
                 <FiZap size={14} /> {t('profile.quizSubtext')}
               </p>
             </div>
@@ -390,34 +353,34 @@ export default function ProfilePage() {
 
         {/* Profile Info Card */}
         {profile && (
-          <div className="mt-8 bg-white rounded-2xl shadow-md p-6 border border-gray-100">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <div className="mt-8 rounded-2xl shadow-xl p-6 border border-gray-100 bg-white/90 backdrop-blur-md dark:bg-white/8 dark:border-white/20">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
               <FiBarChart2 size={18} /> {t('profile.profileInfoSection')}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <p className="text-gray-600 font-medium">{t('profile.name')}</p>
-                <p className="text-gray-900 font-semibold mt-1">{profile.name}</p>
+                <p className="text-gray-600 dark:text-gray-300 font-medium">{t('profile.name')}</p>
+                <p className="text-gray-900 dark:text-gray-100 font-semibold mt-1">{profile.name}</p>
               </div>
               <div>
-                <p className="text-gray-600 font-medium">{t('profile.grade')}</p>
-                <p className="text-gray-900 font-semibold mt-1">{t(`profile.grade${profile.grade}`)}</p>
+                <p className="text-gray-600 dark:text-gray-300 font-medium">{t('profile.grade')}</p>
+                <p className="text-gray-900 dark:text-gray-100 font-semibold mt-1">{t(`profile.grade${profile.grade}`)}</p>
               </div>
               <div>
-                <p className="text-gray-600 font-medium">{t('profile.level')}</p>
+                <p className="text-gray-600 dark:text-gray-300 font-medium">{t('profile.level')}</p>
                 <p className="text-green-600 font-semibold mt-1 capitalize">{profile.level}</p>
               </div>
               <div>
-                <p className="text-gray-600 font-medium">{t('profile.studySystem')}</p>
-                <p className="text-gray-900 font-semibold mt-1 capitalize">{getStudySystemTrans(profile.studySystem)}</p>
+                <p className="text-gray-600 dark:text-gray-300 font-medium">{t('profile.studySystem')}</p>
+                <p className="text-gray-900 dark:text-gray-100 font-semibold mt-1 capitalize">{getStudySystemTrans(profile.studySystem)}</p>
               </div>
               <div>
-                <p className="text-gray-600 font-medium">{t('profile.goal')}</p>
-                <p className="text-gray-900 font-semibold mt-1 capitalize">{getGoalTrans(profile.goal)}</p>
+                <p className="text-gray-600 dark:text-gray-300 font-medium">{t('profile.goal')}</p>
+                <p className="text-gray-900 dark:text-gray-100 font-semibold mt-1 capitalize">{getGoalTrans(profile.goal)}</p>
               </div>
               <div>
-                <p className="text-gray-600 font-medium">{t('profile.lastUpdatedLabel')}</p>
-                <p className="text-gray-900 font-semibold mt-1">{new Date(profile.updatedAt).toLocaleDateString()}</p>
+                <p className="text-gray-600 dark:text-gray-300 font-medium">{t('profile.lastUpdatedLabel')}</p>
+                <p className="text-gray-900 dark:text-gray-100 font-semibold mt-1">{new Date(profile.updatedAt).toLocaleDateString()}</p>
               </div>
             </div>
           </div>
