@@ -103,7 +103,7 @@ export default function AIAssistance() {
           backgroundColor: isDarkMode ? '#0a0a0a' : '#ffffff',
           background: isDarkMode 
             ? 'linear-gradient(135deg, rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9))'
-            : 'linear-gradient(135deg, rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9))',
+            : 'linear-gradient(135deg, rgba(248, 250, 249, 0.4), rgba(240, 244, 242, 0.4), rgba(248, 250, 249, 0.4))',
         }}
       >
         <div className="text-center">
@@ -152,11 +152,14 @@ export default function AIAssistance() {
 
   return (
     <main 
-      className="min-h-screen p-6 text-gray-800 dark:text-gray-100"
+      className="light-image-bg min-h-screen p-6 text-gray-800 dark:text-gray-100"
       style={{
+        '--light-bg-image': "url('https://i.pinimg.com/736x/de/0a/0e/de0a0eb1dd6af97630c3a6b90d162701.jpg')",
         background: `
-          linear-gradient(135deg, ${isDark ? 'rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9)' : 'rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9)'}),
-          url('https://i.pinimg.com/736x/de/0a/0e/de0a0eb1dd6af97630c3a6b90d162701.jpg') center/cover fixed
+          ${isDark ? `
+            linear-gradient(135deg, rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9)),
+            url('https://i.pinimg.com/736x/de/0a/0e/de0a0eb1dd6af97630c3a6b90d162701.jpg') center/cover fixed
+          ` : 'none'}
         `,
         backgroundColor: isDark ? '#0a0a0a' : '#ffffff'
       }}
@@ -208,7 +211,7 @@ export default function AIAssistance() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 
           {/* CHAT AREA */}
-          <div className="lg:col-span-3 bg-white/90 dark:bg-slate-900/60 dark:backdrop-blur-md rounded-2xl shadow-lg dark:shadow-lg p-6 flex flex-col h-[75vh] border dark:border-blue-400/30">
+          <div className="lg:col-span-3 bg-white/50 dark:bg-slate-900/60 dark:backdrop-blur-md rounded-2xl shadow-lg dark:shadow-lg p-6 flex flex-col h-[75vh] border backdrop-blur-lg border-white/40 dark:border-blue-400/30">
             <ChatBox 
               studentProfile={profile}
               chatType="aiAssistance"
@@ -221,7 +224,7 @@ export default function AIAssistance() {
           <div className="space-y-4">
 
             {/* Profile Widget */}
-            <div className="bg-white/90 dark:bg-slate-900/60 dark:backdrop-blur-md p-5 rounded-2xl shadow-md dark:shadow-md border dark:border-blue-400/30">
+            <div className="bg-white/50 dark:bg-slate-900/60 dark:backdrop-blur-md p-5 rounded-2xl shadow-md dark:shadow-md border backdrop-blur-lg border-white/40 dark:border-blue-400/30">
               <h3 className="font-semibold text-green-700 dark:text-green-300 mb-3 flex items-center gap-2"><FiBook size={18} /> {t('aiAssistance.profile')}</h3>
               {profile && (
                 <div className="space-y-2">
@@ -235,7 +238,7 @@ export default function AIAssistance() {
             </div>
 
             {/* How it works */}
-            <div className="bg-green-50/90 dark:bg-green-500/15 dark:backdrop-blur-md p-5 rounded-2xl shadow-md dark:shadow-md border dark:border-green-400/30">
+            <div className="bg-green-50/50 dark:bg-green-500/15 dark:backdrop-blur-md p-5 rounded-2xl shadow-md dark:shadow-md border backdrop-blur-lg border-green-200/40 dark:border-green-400/30">
               <h3 className="font-semibold text-green-800 dark:text-green-300 mb-3 flex items-center gap-2">
                 <FiZap size={18} /> {t('aiAssistance.howItWorks')}
               </h3>
@@ -248,7 +251,7 @@ export default function AIAssistance() {
             </div>
 
             {/* Focus */}
-            <div className="bg-yellow-50/90 dark:bg-yellow-500/15 dark:backdrop-blur-md p-5 rounded-2xl shadow-md dark:shadow-md border dark:border-yellow-400/30">
+            <div className="bg-yellow-50/50 dark:bg-yellow-500/15 dark:backdrop-blur-md p-5 rounded-2xl shadow-md dark:shadow-md border backdrop-blur-lg border-yellow-200/40 dark:border-yellow-400/30">
               <h3 className="font-semibold text-yellow-700 dark:text-yellow-300 mb-3">
                 ✅ {t('aiAssistance.focus')}
               </h3>
@@ -263,7 +266,7 @@ export default function AIAssistance() {
             {/* Update Profile Button */}
             <button
               onClick={() => router.push('/profile')}
-              className="w-full py-3 rounded-xl bg-gray-200 dark:bg-slate-700/60 dark:backdrop-blur-sm dark:border dark:border-blue-400/30 hover:bg-gray-300 dark:hover:bg-slate-700/80 transition-colors font-medium text-gray-900 dark:text-white"
+              className="w-full py-3 rounded-xl bg-white/70 dark:bg-slate-700/60 backdrop-blur-lg border border-white/50 dark:border-blue-400/30 hover:bg-white/90 dark:hover:bg-slate-700/80 transition-colors font-medium text-gray-900 dark:text-white"
             >
               <span className="flex items-center gap-2"><FiFileText size={16} /> {t('aiAssistance.updateProfile')}</span>
             </button>

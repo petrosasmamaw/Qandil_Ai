@@ -123,7 +123,7 @@ export default function Features() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-8 border-l-4 border-green-500 hover:border-teal-500"
+              className="bg-white/50 dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-8 border-l-4 border-green-500 hover:border-teal-500 backdrop-blur-lg border border-white/40 dark:border-gray-700"
             >
               <div className="text-4xl mb-4">{feature.icon}</div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
@@ -145,7 +145,7 @@ export default function Features() {
             {studentFeatures.map((feature, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-8 border-l-4 border-teal-500 hover:border-green-500"
+                className="bg-white/50 dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-8 border-l-4 border-teal-500 hover:border-green-500 backdrop-blur-lg border border-white/40 dark:border-gray-700"
               >
                 <div className="text-4xl mb-4">{feature.icon}</div>
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">

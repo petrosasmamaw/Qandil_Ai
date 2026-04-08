@@ -127,7 +127,7 @@ export default function ChatBox({
   };
 
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden">
+    <div className="h-full flex flex-col bg-white/70 dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden border border-white/60 dark:border-gray-700 backdrop-blur-lg">
       {/* Header */}
       <div className="bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-gray-800 text-white p-4 flex items-center justify-between">
         <div>
@@ -160,7 +160,7 @@ export default function ChatBox({
               className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
                 message.sender === 'user'
                   ? 'bg-blue-600 text-white rounded-br-none'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-bl-none'
+                  : 'bg-white/85 dark:bg-gray-800 text-gray-900 dark:text-white rounded-bl-none border border-white/60 dark:border-gray-700'
               }`}
             >
               <p className="text-sm whitespace-pre-wrap leading-relaxed">
@@ -184,7 +184,7 @@ export default function ChatBox({
 
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg rounded-bl-none px-4 py-3">
+            <div className="bg-white/85 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg rounded-bl-none px-4 py-3 border border-white/60 dark:border-gray-700">
               <div className="flex items-center gap-2">
                 <div className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-gray-600 dark:border-gray-400"></div>
                 <span className="text-sm">{t('common.thinking')}</span>
@@ -204,7 +204,7 @@ export default function ChatBox({
       )}
 
       {/* Input Area */}
-      <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-800">
+      <div className="border-t border-gray-200/70 dark:border-gray-700 p-4 bg-gray-50/70 dark:bg-gray-800 backdrop-blur-md">
         <form onSubmit={handleSendMessage} className="flex gap-2">
           <input
             type="text"

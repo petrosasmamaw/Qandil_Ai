@@ -195,7 +195,7 @@ export default function ProfilePage() {
 
         {/* Success Message */}
         {success && (
-          <div className="mb-6 p-4 rounded-lg shadow-sm border-l-4 border-green-500 bg-green-50/95 dark:bg-green-500/10 dark:border-green-400 backdrop-blur-lg border border-green-200/70 dark:border-green-400/35">
+          <div className="mb-6 p-4 rounded-lg shadow-sm border-l-4 border-green-500 bg-green-50/50 dark:bg-green-500/10 dark:border-green-400 backdrop-blur-lg border border-green-200/40 dark:border-green-400/35">
             <p className="text-green-800 dark:text-green-200 font-medium flex items-center gap-2">
               <FiCheck size={18} /> {successMessage}
             </p>
@@ -204,7 +204,7 @@ export default function ProfilePage() {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-6 p-4 rounded-lg shadow-sm border-l-4 border-red-600 dark:border-red-400 bg-red-50/95 dark:bg-red-500/10 backdrop-blur-lg border border-red-200/70 dark:border-red-400/35">
+          <div className="mb-6 p-4 rounded-lg shadow-sm border-l-4 border-red-600 dark:border-red-400 bg-red-50/50 dark:bg-red-500/10 backdrop-blur-lg border border-red-200/40 dark:border-red-400/35">
             <div className="flex justify-between items-start">
               <p className="text-red-800 dark:text-red-200 font-medium">
                 ✕ {error}
@@ -220,7 +220,7 @@ export default function ProfilePage() {
         )}
 
         {/* Form Card */}
-        <div className="rounded-2xl shadow-xl p-8 border border-gray-100 bg-white/90 backdrop-blur-md dark:bg-white/8 dark:border-white/20">
+        <div className="rounded-2xl shadow-xl p-8 border border-white/40 bg-white/50 backdrop-blur-lg dark:bg-white/8 dark:border-white/20">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name Field */}
             <div>
@@ -314,7 +314,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Level Field - AI Quiz */}
-            <div className="bg-gradient-to-br from-green-50 to-yellow-50 dark:from-green-500/12 dark:to-yellow-400/10 p-6 rounded-xl border-2 border-green-200 dark:border-green-300/30 backdrop-blur-sm">
+            <div className="bg-gradient-to-br from-green-50/50 to-yellow-50/50 dark:from-green-500/12 dark:to-yellow-400/10 p-6 rounded-xl border-2 border-green-200/50 dark:border-green-300/30 backdrop-blur-lg">
               <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
                 <FiTarget size={18} /> {t('profile.level')} {formData.level !== 'foundation' && `✓ ${formData.level.charAt(0).toUpperCase() + formData.level.slice(1)}`}
               </label>
@@ -353,7 +353,7 @@ export default function ProfilePage() {
 
         {/* Profile Info Card */}
         {profile && (
-          <div className="mt-8 rounded-2xl shadow-xl p-6 border border-gray-100 bg-white/90 backdrop-blur-md dark:bg-white/8 dark:border-white/20">
+          <div className="mt-8 rounded-2xl shadow-xl p-6 border border-white/40 bg-white/50 backdrop-blur-lg dark:bg-white/8 dark:border-white/20">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
               <FiBarChart2 size={18} /> {t('profile.profileInfoSection')}
             </h3>

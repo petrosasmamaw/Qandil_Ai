@@ -47,24 +47,22 @@ export default function Home() {
   }, []);
 
   const backgroundStyle = {
+    '--light-bg-image': "url('https://images.openai.com/static-rsc-4/b9GSMauiGKlA6VMEEc1Xdi4OCektiyGX3D_mPMB8DXDy35G_W_KrrXLaHa4lGrgAyiVqacvBM29zArkzEe21HJJWSPfb5aa7FxiVNswdzZHaZQ5Ez4zkzFJYMuC_0OlYOPvQ2MEMajSfEF9Xg-ncWCqeweMsSF80k9KZPPUa8jRjxpinxETr8iUE0TyHnFX4?purpose=inline')",
     backgroundImage: isDark
       ? `
         linear-gradient(135deg, rgba(15, 23, 42, 0.15) 0%, rgba(25, 40, 70, 0.13) 50%, rgba(15, 23, 42, 0.15) 100%),
         url('https://images.openai.com/static-rsc-4/UhK-ZnGnaOc26fOHcPEMngdrJMi0lBmw_eKNkaDh38qqO6xopIWrT3GyMD_7F0bUEwvEgsSxHAA7F9eZ0sIsr6zwzCbSZXRwDuam2ZAsT_4kprqEa4D6b_95yr-58SC2Fzcww7u8K9AFRoRHVUJ2ItNncyjWPfYYxDDhB96QIwwOEW1mvB1bi6CkXIYSZjje?purpose=inline')
       `
-      : `
-        linear-gradient(135deg, rgba(255, 255, 255, 0.97) 0%, rgba(240, 248, 255, 0.95) 50%, rgba(255, 255, 255, 0.97) 100%),
-        url('https://images.openai.com/static-rsc-4/b9GSMauiGKlA6VMEEc1Xdi4OCektiyGX3D_mPMB8DXDy35G_W_KrrXLaHa4lGrgAyiVqacvBM29zArkzEe21HJJWSPfb5aa7FxiVNswdzZHaZQ5Ez4zkzFJYMuC_0OlYOPvQ2MEMajSfEF9Xg-ncWCqeweMsSF80k9KZPPUa8jRjxpinxETr8iUE0TyHnFX4?purpose=inline')
-      `,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundAttachment: 'fixed',
+      : 'none',
+    backgroundSize: isDark ? 'cover' : undefined,
+    backgroundPosition: isDark ? 'center' : undefined,
+    backgroundRepeat: isDark ? 'no-repeat' : undefined,
+    backgroundAttachment: isDark ? 'fixed' : undefined,
   };
 
   return (
     <main 
-      className="min-h-screen text-gray-800 dark:text-gray-100 transition-colors duration-300"
+      className="light-image-bg min-h-screen text-gray-800 dark:text-gray-100 transition-colors duration-300"
       style={backgroundStyle}
     >
 
@@ -73,7 +71,7 @@ export default function Home() {
         {/* Beautiful Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-green-500/10 dark:from-transparent to-transparent pointer-events-none"></div>
         
-        <div className="relative z-10">
+        <div className="relative z-10 max-w-5xl mx-auto bg-white/40 dark:bg-transparent backdrop-blur-xl rounded-3xl border border-white/60 dark:border-transparent px-6 py-10 md:px-10 md:py-12 shadow-xl dark:shadow-none">
           <h1 className="text-5xl font-bold leading-tight text-gray-900 dark:text-white drop-shadow-lg">
             {t('home.hero.title')} <span className="bg-gradient-to-r from-green-600 to-green-500 dark:from-green-400 dark:to-green-300 bg-clip-text text-transparent">{t('home.hero.titleHighlight')}</span>
           </h1>
@@ -82,10 +80,10 @@ export default function Home() {
           </p>
 
           <div className="mt-8 flex justify-center gap-4 flex-wrap">
-            <Link href="/profile" className="bg-gradient-to-r from-green-600 to-green-700 dark:from-green-500 dark:to-green-600 text-white px-6 py-3 rounded-xl hover:shadow-lg hover:scale-105 transition-all font-semibold backdrop-blur-sm">
+            <Link href="/profile" className="bg-gradient-to-r from-green-600 to-green-700 dark:from-green-500 dark:to-green-600 text-white px-6 py-3 rounded-xl hover:shadow-lg hover:scale-105 transition-all font-semibold backdrop-blur-md">
               {t('home.hero.startJourney')}
             </Link>
-            <Link href="/features" className="backdrop-blur-sm border-2 border-gray-400 dark:border-gray-300 text-gray-800 dark:text-gray-100 px-6 py-3 rounded-xl hover:shadow-lg hover:scale-105 transition-all font-semibold bg-white/40 dark:bg-transparent">
+            <Link href="/features" className="backdrop-blur-lg border-2 border-gray-300 dark:border-gray-300 text-gray-800 dark:text-gray-100 px-6 py-3 rounded-xl hover:shadow-lg hover:scale-105 transition-all font-semibold bg-white/50 dark:bg-slate-900/30">
               {t('home.hero.exploreFeatures')}
             </Link>
           </div>
@@ -115,7 +113,7 @@ export default function Home() {
           },
         ].map((item, i) => (
           <Link href={item.link} key={i}>
-            <div className="backdrop-blur-md bg-white/85 dark:bg-slate-900/60 dark:backdrop-blur-md p-6 rounded-2xl shadow-lg dark:shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all hover:scale-105 cursor-pointer h-full border border-white/20 dark:border-blue-400/30">
+            <div className="backdrop-blur-lg bg-white/50 dark:bg-slate-900/60 dark:backdrop-blur-md p-6 rounded-2xl shadow-lg dark:shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all hover:scale-105 cursor-pointer h-full border border-white/40 dark:border-blue-400/30">
               <div className="text-green-600 dark:text-green-400 mb-4 drop-shadow-md">{item.icon}</div>
               <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white drop-shadow-md">{item.title}</h3>
               <p className="text-gray-700 dark:text-gray-300 drop-shadow-sm">{item.desc}</p>
@@ -125,7 +123,7 @@ export default function Home() {
       </section>
 
       {/* COMPREHENSIVE FEATURES */}
-      <section className="px-6 md:px-16 py-16 backdrop-blur-sm bg-white/60 dark:bg-slate-900/30 dark:backdrop-blur-md transition-colors duration-300 border-t border-white/20 dark:border-blue-400/20">
+      <section className="px-6 md:px-16 py-16 backdrop-blur-lg bg-white/35 dark:bg-slate-900/30 dark:backdrop-blur-md transition-colors duration-300 border-t border-white/20 dark:border-blue-400/20">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white drop-shadow-lg">{t('home.powerfulFeatures')}</h2>
           <p className="mt-2 text-gray-700 dark:text-gray-300 drop-shadow-md">{t('home.discoverFeatures')}</p>
@@ -167,7 +165,7 @@ export default function Home() {
                 icon: <FiTrendingUp className="w-10 h-10 text-green-600 dark:text-green-400" />,
               },
             ].map((feature, i) => (
-              <div key={i} className="backdrop-blur-md bg-white/80 dark:bg-slate-900/50 dark:backdrop-blur-md p-8 rounded-2xl shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all border-l-4 border-green-500 dark:border-green-400/50 hover:scale-105">
+              <div key={i} className="backdrop-blur-lg bg-white/50 dark:bg-slate-900/50 dark:backdrop-blur-md p-8 rounded-2xl shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all border-l-4 border-green-500 dark:border-green-400/50 hover:scale-105">
                 <div className="mb-4 drop-shadow-md">{feature.icon}</div>
                 <h4 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white drop-shadow-md">{feature.title}</h4>
                 <p className="text-gray-700 dark:text-gray-300 drop-shadow-sm">{feature.description}</p>
@@ -202,7 +200,7 @@ export default function Home() {
                 icon: <FiImage className="w-10 h-10 text-teal-600 dark:text-teal-400" />,
               },
             ].map((feature, i) => (
-              <div key={i} className="backdrop-blur-md bg-white/80 dark:bg-slate-900/50 dark:backdrop-blur-md p-8 rounded-2xl shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all border-l-4 border-teal-500 dark:border-teal-400/50 hover:scale-105">
+              <div key={i} className="backdrop-blur-lg bg-white/50 dark:bg-slate-900/50 dark:backdrop-blur-md p-8 rounded-2xl shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all border-l-4 border-teal-500 dark:border-teal-400/50 hover:scale-105">
                 <div className="mb-4 drop-shadow-md">{feature.icon}</div>
                 <h4 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white drop-shadow-md">{feature.title}</h4>
                 <p className="text-gray-700 dark:text-gray-300 text-sm drop-shadow-sm">{feature.description}</p>
@@ -213,7 +211,7 @@ export default function Home() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="px-6 md:px-16 py-16 backdrop-blur-sm bg-white/60 dark:bg-slate-900/30 dark:backdrop-blur-md transition-colors duration-300 border-t border-white/20 dark:border-blue-400/20">
+      <section className="px-6 md:px-16 py-16 backdrop-blur-lg bg-white/35 dark:bg-slate-900/30 dark:backdrop-blur-md transition-colors duration-300 border-t border-white/20 dark:border-blue-400/20">
         <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white drop-shadow-lg">{t('home.howItWorks')}</h2>
 
         <div className="grid md:grid-cols-3 gap-10 mt-10">
@@ -222,7 +220,7 @@ export default function Home() {
             { step: t('home.takeQuiz'), desc: t('home.takeQuizDesc') },
             { step: t('home.learnWithAI'), desc: t('home.learnWithAIDesc') },
           ].map((step, i) => (
-            <div key={i} className="text-center backdrop-blur-md bg-white/70 dark:bg-slate-900/50 dark:backdrop-blur-md p-6 rounded-xl shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all border border-white/20 dark:border-blue-400/30">
+            <div key={i} className="text-center backdrop-blur-lg bg-white/50 dark:bg-slate-900/50 dark:backdrop-blur-md p-6 rounded-xl shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all border border-white/40 dark:border-blue-400/30">
               <div className="text-4xl font-bold bg-gradient-to-r from-green-600 to-green-500 dark:from-green-400 dark:to-green-300 bg-clip-text text-transparent mb-4">
                 {i + 1}
               </div>
@@ -234,7 +232,7 @@ export default function Home() {
       </section>
 
       {/* WHY CHOOSE */}
-      <section className="px-6 md:px-16 py-16 backdrop-blur-sm bg-white/60 dark:bg-slate-900/30 dark:backdrop-blur-md transition-colors duration-300 border-t border-white/20 dark:border-blue-400/20">
+      <section className="px-6 md:px-16 py-16 backdrop-blur-lg bg-white/35 dark:bg-slate-900/30 dark:backdrop-blur-md transition-colors duration-300 border-t border-white/20 dark:border-blue-400/20">
         <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white drop-shadow-lg">{t('home.whyChoose')}</h2>
 
         <div className="grid md:grid-cols-3 gap-8 mt-10">
@@ -243,7 +241,7 @@ export default function Home() {
             { title: t('home.builtForEthiopia'), desc: t('home.builtForEthiopiaDesc') },
             { title: t('home.learnByUnderstanding'), desc: t('home.learnByUnderstandingDesc') },
           ].map((item, i) => (
-            <div key={i} className="backdrop-blur-md bg-white/80 dark:bg-slate-900/50 dark:backdrop-blur-md p-8 rounded-2xl shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all hover:scale-105 border-l-4 border-blue-500 dark:border-blue-400/50">
+            <div key={i} className="backdrop-blur-lg bg-white/50 dark:bg-slate-900/50 dark:backdrop-blur-md p-8 rounded-2xl shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all hover:scale-105 border-l-4 border-blue-500 dark:border-blue-400/50">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-2 text-lg drop-shadow-md">{item.title}</h3>
               <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed drop-shadow-sm">{item.desc}</p>
             </div>
@@ -252,7 +250,7 @@ export default function Home() {
       </section>
 
       {/* WHO IT'S FOR */}
-      <section className="px-6 md:px-16 py-16 backdrop-blur-sm bg-white/60 dark:bg-slate-900/30 dark:backdrop-blur-md transition-colors duration-300 border-t border-white/20 dark:border-blue-400/20">
+      <section className="px-6 md:px-16 py-16 backdrop-blur-lg bg-white/35 dark:bg-slate-900/30 dark:backdrop-blur-md transition-colors duration-300 border-t border-white/20 dark:border-blue-400/20">
         <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white drop-shadow-lg">{t('home.whoItFor')}</h2>
 
         <div className="grid md:grid-cols-3 gap-8 mt-10">
@@ -261,7 +259,7 @@ export default function Home() {
             { user: t('home.examPrep'), desc: t('home.examPrepDesc') },
             { user: t('home.independentLearners'), desc: t('home.independentLearnersDesc') },
           ].map((item, i) => (
-            <div key={i} className="backdrop-blur-md bg-white/80 dark:bg-slate-900/50 dark:backdrop-blur-md p-8 rounded-2xl shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all hover:scale-105 border-l-4 border-purple-500 dark:border-purple-400/50 text-center">
+            <div key={i} className="backdrop-blur-lg bg-white/50 dark:bg-slate-900/50 dark:backdrop-blur-md p-8 rounded-2xl shadow-lg hover:shadow-xl dark:hover:shadow-xl transition-all hover:scale-105 border-l-4 border-purple-500 dark:border-purple-400/50 text-center">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-2 text-lg drop-shadow-md">{item.user}</h3>
               <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed drop-shadow-sm">{item.desc}</p>
             </div>
@@ -270,7 +268,7 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="text-center px-6 py-20 backdrop-blur-sm bg-gradient-to-r from-green-600/90 dark:from-slate-900/60 to-green-500/90 dark:to-slate-900/60 text-white dark:text-gray-100 transition-colors duration-300 border-t border-white/20 dark:border-blue-400/20 relative overflow-hidden dark:backdrop-blur-md">
+      <section className="text-center px-6 py-20 backdrop-blur-lg bg-gradient-to-r from-green-600/90 dark:from-slate-900/60 to-green-500/90 dark:to-slate-900/60 text-white dark:text-gray-100 transition-colors duration-300 border-t border-white/20 dark:border-blue-400/20 relative overflow-hidden dark:backdrop-blur-md">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.05) 10px, rgba(255,255,255,.05) 20px)` }}></div>
         <div className="relative z-10">
           <h2 className="text-4xl font-bold drop-shadow-lg">
@@ -281,7 +279,7 @@ export default function Home() {
           </p>
 
           <Link href="/profile">
-            <button className="mt-8 backdrop-blur-sm bg-white/95 dark:bg-slate-900/70 dark:backdrop-blur-md text-green-600 dark:text-green-300 px-8 py-3 rounded-xl font-semibold hover:bg-white dark:hover:bg-slate-900/90 transition-all hover:scale-105 shadow-lg dark:shadow-lg border border-white/30 dark:border-blue-400/40">
+            <button className="mt-8 backdrop-blur-lg bg-white/70 dark:bg-slate-900/70 dark:backdrop-blur-md text-green-600 dark:text-green-300 px-8 py-3 rounded-xl font-semibold hover:bg-white/85 dark:hover:bg-slate-900/90 transition-all hover:scale-105 shadow-lg dark:shadow-lg border border-white/40 dark:border-blue-400/40">
               {t('home.getStarted')}
             </button>
           </Link>
@@ -289,7 +287,7 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer className="text-center py-8 backdrop-blur-sm bg-white/70 dark:bg-slate-900/50 dark:backdrop-blur-md text-gray-600 dark:text-gray-300 text-sm transition-colors duration-300 border-t border-white/20 dark:border-blue-400/20">
+      <footer className="text-center py-8 backdrop-blur-lg bg-white/50 dark:bg-slate-900/50 dark:backdrop-blur-md text-gray-600 dark:text-gray-300 text-sm transition-colors duration-300 border-t border-white/20 dark:border-blue-400/20">
         © {new Date().getFullYear()} QandilAI. {t('home.empoweringStudents')}
       </footer>
 

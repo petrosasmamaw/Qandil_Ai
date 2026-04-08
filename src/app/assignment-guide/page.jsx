@@ -87,7 +87,7 @@ export default function AssignmentGuidePage() {
           backgroundColor: isDarkMode ? '#0a0a0a' : '#ffffff',
           background: isDarkMode 
             ? 'linear-gradient(135deg, rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9))'
-            : 'linear-gradient(135deg, rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9))',
+            : 'linear-gradient(135deg, rgba(248, 250, 249, 0.4), rgba(240, 244, 242, 0.4), rgba(248, 250, 249, 0.4))',
         }}
       >
         <div className="text-center">
@@ -111,7 +111,7 @@ export default function AssignmentGuidePage() {
 
   if (!session || !profile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4">
+      <div className="min-h-screen bg-gradient-to-br from-white/50 via-gray-50/50 to-gray-100/50 dark:from-gray-900 dark:to-gray-800 py-12 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
             <p className="text-yellow-800 dark:text-yellow-300">{t('assignmentGuide.profileNotCreated')}</p>
@@ -238,11 +238,14 @@ export default function AssignmentGuidePage() {
 
   return (
     <main 
-      className="min-h-screen p-6 text-gray-800 dark:text-gray-100"
+      className="light-image-bg min-h-screen p-6 text-gray-800 dark:text-gray-100"
       style={{
+        '--light-bg-image': "url('https://i.pinimg.com/736x/de/0a/0e/de0a0eb1dd6af97630c3a6b90d162701.jpg')",
         background: `
-          linear-gradient(135deg, ${document.documentElement.classList.contains('dark') ? 'rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9)' : 'rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9)'}),
-          url('https://i.pinimg.com/736x/de/0a/0e/de0a0eb1dd6af97630c3a6b90d162701.jpg') center/cover fixed
+          ${document.documentElement.classList.contains('dark') ? `
+            linear-gradient(135deg, rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9)),
+            url('https://i.pinimg.com/736x/de/0a/0e/de0a0eb1dd6af97630c3a6b90d162701.jpg') center/cover fixed
+          ` : 'none'}
         `,
         backgroundColor: document.documentElement.classList.contains('dark') ? '#0a0a0a' : '#ffffff'
       }}
@@ -306,7 +309,7 @@ export default function AssignmentGuidePage() {
                 className={`mb-12 p-12 border-2 border-dashed rounded-lg transition-all cursor-pointer ${
                   dragActive
                     ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'
+                    : 'border-white/70 dark:border-gray-600 bg-white/55 dark:bg-gray-800 backdrop-blur-lg'
                 }`}
               >
                 <div className="text-center">
@@ -337,7 +340,7 @@ export default function AssignmentGuidePage() {
 
             {/* Text Input Area */}
             {inputMode === 'text' && (
-              <form onSubmit={handleTextSubmit} className="mb-12 bg-white/90 dark:bg-slate-900/60 dark:backdrop-blur-md rounded-lg p-6 border border-gray-200 dark:border-blue-400/30 shadow-md dark:shadow-lg">
+              <form onSubmit={handleTextSubmit} className="mb-12 bg-white/50 dark:bg-slate-900/60 dark:backdrop-blur-md rounded-lg p-6 border border-gray-200/50 dark:border-blue-400/30 backdrop-blur-lg shadow-md dark:shadow-lg">
                 <div className="mb-4">
                   <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     {t('assignmentGuide.titleForAssignment')}
@@ -376,23 +379,23 @@ export default function AssignmentGuidePage() {
 
             {/* Student Profile Info */}
             <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+              <div className="bg-white/55 dark:bg-gray-800 rounded-lg p-4 border border-white/70 dark:border-gray-700 backdrop-blur-lg">
                 <p className="text-sm text-gray-600 dark:text-gray-400">{t('profile.level')}</p>
                 <p className="text-lg font-semibold text-gray-900 dark:text-white capitalize">{profile.level}</p>
               </div>
-              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+              <div className="bg-white/55 dark:bg-gray-800 rounded-lg p-4 border border-white/70 dark:border-gray-700 backdrop-blur-lg">
                 <p className="text-sm text-gray-600 dark:text-gray-400">{t('profile.studySystem')}</p>
                 <p className="text-lg font-semibold text-gray-900 dark:text-white capitalize">
                   {profile.studySystem.replace(/_/g, ' ')}
                 </p>
               </div>
-              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+              <div className="bg-white/55 dark:bg-gray-800 rounded-lg p-4 border border-white/70 dark:border-gray-700 backdrop-blur-lg">
                 <p className="text-sm text-gray-600 dark:text-gray-400">{t('profile.goal')}</p>
                 <p className="text-lg font-semibold text-gray-900 dark:text-white capitalize">
                   {profile.goal.replace(/_/g, ' ')}
                 </p>
               </div>
-              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+              <div className="bg-white/55 dark:bg-gray-800 rounded-lg p-4 border border-white/70 dark:border-gray-700 backdrop-blur-lg">
                 <p className="text-sm text-gray-600 dark:text-gray-400">Total Guidances</p>
                 <p className="text-lg font-semibold text-gray-900 dark:text-white">{guidances.length}</p>
               </div>
@@ -413,7 +416,7 @@ export default function AssignmentGuidePage() {
                   ))}
                 </>
               ) : (
-                <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div className="text-center py-12 bg-white/55 dark:bg-gray-800 rounded-lg border border-white/70 dark:border-gray-700 backdrop-blur-lg">
                   <div className="text-6xl mb-4 text-blue-400"><FiBook size={60} /></div>
                   <p className="text-gray-600 dark:text-gray-400 mb-4">{t('assignmentGuide.guidanceNotFound')}</p>
                   <p className="text-sm text-gray-500 dark:text-gray-500">{t('assignmentGuide.guidanceNotFoundDesc')}</p>
@@ -423,7 +426,7 @@ export default function AssignmentGuidePage() {
 
             {/* Info Sections */}
             <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+              <div className="bg-blue-50/65 dark:bg-blue-900/20 border border-blue-200/70 dark:border-blue-800 rounded-lg p-6 backdrop-blur-lg">
                 <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2"><FiZap size={18} /> {t('assignmentGuide.helpTitle')}</h3>
                 <ol className="text-blue-800 dark:text-blue-400 space-y-2 text-sm">
                   <li>1. Upload your assignment file OR paste assignment text</li>
@@ -433,7 +436,7 @@ export default function AssignmentGuidePage() {
                 </ol>
               </div>
 
-              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+              <div className="bg-blue-50/65 dark:bg-blue-900/20 border border-blue-200/70 dark:border-blue-800 rounded-lg p-6 backdrop-blur-lg">
                 <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2"><FiFileText size={18} /> {t('assignmentGuide.whatYouGet')}</h3>
                 <ul className="text-blue-800 dark:text-blue-400 space-y-2 text-sm">
                   <li className="flex items-center gap-2"><FiCheck size={16} /> Clear understanding of assignment requirements</li>

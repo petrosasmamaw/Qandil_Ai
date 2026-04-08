@@ -102,14 +102,14 @@ export const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50">
       {/* Glassmorphic navbar background */}
-      <div className="absolute inset-0 bg-gray-400/40 dark:bg-gray-800/40 backdrop-blur-md border-b border-white/30 dark:border-gray-700/30 rounded-bl-2xl rounded-br-2xl"></div>
+      <div className="absolute inset-0 bg-white/60 dark:bg-gray-800/40 backdrop-blur-lg border-b border-white/50 dark:border-gray-700/30 rounded-bl-2xl rounded-br-2xl"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo with Animation */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center gap-3 group cursor-pointer focus:outline-none">
-              <div className="logo-animate p-1.5 bg-white/70 dark:bg-gray-800/70 rounded-full border border-gray-300/50 dark:border-gray-600/50 shadow-md">
+              <div className="logo-animate p-1.5 bg-white/85 dark:bg-gray-800/70 rounded-full border border-gray-200/70 dark:border-gray-600/50 shadow-md">
                 <Image
                   src="/qandil-logo.png"
                   alt="Qandil AI Logo"
@@ -127,15 +127,15 @@ export const Navbar = () => {
 
           {/* Center Navigation - Glassmorphic Pills */}
           {!loading && session?.user && (
-            <div className="hidden md:flex items-center gap-1.5 bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg rounded-full px-1.5 py-1.5 border border-white/30 dark:border-gray-700/30 shadow-lg">
+            <div className="hidden md:flex items-center gap-1.5 bg-white/65 dark:bg-gray-800/50 backdrop-blur-lg rounded-full px-1.5 py-1.5 border border-white/50 dark:border-gray-700/30 shadow-lg">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 ${
                     isActive(item.href)
-                      ? 'bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white shadow-lg scale-105'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/50 dark:hover:bg-gray-600/50'
+                      ? 'bg-white/90 dark:bg-gray-700/80 text-gray-900 dark:text-white shadow-lg scale-105'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/70 dark:hover:bg-gray-600/50'
                   }`}
                 >
                   {item.icon}
@@ -151,7 +151,7 @@ export const Navbar = () => {
             {mounted && session?.user && (
               <button
                 onClick={() => dispatch(toggleLanguage())}
-                className="px-4 py-1.5 rounded-full text-sm font-medium bg-white/50 dark:bg-gray-800/50 border border-blue-300/50 dark:border-blue-600/50 text-blue-900 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
+                className="px-4 py-1.5 rounded-full text-sm font-medium bg-white/75 dark:bg-gray-800/50 border border-blue-300/50 dark:border-blue-600/50 text-blue-900 dark:text-blue-100 hover:bg-blue-50/80 dark:hover:bg-blue-950/20 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
                 title="Toggle language"
               >
                 {language === 'eng' ? '🇺🇸 ENG' : '🇪🇹 AMH'}
@@ -162,7 +162,7 @@ export const Navbar = () => {
             {mounted && (
               <button
                 onClick={() => dispatch(toggleTheme())}
-                className="p-2.5 rounded-full text-sm font-medium bg-white/50 dark:bg-gray-800/50 border border-gray-300/50 dark:border-gray-600/50 text-gray-900 dark:text-gray-100 hover:bg-white/70 dark:hover:bg-gray-700/70 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
+                className="p-2.5 rounded-full text-sm font-medium bg-white/75 dark:bg-gray-800/50 border border-gray-300/50 dark:border-gray-600/50 text-gray-900 dark:text-gray-100 hover:bg-white dark:hover:bg-gray-700/70 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
                 title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
               >
                 {theme === 'light' ? (
@@ -184,7 +184,7 @@ export const Navbar = () => {
                   await supabase.auth.signOut();
                   window.location.href = '/auth/login';
                 }}
-                className="px-4 py-1.5 rounded-full text-sm font-medium text-red-600 dark:text-red-400 bg-white/50 dark:bg-gray-800/50 border-2 border-red-300 dark:border-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 hover:border-red-400 dark:hover:border-red-500 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+                className="px-4 py-1.5 rounded-full text-sm font-medium text-red-600 dark:text-red-400 bg-white/75 dark:bg-gray-800/50 border-2 border-red-300 dark:border-red-600 hover:bg-red-50/85 dark:hover:bg-red-950/20 hover:border-red-400 dark:hover:border-red-500 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
               >
                 {t('navbar.signOut')}
               </button>
@@ -200,7 +200,7 @@ export const Navbar = () => {
               <div className="flex items-center gap-2">
                 <Link
                   href="/auth/login"
-                  className="px-5 py-1.5 rounded-full text-sm font-medium text-gray-900 dark:text-gray-100 bg-white/60 dark:bg-gray-700/60 hover:bg-white dark:hover:bg-gray-600 border border-gray-300/50 dark:border-gray-500/50 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                  className="px-5 py-1.5 rounded-full text-sm font-medium text-gray-900 dark:text-gray-100 bg-white/80 dark:bg-gray-700/60 hover:bg-white dark:hover:bg-gray-600 border border-gray-300/50 dark:border-gray-500/50 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
                 >
                   {t('navbar.signIn')}
                 </Link>

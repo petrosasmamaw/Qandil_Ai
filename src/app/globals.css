@@ -145,3 +145,70 @@ button, a {
     background: radial-gradient(at top, rgba(31, 41, 55, 0.4), rgba(17, 24, 39, 0.2));
   }
 }
+
+/* Premium light theme system without affecting dark mode */
+html:not(.dark) body {
+  background:
+    radial-gradient(circle at 10% -10%, rgba(16, 185, 129, 0.18), transparent 40%),
+    radial-gradient(circle at 90% 0%, rgba(59, 130, 246, 0.14), transparent 38%),
+    linear-gradient(180deg, #f8fbff 0%, #eef4fb 45%, #f6faf8 100%);
+  color: #111827;
+}
+
+html:not(.dark) .backdrop-blur-sm,
+html:not(.dark) .backdrop-blur-md,
+html:not(.dark) .backdrop-blur-lg,
+html:not(.dark) .backdrop-blur-xl {
+  backdrop-filter: none !important;
+}
+
+html:not(.dark) main [class*="bg-white"],
+html:not(.dark) nav [class*="bg-white"] {
+  background-color: rgba(255, 255, 255, 0.38) !important;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+}
+
+html:not(.dark) main [class*="bg-white/"] {
+  border-color: rgba(255, 255, 255, 0.72);
+}
+
+html:not(.dark) main [class*="bg-gray-50"],
+html:not(.dark) main [class*="bg-blue-50"],
+html:not(.dark) main [class*="bg-green-50"],
+html:not(.dark) main [class*="bg-yellow-50"],
+html:not(.dark) main [class*="bg-red-50"] {
+  background-color: rgba(255, 255, 255, 0.36) !important;
+}
+
+/* Blur the background image itself (light mode), not the content boxes */
+.light-image-bg {
+  position: relative;
+  isolation: isolate;
+}
+
+html:not(.dark) .light-image-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image: var(--light-bg-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  filter: blur(4px);
+  transform: scale(1.02);
+}
+
+html:not(.dark) .light-image-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.26), rgba(240, 248, 255, 0.22), rgba(255, 255, 255, 0.26));
+}
+
+html.dark .light-image-bg::before,
+html.dark .light-image-bg::after {
+  display: none;
+}

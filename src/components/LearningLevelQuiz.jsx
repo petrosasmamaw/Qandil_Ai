@@ -79,7 +79,7 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
   if (loading) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-8 max-w-2xl w-full shadow-2xl">
+        <div className="bg-white/80 dark:bg-gray-800 rounded-lg p-8 max-w-2xl w-full shadow-2xl backdrop-blur-xl border border-white/70 dark:border-gray-700">
           <div className="flex flex-col items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-gray-100 mb-4"></div>
             <p className="text-gray-600 dark:text-gray-400 text-center">
@@ -96,7 +96,7 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full shadow-2xl flex flex-col max-h-[90vh]">
+      <div className="bg-white/80 dark:bg-gray-800 rounded-lg max-w-2xl w-full shadow-2xl flex flex-col max-h-[90vh] backdrop-blur-xl border border-white/70 dark:border-gray-700">
         {/* Header */}
         <div className="border-b border-gray-200 dark:border-gray-700 p-6 flex justify-between items-center">
           <div>
@@ -140,9 +140,9 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
                 </h3>
 
                 {currentQuestion.hint && (
-                  <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded flex items-start gap-2\">
+                  <div className="mb-4 p-3 bg-blue-50/75 dark:bg-blue-900/20 border border-blue-200/70 dark:border-blue-800 rounded flex items-start gap-2 backdrop-blur-md">
                     <FiZap size={16} className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-blue-800 dark:text-blue-300\">
+                    <p className="text-sm text-blue-800 dark:text-blue-300">
                       Hint: {currentQuestion.hint}
                     </p>
                   </div>

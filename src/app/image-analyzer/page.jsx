@@ -136,7 +136,7 @@ export default function ImageAnalyzerPage() {
           backgroundColor: isDarkMode ? '#0a0a0a' : '#ffffff',
           background: isDarkMode 
             ? 'linear-gradient(135deg, rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9))'
-            : 'linear-gradient(135deg, rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9))',
+            : 'linear-gradient(135deg, rgba(248, 250, 249, 0.32), rgba(240, 244, 242, 0.32), rgba(248, 250, 249, 0.32))',
         }}
       >
         <div className="text-center">
@@ -168,11 +168,14 @@ export default function ImageAnalyzerPage() {
 
   return (
     <main 
-      className="min-h-screen p-6 text-gray-800 dark:text-gray-100"
+      className="light-image-bg min-h-screen p-6 text-gray-800 dark:text-gray-100"
       style={{
+        '--light-bg-image': "url('https://i.pinimg.com/736x/de/0a/0e/de0a0eb1dd6af97630c3a6b90d162701.jpg')",
         background: `
-          linear-gradient(135deg, ${document.documentElement.classList.contains('dark') ? 'rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9)' : 'rgba(248, 250, 249, 0.9), rgba(240, 244, 242, 0.9), rgba(248, 250, 249, 0.9)'}),
-          url('https://i.pinimg.com/736x/de/0a/0e/de0a0eb1dd6af97630c3a6b90d162701.jpg') center/cover fixed
+          ${document.documentElement.classList.contains('dark') ? `
+            linear-gradient(135deg, rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9)),
+            url('https://i.pinimg.com/736x/de/0a/0e/de0a0eb1dd6af97630c3a6b90d162701.jpg') center/cover fixed
+          ` : 'none'}
         `,
         backgroundColor: document.documentElement.classList.contains('dark') ? '#0a0a0a' : '#ffffff'
       }}
@@ -197,21 +200,21 @@ export default function ImageAnalyzerPage() {
 
             {/* Profile Info Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-8">
-              <div className="bg-gradient-to-br from-blue-900 to-blue-800 p-4 rounded-lg border border-blue-700">
-                <p className="text-blue-300 text-sm font-semibold">{t('imageAnalyzer.studentNameCard')}</p>
-                <p className="text-white font-bold text-lg">{profile?.name}</p>
+              <div className="bg-white/60 dark:bg-gradient-to-br dark:from-blue-900 dark:to-blue-800 p-4 rounded-lg border border-white/70 dark:border-blue-700 backdrop-blur-lg">
+                <p className="text-blue-800 dark:text-blue-300 text-sm font-semibold">{t('imageAnalyzer.studentNameCard')}</p>
+                <p className="text-gray-900 dark:text-white font-bold text-lg">{profile?.name}</p>
               </div>
-              <div className="bg-gradient-to-br from-cyan-900 to-cyan-800 p-4 rounded-lg border border-cyan-700">
-                <p className="text-cyan-300 text-sm font-semibold">{t('imageAnalyzer.learningLevelCard')}</p>
-                <p className="text-white font-bold text-lg capitalize">{profile?.level}</p>
+              <div className="bg-white/60 dark:bg-gradient-to-br dark:from-cyan-900 dark:to-cyan-800 p-4 rounded-lg border border-white/70 dark:border-cyan-700 backdrop-blur-lg">
+                <p className="text-cyan-800 dark:text-cyan-300 text-sm font-semibold">{t('imageAnalyzer.learningLevelCard')}</p>
+                <p className="text-gray-900 dark:text-white font-bold text-lg capitalize">{profile?.level}</p>
               </div>
-              <div className="bg-gradient-to-br from-purple-900 to-purple-800 p-4 rounded-lg border border-purple-700">
-                <p className="text-purple-300 text-sm font-semibold">{t('imageAnalyzer.studySystemCard')}</p>
-                <p className="text-white font-bold text-lg">{profile?.studySystem}</p>
+              <div className="bg-white/60 dark:bg-gradient-to-br dark:from-purple-900 dark:to-purple-800 p-4 rounded-lg border border-white/70 dark:border-purple-700 backdrop-blur-lg">
+                <p className="text-purple-800 dark:text-purple-300 text-sm font-semibold">{t('imageAnalyzer.studySystemCard')}</p>
+                <p className="text-gray-900 dark:text-white font-bold text-lg">{profile?.studySystem}</p>
               </div>
-              <div className="bg-gradient-to-br from-orange-900 to-orange-800 p-4 rounded-lg border border-orange-700">
-                <p className="text-orange-300 text-sm font-semibold">{t('imageAnalyzer.learningGoalCard')}</p>
-                <p className="text-white font-bold text-lg">{profile?.goal}</p>
+              <div className="bg-white/60 dark:bg-gradient-to-br dark:from-orange-900 dark:to-orange-800 p-4 rounded-lg border border-white/70 dark:border-orange-700 backdrop-blur-lg">
+                <p className="text-orange-800 dark:text-orange-300 text-sm font-semibold">{t('imageAnalyzer.learningGoalCard')}</p>
+                <p className="text-gray-900 dark:text-white font-bold text-lg">{profile?.goal}</p>
               </div>
             </div>
 
@@ -225,8 +228,8 @@ export default function ImageAnalyzerPage() {
                   onDrop={handleDrop}
                   className={`block border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-all ${
                     dragActive
-                      ? 'border-blue-400 bg-blue-500 bg-opacity-10'
-                      : 'border-gray-500 hover:border-gray-400'
+                      ? 'border-blue-400 bg-blue-100/60 dark:bg-blue-500/10 backdrop-blur-lg'
+                      : 'border-white/70 dark:border-gray-500 hover:border-blue-300 bg-white/50 dark:bg-transparent backdrop-blur-lg'
                   }`}
                 >
                   <input
@@ -239,10 +242,10 @@ export default function ImageAnalyzerPage() {
                   <div className="mb-4">
                     <span className="text-5xl">🖼️</span>
                   </div>
-                  <p className="text-xl font-semibold mb-2">
+                  <p className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
                     {analyzing ? t('imageAnalyzer.analyzingText') : t('imageAnalyzer.dropImagePrompt')}
                   </p>
-                  <p className="text-gray-400 text-sm">{t('imageAnalyzer.supportedImageFormats')}</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">{t('imageAnalyzer.supportedImageFormats')}</p>
                   {analyzing && (
                     <div className="mt-4 flex justify-center">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
@@ -251,8 +254,8 @@ export default function ImageAnalyzerPage() {
                 </label>
 
                 {error && (
-                  <div className="mt-4 p-4 bg-red-900 bg-opacity-50 border border-red-700 rounded-lg">
-                    <p className="text-red-200">{error}</p>
+                  <div className="mt-4 p-4 bg-red-50/75 dark:bg-red-900/50 border border-red-300 dark:border-red-700 rounded-lg backdrop-blur-lg">
+                    <p className="text-red-700 dark:text-red-200">{error}</p>
                   </div>
                 )}
               </div>
