@@ -106,7 +106,7 @@ const ChatHistory = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md max-h-96 overflow-hidden flex flex-col">
+      <div className="bg-white/25 dark:bg-gray-800 rounded-lg shadow-md w-full max-w-md max-h-96 overflow-hidden flex flex-col border border-white/40 dark:border-gray-700 backdrop-blur-md">
         {/* Header */}
         <div className="bg-blue-600 text-white p-4 flex justify-between items-center">
           <h2 className="text-lg font-semibold">Chat History</h2>

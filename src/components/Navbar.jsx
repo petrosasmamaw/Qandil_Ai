@@ -101,8 +101,8 @@ export const Navbar = () => {
 
   return (
     <nav className="sticky top-0 z-50">
-      {/* Glassmorphic navbar background */}
-      <div className="absolute inset-0 bg-white/60 dark:bg-gray-800/40 backdrop-blur-lg border-b border-white/50 dark:border-gray-700/30 rounded-bl-2xl rounded-br-2xl"></div>
+      {/* Glassmorphic navbar background - amazing light theme */}
+      <div className="absolute inset-0 bg-white/20 dark:bg-gray-800/40 backdrop-blur-md border-b border-white/30 dark:border-gray-700/30 rounded-bl-xl rounded-br-xl shadow-sm"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -127,15 +127,15 @@ export const Navbar = () => {
 
           {/* Center Navigation - Glassmorphic Pills */}
           {!loading && session?.user && (
-            <div className="hidden md:flex items-center gap-1.5 bg-white/65 dark:bg-gray-800/50 backdrop-blur-lg rounded-full px-1.5 py-1.5 border border-white/50 dark:border-gray-700/30 shadow-lg">
+            <div className="hidden md:flex items-center gap-1.5 bg-white/15 dark:bg-gray-800/50 backdrop-blur-md rounded-full px-1.5 py-1.5 border border-white/30 dark:border-gray-700/30 shadow-sm">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 ${
                     isActive(item.href)
-                      ? 'bg-white/90 dark:bg-gray-700/80 text-gray-900 dark:text-white shadow-lg scale-105'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/70 dark:hover:bg-gray-600/50'
+                      ? 'bg-white/40 dark:bg-gray-700/80 text-gray-900 dark:text-white shadow-md scale-105'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/25 dark:hover:bg-gray-600/50'
                   }`}
                 >
                   {item.icon}

@@ -79,7 +79,7 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
   if (loading) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white/80 dark:bg-gray-800 rounded-lg p-8 max-w-2xl w-full shadow-2xl backdrop-blur-xl border border-white/70 dark:border-gray-700">
+        <div className="bg-white/25 dark:bg-gray-800 rounded-lg p-8 max-w-2xl w-full shadow-xl backdrop-blur-md border border-white/40 dark:border-gray-700">
           <div className="flex flex-col items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-gray-100 mb-4"></div>
             <p className="text-gray-600 dark:text-gray-400 text-center">
@@ -96,7 +96,7 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white/80 dark:bg-gray-800 rounded-lg max-w-2xl w-full shadow-2xl flex flex-col max-h-[90vh] backdrop-blur-xl border border-white/70 dark:border-gray-700">
+      <div className="bg-white/25 dark:bg-gray-800 rounded-lg max-w-2xl w-full shadow-xl flex flex-col max-h-[90vh] backdrop-blur-md border border-white/40 dark:border-gray-700">
         {/* Header */}
         <div className="border-b border-gray-200 dark:border-gray-700 p-6 flex justify-between items-center">
           <div>

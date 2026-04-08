@@ -25,7 +25,7 @@ export default function ImageAnalysisDisplay({ analysis, onDelete }) {
   return (
     <div className="space-y-6">
       {/* Analysis Header */}
-      <div className="bg-white/60 dark:bg-gradient-to-r dark:from-slate-800 dark:to-slate-700 p-6 rounded-lg border border-white/70 dark:border-slate-600 backdrop-blur-lg">
+      <div className="bg-white/25 dark:bg-gradient-to-r dark:from-slate-800 dark:to-slate-700 p-6 rounded-lg border border-white/40 dark:border-slate-600 backdrop-blur-md">
         <div className="flex justify-between items-start">
           <div>
             <h3 className="text-2xl font-bold mb-1 flex items-center gap-2 text-gray-900 dark:text-white"><FiCamera size={24} /> Image Analysis</h3>
@@ -39,14 +39,14 @@ export default function ImageAnalysisDisplay({ analysis, onDelete }) {
       </div>
 
       {/* Analysis Content */}
-      <div className="bg-white/60 dark:bg-gradient-to-br dark:from-slate-800 dark:to-slate-900 p-8 rounded-lg border border-white/70 dark:border-slate-700 max-h-96 overflow-y-auto backdrop-blur-lg">
+      <div className="bg-white/25 dark:bg-gradient-to-br dark:from-slate-800 dark:to-slate-900 p-8 rounded-lg border border-white/40 dark:border-slate-700 max-h-96 overflow-y-auto backdrop-blur-md">
         <p className="text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-wrap">
           {analysis.analysis}
         </p>
       </div>
 
       {/* Disclaimer */}
-      <div className="bg-blue-50/70 dark:bg-blue-900/30 border border-blue-200/70 dark:border-blue-700 p-4 rounded-lg flex items-start gap-3 backdrop-blur-md">
+      <div className="bg-blue-50/30 dark:bg-blue-900/30 border border-blue-200/40 dark:border-blue-700 p-4 rounded-lg flex items-start gap-3 backdrop-blur-sm">
         <FiZap size={18} className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
         <p className="text-blue-800 dark:text-blue-200 text-sm">
           <span className="font-semibold">Tip:</span> This analysis is your AI assistant's educational interpretation of the image. Use it as a starting point for your learning journey.
