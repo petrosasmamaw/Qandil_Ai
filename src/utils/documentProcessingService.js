@@ -2,9 +2,9 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
 
-export const processDocument = async (file, studentProfile) => {
+export const processDocument = async (file, studentProfile, appLanguage = 'eng') => {
   try {
-    const systemPrompt = createDocumentPrompt(studentProfile);
+    const systemPrompt = createDocumentPrompt(studentProfile, appLanguage);
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-3.1-flash-lite-preview',
       systemInstruction: systemPrompt
@@ -39,9 +39,9 @@ export const processDocument = async (file, studentProfile) => {
   }
 };
 
-export const processTextContent = async (text, title, studentProfile) => {
+export const processTextContent = async (text, title, studentProfile, appLanguage = 'eng') => {
   try {
-    const systemPrompt = createDocumentPrompt(studentProfile);
+    const systemPrompt = createDocumentPrompt(studentProfile, appLanguage);
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-3.1-flash-lite-preview',
       systemInstruction: systemPrompt
@@ -90,12 +90,15 @@ const getMimeType = (fileType) => {
   return fileType;
 };
 
-const createDocumentPrompt = (studentProfile) => {
+const createDocumentPrompt = (studentProfile, appLanguage = 'eng') => {
+  const preferredLang = appLanguage === 'amh' ? 'Amharic (Ethiopian)' : studentProfile.preferredLanguage || 'English';
+
   return `You are a world-class adaptive tutor specialized in the ${studentProfile.studySystem} system. Your student is ${studentProfile.name}, a Grade ${studentProfile.grade} learner at the ${studentProfile.level} level.
 
 CONTEXT:
 Student Goal: ${studentProfile.goal}
 Learning Level: ${studentProfile.level}
+Primary Language: ${preferredLang}
 
 TASK:
 Analyze the attached document and transform it into study notes. You must adapt your vocabulary, sentence complexity, and instructional scaffolding to match the "${studentProfile.level}" profile. 
@@ -114,6 +117,7 @@ CONSTRAINTS:
 - NO BULLET POINTS or special characters.
 - Use only plain text and natural paragraphs.
 - Focus on flow and narrative structure.
+- Language Requirement: You MUST write the study notes primarily in ${preferredLang}. This is a strict requirement.
 
 Include:
 1. A summary of main topics.

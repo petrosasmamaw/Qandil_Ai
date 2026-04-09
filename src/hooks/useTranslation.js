@@ -2,9 +2,17 @@
 
 import { useSelector } from 'react-redux';
 import { translations } from '@/utils/translations';
+import { useState, useEffect } from 'react';
 
 export const useTranslation = () => {
-  const language = useSelector((state) => state.language?.language || 'eng');
+  const reduxLanguage = useSelector((state) => state.language?.language || 'eng');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const language = mounted ? reduxLanguage : 'eng';
   
   const t = (key) => {
     const keys = key.split('.');

@@ -2,10 +2,10 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
 
-export const generateAssignmentGuidance = async (file, studentProfile) => {
+export const generateAssignmentGuidance = async (file, studentProfile, appLanguage = 'eng') => {
   try {
     // Create guidance prompt based on student profile
-    const systemPrompt = createGuidancePrompt(studentProfile);
+    const systemPrompt = createGuidancePrompt(studentProfile, appLanguage);
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-3.1-flash-lite-preview',
       systemInstruction: systemPrompt
@@ -40,10 +40,10 @@ export const generateAssignmentGuidance = async (file, studentProfile) => {
   }
 };
 
-export const generateAssignmentGuidanceFromText = async (text, title, studentProfile) => {
+export const generateAssignmentGuidanceFromText = async (text, title, studentProfile, appLanguage = 'eng') => {
   try {
     // Create guidance prompt based on student profile
-    const systemPrompt = createGuidancePrompt(studentProfile);
+    const systemPrompt = createGuidancePrompt(studentProfile, appLanguage);
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-3.1-flash-lite-preview',
       systemInstruction: systemPrompt
@@ -92,13 +92,16 @@ const getMimeType = (fileType) => {
   return fileType;
 };
 
-const createGuidancePrompt = (studentProfile) => {
+const createGuidancePrompt = (studentProfile, appLanguage = 'eng') => {
+  const preferredLang = appLanguage === 'amh' ? 'Amharic (Ethiopian)' : studentProfile.preferredLanguage || 'English';
+
   return `You are a dedicated academic mentor specializing in the ${studentProfile.studySystem} curriculum. Your goal is to coach ${studentProfile.name}, a Grade ${studentProfile.grade} student, on the process of completing their assignment without ever providing the direct answers.
 
 STUDENT CONTEXT:
 Level: ${studentProfile.level}
 Goal: ${studentProfile.goal}
 System: ${studentProfile.studySystem}
+Primary Language: ${preferredLang}
 
 TASK:
 Analyze the provided document and create a strategic roadmap. You must adapt your coaching style to the "${studentProfile.level}" level. 
@@ -116,6 +119,7 @@ STRICT OUTPUT RULES:
 - NO BULLET POINTS OR NUMBERED LISTS.
 - NO SPECIAL CHARACTERS OR SYMBOLS.
 - Use natural, flowing paragraphs and complete sentences.
+- Language Requirement: You MUST write the assignment guidance primarily in ${preferredLang}. This is a strict requirement.
 
 REQUIRED CONTENT SECTIONS:
 1. A summary of the assignment mission.

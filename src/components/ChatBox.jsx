@@ -22,7 +22,7 @@ export default function ChatBox({
   const chatContainerRef = useRef(null);
   const dispatch = useDispatch();
   
-  const language = useSelector((state) => state.theme?.language || 'eng');
+  const language = useSelector((state) => state.language?.language || 'eng');
   
   const t = (key) => {
     return key.split('.').reduce((obj, k) => obj && obj[k], translations[language]) || key;
@@ -38,7 +38,7 @@ export default function ChatBox({
 
   useEffect(() => {
     if (studentProfile) {
-      const greeting = getInitialGreeting(studentProfile);
+      const greeting = getInitialGreeting(studentProfile, language);
       setMessages([
         {
           id: 1,
@@ -48,7 +48,7 @@ export default function ChatBox({
         },
       ]);
     }
-  }, [studentProfile]);
+  }, [studentProfile, language]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -99,7 +99,8 @@ export default function ChatBox({
       const response = await sendChatMessage(
         studentProfile,
         conversationHistory,
-        inputValue
+        inputValue,
+        language
       );
 
       const aiMessage = {

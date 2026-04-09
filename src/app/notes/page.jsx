@@ -131,7 +131,7 @@ export default function NotesPage() {
     setProcessing(true);
     
     try {
-      const result = await processDocument(file, Object.fromEntries(Object.entries(profile).filter(([k]) => ['name', 'grade', 'level', 'studySystem', 'goal', 'preferredLanguage'].includes(k))));
+      const result = await processDocument(file, Object.fromEntries(Object.entries(profile).filter(([k]) => ['name', 'grade', 'level', 'studySystem', 'goal', 'preferredLanguage'].includes(k))), language);
       
       if (result.success) {
         const newNote = {
@@ -168,7 +168,7 @@ export default function NotesPage() {
     setProcessing(true);
     
     try {
-      const result = await processTextContent(textInput, textTitle, Object.fromEntries(Object.entries(profile).filter(([k]) => ['name', 'grade', 'level', 'studySystem', 'goal', 'preferredLanguage'].includes(k))));
+      const result = await processTextContent(textInput, textTitle, Object.fromEntries(Object.entries(profile).filter(([k]) => ['name', 'grade', 'level', 'studySystem', 'goal', 'preferredLanguage'].includes(k))), language);
       
       if (result.success) {
         const newNote = {

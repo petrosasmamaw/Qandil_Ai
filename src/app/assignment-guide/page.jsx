@@ -131,7 +131,7 @@ export default function AssignmentGuidePage() {
     setProcessing(true);
     
     try {
-      const result = await generateAssignmentGuidance(file, Object.fromEntries(Object.entries(profile).filter(([k]) => ['name', 'grade', 'level', 'studySystem', 'goal', 'preferredLanguage'].includes(k))));
+      const result = await generateAssignmentGuidance(file, Object.fromEntries(Object.entries(profile).filter(([k]) => ['name', 'grade', 'level', 'studySystem', 'goal', 'preferredLanguage'].includes(k))), language);
       
       if (result.success) {
         const newGuidance = {
@@ -168,7 +168,7 @@ export default function AssignmentGuidePage() {
     setProcessing(true);
     
     try {
-      const result = await generateAssignmentGuidanceFromText(textInput, textTitle, Object.fromEntries(Object.entries(profile).filter(([k]) => ['name', 'grade', 'level', 'studySystem', 'goal', 'preferredLanguage'].includes(k))));
+      const result = await generateAssignmentGuidanceFromText(textInput, textTitle, Object.fromEntries(Object.entries(profile).filter(([k]) => ['name', 'grade', 'level', 'studySystem', 'goal', 'preferredLanguage'].includes(k))), language);
       
       if (result.success) {
         const newGuidance = {

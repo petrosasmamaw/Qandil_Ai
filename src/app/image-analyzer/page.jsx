@@ -92,7 +92,7 @@ export default function ImageAnalyzerPage() {
     setAnalyzing(true);
 
     try {
-      const result = await analyzeImage(file, profile);
+      const result = await analyzeImage(file, profile, language);
       setImageAnalysis(result);
     } catch (err) {
       setError(err.message || t('imageAnalyzer.failedAnalysis'));

@@ -2,17 +2,20 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
 
-export const createEducationalChatSession = (studentProfile) => {
+export const createEducationalChatSession = (studentProfile, appLanguage = 'eng') => {
   if (!studentProfile) {
-    return 'You are a professional and adaptive educational mentor here to help students with their academic questions. Please provide helpful, clear explanations.';
+    return `You are a professional and adaptive educational mentor here to help students with their academic questions. Please provide helpful, clear explanations. Respond in ${appLanguage === 'amh' ? 'Amharic (Ethiopian)' : 'English'}.`;
   }
+  
+  const preferredLang = appLanguage === 'amh' ? 'Amharic (Ethiopian)' : studentProfile.preferredLanguage || 'English';
+
   const systemPrompt = `You are a professional and adaptive educational mentor. Your identity is built on being a supportive guide for ${studentProfile.name}, a Grade ${studentProfile.grade} student currently focusing on a ${studentProfile.studySystem} approach to reach the goal of ${studentProfile.goal}.
 
 STUDENT CONTEXT:
 - Current Level: ${studentProfile.level}
 - Target Goal: ${studentProfile.goal}
 - Study Method: ${studentProfile.studySystem}
-- Primary Language: ${studentProfile.preferredLanguage}
+- Primary Language: ${preferredLang}
 
 TEACHING PHILOSOPHY:
 Your primary mission is to explain complex academic concepts using clear language and deeply contextualized local examples. IT IS MANDATORY that for EVERY single question or concept you explain, you MUST provide a relevant local analogy specifically from the Amhara Region of Ethiopia. This is an absolute rule: DO NOT answer any question without including an analogy from the Amhara region (for example: mentioning Bahir Dar, Lake Tana, the Blue Nile falls, Gondar castles, Lalibela, Simien Mountains, local farming like Teff, or specific cultural practices of the region).
@@ -34,7 +37,7 @@ STRICT FORMATTING AND CONTENT BOUNDARIES:
 - NO BULLET POINTS. Use full, natural sentences and clear paragraph breaks.
 - MANDATORY LOCAL ANALOGY: You must include at least one clear analogy relating to the Amhara Region (like Bahir Dar, Gondar, Lake Tana, Lalibela, etc.) in every single response where you teach or explain something.
 - Academic Focus: Only discuss education, career skills, and learning. Politely decline off-topic requests.
-- Language: Primarily respond in ${studentProfile.preferredLanguage} while maintaining the professional mentor persona.
+- Language Requirement: You MUST respond primarily in ${preferredLang}. This is a strict requirement for all your answers and explanations.
 
 Tone: Be encouraging, respectful, and culturally grounded. 
 
@@ -42,13 +45,13 @@ Start now by greeting the student warmly. Mention your excitement to help them r
   return systemPrompt;
 };
 
-export const sendChatMessage = async (studentProfile, conversationHistory, userMessage) => {
+export const sendChatMessage = async (studentProfile, conversationHistory, userMessage, appLanguage = 'eng') => {
   try {
     if (!studentProfile) {
       throw new Error('Student profile not loaded. Please complete your profile setup first.');
     }
 
-    const systemPrompt = createEducationalChatSession(studentProfile);
+    const systemPrompt = createEducationalChatSession(studentProfile, appLanguage);
 
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-3.1-flash-lite-preview',
@@ -82,14 +85,51 @@ export const sendChatMessage = async (studentProfile, conversationHistory, userM
   }
 };
 
-export const getInitialGreeting = (studentProfile) => {
+export const getInitialGreeting = (studentProfile, appLanguage = 'eng') => {
   if (!studentProfile) {
-    return `👋 Welcome to your personalized learning assistant!
+    return appLanguage === 'amh'
+      ? `👋 እንኳን ወደ ልዩ የትምህርት አጋዥዎ በደህና መጡ!
+
+በትምህርትዎ ልረዳዎ እዚህ መጥቻለሁ። እባክዎ የመማሪያ ልምድዎን ከፍላጎትዎ ጋር ማስተካከል እንድችል መገለጫዎን ሙሉ በሙሉ ያጠናቅቁ።
+
+ዛሬ በምን ርዕስ ላይ እርዳታ ይፈልጋሉ?`
+      : `👋 Welcome to your personalized learning assistant!
 
 I'm here to help you with your studies. Please complete your profile so I can tailor the learning experience to your needs.
 
 What subject or topic would you like help with today?`;
   }
+
+  if (appLanguage === 'amh') {
+    const studySystemAmh = {
+      'theoretical': 'ንድፈ-ሀሳባዊ',
+      'practical': 'ተግባራዊ',
+      'visual': 'ዕይታ-ተኮር'
+    }[studentProfile.studySystem] || studentProfile.studySystem;
+
+    const levelAmh = {
+      'foundation': 'መሰረታዊ (Foundation)',
+      'guided': 'የሚመራ (Guided)',
+      'independent': 'ራሱን የቻለ (Independent)',
+      'analytical': 'ትንታኔያዊ (Analytical)'
+    }[studentProfile.level?.toLowerCase()] || studentProfile.level;
+
+    const goalAmh = {
+      'pass_exam': 'ፈተና ማለፍ',
+      'deep_understanding': 'ጥልቅ ግንዛቤ ማግኘት'
+    }[studentProfile.goal] || studentProfile.goal?.replace(/_/g, ' ');
+
+    return `ሰላም ${studentProfile.name}! 👋 እንኳን ወደ ልዩ የትምህርት አጋዥዎ በደህና መጡ።
+
+በራስዎ የመማር ዘዴ መሰረት በትምህርትዎ ልረዳዎ ዝግጁ ነኝ። ስለ እርስዎ የተረዳሁት፡
+- የክፍል ደረጃ፡ ${studentProfile.grade}ኛ ክፍል
+- የመማር ዘዴዎ፡ ${studySystemAmh}
+- የአሁን የትምህርት ደረጃዎ፡ ${levelAmh}
+- ዋና ግብዎ፡ ${goalAmh}
+
+ዛሬ በየትኛው ትምህርት ወይም ርዕስ ላይ ልረዳዎ እችላለሁ? ማንኛውንም ጥያቄ ለመጠየቅ፣ ማብራሪያዎችን ለመፈለግ፣ ወይም ጥያቄዎችን አብረን ለመስራት ነፃ ይሁኑ!`;
+  }
+
   return `Hello ${studentProfile.name}! 👋 Welcome to your personalized learning assistant.
 
 I'm here to help you with your studies tailored to your learning style. I understand that you:

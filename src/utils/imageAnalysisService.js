@@ -2,10 +2,10 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
 
-export const analyzeImage = async (imageFile, studentProfile) => {
+export const analyzeImage = async (imageFile, studentProfile, appLanguage = 'eng') => {
   try {
     // Create analysis prompt based on student profile
-    const systemPrompt = createAnalysisPrompt(studentProfile);
+    const systemPrompt = createAnalysisPrompt(studentProfile, appLanguage);
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-3.1-flash-lite-preview',
       systemInstruction: systemPrompt
@@ -52,12 +52,15 @@ const readFileAsBase64 = (file) => {
   });
 };
 
-const createAnalysisPrompt = (studentProfile) => {
+const createAnalysisPrompt = (studentProfile, appLanguage = 'eng') => {
+  const preferredLang = appLanguage === 'amh' ? 'Amharic (Ethiopian)' : studentProfile.preferredLanguage || 'English';
+
   return `You are an expert visual educator and academic mentor. Your task is to analyze the provided image and transform it into a personalized learning experience for ${studentProfile.name}, who is a Grade ${studentProfile.grade} student at the ${studentProfile.level} level.
 
 STUDENT GOAL AND SYSTEM:
 Goal: ${studentProfile.goal}
 System: ${studentProfile.studySystem}
+Primary Language: ${preferredLang}
 
 CORE TASK:
 Provide a deep educational analysis of this image. Do not just describe what is there; explain why it matters to their studies. You must adapt your explanation style to the "${studentProfile.level}" level. 
@@ -75,6 +78,7 @@ OUTPUT CONSTRAINTS:
 - NO BULLET POINTS OR NUMBERED LISTS.
 - NO SPECIAL CHARACTERS.
 - Use natural, flowing paragraphs and full sentences.
+- Language Requirement: You MUST write the image analysis primarily in ${preferredLang}. This is a strict requirement.
 
 REQUIRED CONTENT:
 1. A narrative summary of what the image depicts.
