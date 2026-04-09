@@ -1,20 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiCheck, FiClipboard, FiDownload, FiCamera, FiStar, FiZap } from 'react-icons/fi';
 
 export default function ImageAnalysisDisplay({ analysis, onDelete }) {
   const [copied, setCopied] = useState(false);
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const checkDark = () => setIsDark(document.documentElement.classList.contains('dark'));
+    checkDark();
+    const observer = new MutationObserver(checkDark);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(analysis.analysis);
+    navigator.clipboard.writeText(analysis.analysis || analysis.content);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleDownload = () => {
     const element = document.createElement('a');
-    const file = new Blob([analysis.analysis], { type: 'text/plain' });
+    const file = new Blob([analysis.analysis || analysis.content], { type: 'text/plain' });
     element.href = URL.createObjectURL(file);
     element.download = `image-analysis-${Date.now()}.txt`;
     document.body.appendChild(element);
@@ -30,9 +39,9 @@ export default function ImageAnalysisDisplay({ analysis, onDelete }) {
           <div>
             <h3 className="text-2xl font-bold mb-1 flex items-center gap-2 text-gray-900 dark:text-white"><FiCamera size={24} /> Image Analysis</h3>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Analyzed on {analysis.analyzedAt.toLocaleString()}
+              Analyzed on {(analysis.analyzedAt ? new Date(analysis.analyzedAt) : new Date(analysis.date || new Date())).toLocaleString()}
             </p>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">File: {analysis.fileName}</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">File: {analysis.fileName || 'Image'}</p>
           </div>
           <div className="text-3xl text-yellow-500"><FiStar size={32} /></div>
         </div>
@@ -40,8 +49,8 @@ export default function ImageAnalysisDisplay({ analysis, onDelete }) {
 
       {/* Analysis Content */}
       <div className="bg-white/25 dark:bg-gradient-to-br dark:from-slate-800 dark:to-slate-900 p-8 rounded-lg border border-white/40 dark:border-slate-700 max-h-96 overflow-y-auto backdrop-blur-md">
-        <p className="text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-wrap">
-          {analysis.analysis}
+        <p className="leading-relaxed whitespace-pre-wrap" style={{ color: isDark ? '#ffffff' : '#000000' }}>
+          {analysis.analysis || analysis.content}
         </p>
       </div>
 

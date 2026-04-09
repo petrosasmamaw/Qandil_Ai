@@ -1,19 +1,28 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { FiClipboard, FiZap, FiCheck, FiDownload, FiTrash2 } from 'react-icons/fi';
 
 export default function AssignmentGuidanceDisplay({ guidance, onDelete, onDownload }) {
   const contentRef = useRef(null);
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const checkDark = () => setIsDark(document.documentElement.classList.contains('dark'));
+    checkDark();
+    const observer = new MutationObserver(checkDark);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="bg-white/25 dark:bg-gray-800 rounded-lg shadow-md overflow-hidden border border-white/40 dark:border-gray-700 backdrop-blur-md">
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-purple-700 dark:from-purple-700 dark:to-purple-800 text-white p-6 flex justify-between items-start">
         <div className="flex-1">
-          <h3 className="text-lg font-semibold mb-1 flex items-center gap-2"><FiClipboard size={18} /> {guidance.fileName}</h3>
+          <h3 className="text-lg font-semibold mb-1 flex items-center gap-2"><FiClipboard size={18} /> {guidance.fileName || guidance.title || 'Assignment Guidance'}</h3>
           <p className="text-purple-100 text-sm">
-            Generated on {guidance.processedAt.toLocaleDateString()} at {guidance.processedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            Generated on {(guidance.processedAt ? new Date(guidance.processedAt) : new Date(guidance.date || new Date())).toLocaleDateString()} at {(guidance.processedAt ? new Date(guidance.processedAt) : new Date(guidance.date || new Date())).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </p>
         </div>
         <div className="flex gap-2">
@@ -42,9 +51,10 @@ export default function AssignmentGuidanceDisplay({ guidance, onDelete, onDownlo
         </div>
         <div
           ref={contentRef}
-          className="prose prose-sm dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed"
+          className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap leading-relaxed"
+          style={{ color: isDark ? '#ffffff' : '#000000' }}
         >
-          {guidance.guidance}
+          {guidance.guidance || guidance.content}
         </div>
       </div>
 

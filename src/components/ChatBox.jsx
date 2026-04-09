@@ -17,6 +17,7 @@ export default function ChatBox({
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isDark, setIsDark] = useState(false);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const dispatch = useDispatch();
@@ -26,6 +27,14 @@ export default function ChatBox({
   const t = (key) => {
     return key.split('.').reduce((obj, k) => obj && obj[k], translations[language]) || key;
   };
+
+  useEffect(() => {
+    const checkDark = () => setIsDark(document.documentElement.classList.contains('dark'));
+    checkDark();
+    const observer = new MutationObserver(checkDark);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const greeting = getInitialGreeting(studentProfile);
@@ -153,15 +162,16 @@ export default function ChatBox({
               className={`max-w-[85%] lg:max-w-[70%] px-5 py-3 rounded-2xl shadow-sm transition-all ${
                 message.sender === 'user'
                   ? 'bg-green-600 text-white rounded-br-none shadow-green-500/20'
-                  : 'light-box text-inherit rounded-bl-none border border-black/5 dark:border-white/10'
+                  : 'light-box rounded-bl-none border border-black/5 dark:border-white/10'
               }`}
+              style={message.sender === 'ai' ? { color: isDark ? '#ffffff' : '#000000' } : {}}
             >
               <p className="text-sm whitespace-pre-wrap leading-relaxed">
                 {message.content}
               </p>
               <div
                 className={`text-[10px] mt-2 font-medium opacity-60 ${
-                  message.sender === 'user' ? 'text-white' : 'text-inherit'
+                  message.sender === 'user' ? 'text-white' : ''
                 }`}
               >
                 {message.timestamp.toLocaleTimeString([], {
@@ -175,7 +185,7 @@ export default function ChatBox({
 
         {loading && (
           <div className="flex justify-start">
-            <div className="light-box px-5 py-3 rounded-2xl rounded-bl-none border border-black/5 flex items-center gap-3">
+            <div className="light-box px-5 py-3 rounded-2xl rounded-bl-none border border-black/5 flex items-center gap-3" style={{ color: isDark ? '#ffffff' : '#000000' }}>
               <span className="flex gap-1">
                 <span className="w-1.5 h-1.5 bg-green-600 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
                 <span className="w-1.5 h-1.5 bg-green-600 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
