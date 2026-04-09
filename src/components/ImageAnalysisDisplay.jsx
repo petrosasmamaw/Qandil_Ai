@@ -49,7 +49,7 @@ export default function ImageAnalysisDisplay({ analysis, onDelete }) {
 
       {/* Analysis Content */}
       <div className="bg-white/25 dark:bg-gradient-to-br dark:from-slate-800 dark:to-slate-900 p-8 rounded-lg border border-white/40 dark:border-slate-700 max-h-96 overflow-y-auto backdrop-blur-md">
-        <p className="leading-relaxed whitespace-pre-wrap" style={{ color: isDark ? '#ffffff' : '#000000' }}>
+        <p className="leading-relaxed whitespace-pre-wrap text-black dark:text-white">
           {analysis.analysis || analysis.content}
         </p>
       </div>

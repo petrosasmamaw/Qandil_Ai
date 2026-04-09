@@ -79,8 +79,8 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
 
   if (loading) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white/25 dark:bg-gray-800 rounded-lg p-8 max-w-2xl w-full shadow-xl backdrop-blur-md border border-white/40 dark:border-gray-700">
+      <div className="fixed inset-0 z-[100] p-4 flex items-center justify-center bg-black/40 dark:bg-black/60 backdrop-blur-sm">
+        <div className="light-box shadow-2xl relative z-10 p-8 max-w-2xl w-full rounded-2xl">
           <div className="flex flex-col items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-gray-100 mb-4"></div>
             <p className="text-gray-600 dark:text-gray-400 text-center">
@@ -95,27 +95,27 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
   if (quizResult) {
     const scoreColor = quizResult.score >= 5 ? 'text-green-500' : 'text-orange-500';
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white/90 dark:bg-gray-800/90 rounded-2xl p-8 max-w-lg w-full shadow-2xl backdrop-blur-xl border border-white/40 dark:border-gray-700 flex flex-col items-center justify-center text-center text-gray-900 dark:text-gray-100">
-          <div className={`p-4 rounded-full bg-opacity-10 mb-4 ${scoreColor.replace('text', 'bg')}`}>
+      <div className="fixed inset-0 z-[100] p-4 flex items-center justify-center bg-black/40 dark:bg-black/60 backdrop-blur-sm">
+        <div className="light-box shadow-2xl relative z-10 p-8 max-w-lg w-full rounded-2xl flex flex-col items-center justify-center text-center">
+          <div className={`p-4 rounded-full bg-opacity-10 mb-4 ${scoreColor.replace('text', 'bg')} bg-black/5 dark:bg-white/5`}>
              <FiCheckCircle size={48} className={scoreColor} />
           </div>
-          <h2 className="text-3xl font-black mb-2">Quiz Completed!</h2>
+          <h2 className="text-3xl font-black mb-2 text-gray-900 dark:text-gray-100">Quiz Completed!</h2>
           <div className="mb-6 flex flex-col items-center">
-            <span className="text-sm font-bold uppercase tracking-widest opacity-60 mb-2">Your Score</span>
+            <span className="text-sm font-bold uppercase tracking-widest opacity-60 mb-2 text-gray-900 dark:text-gray-100">Your Score</span>
             <span className={`text-6xl font-black ${scoreColor}`}>
               {quizResult.score !== undefined ? `${quizResult.score}/10` : 'Done'}
             </span>
           </div>
           
           <div className="w-full bg-black/5 dark:bg-white/5 p-4 rounded-xl border border-black/10 dark:border-white/10 mb-6">
-            <span className="text-sm font-bold uppercase tracking-widest opacity-60 block mb-1">Determined Level</span>
+            <span className="text-sm font-bold uppercase tracking-widest opacity-60 block mb-1 text-gray-900 dark:text-gray-100">Determined Level</span>
             <span className="text-xl font-bold uppercase text-blue-600 dark:text-blue-400">
               {quizResult.level}
             </span>
           </div>
 
-          <p className="text-sm md:text-base opacity-80 leading-relaxed mb-8 text-balance">
+          <p className="text-sm md:text-base opacity-80 leading-relaxed mb-8 text-balance text-gray-900 dark:text-gray-100">
             {quizResult.explanation}
           </p>
 
@@ -134,8 +134,8 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
   const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white/25 dark:bg-gray-800 rounded-lg max-w-2xl w-full shadow-xl flex flex-col max-h-[90vh] backdrop-blur-md border border-white/40 dark:border-gray-700">
+    <div className="fixed inset-0 z-[100] p-4 flex items-center justify-center bg-black/40 dark:bg-black/60 backdrop-blur-sm">
+      <div className="light-box shadow-2xl relative z-10 max-w-2xl w-full rounded-2xl flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="border-b border-gray-200 dark:border-gray-700 p-6 flex justify-between items-center">
           <div>
@@ -193,17 +193,12 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
                 {currentQuestion.options.map((option, index) => (
                   <label
                     key={index}
-                    className="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all"
-                    style={{
-                      borderColor:
-                        selectedAnswer === index
-                          ? 'rgb(31, 41, 55)'
-                          : 'rgb(229, 231, 235)',
-                      backgroundColor:
-                        selectedAnswer === index
-                          ? 'rgb(243, 244, 246)'
-                          : 'transparent',
-                    }}
+                    onClick={() => handleAnswerSelect(index)}
+                    className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                      selectedAnswer === index
+                        ? 'border-gray-900 bg-gray-100 dark:border-white dark:bg-white/10'
+                        : 'border-gray-200 dark:border-gray-700 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                    }`}
                   >
                     <input
                       type="radio"
@@ -211,7 +206,8 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
                       value={index}
                       checked={selectedAnswer === index}
                       onChange={() => handleAnswerSelect(index)}
-                      className="w-4 h-4 cursor-pointer"
+                      className="w-4 h-4 cursor-pointer text-gray-900 dark:text-white"
+                      onClick={(e) => e.stopPropagation()}
                     />
                     <span className="ml-3 text-gray-900 dark:text-white font-medium">
                       {String.fromCharCode(65 + index)}) {option}
