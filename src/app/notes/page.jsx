@@ -5,18 +5,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
-import { processDocument, processTextContent } from '@/utils/documentProcessingService';
-import NoteDisplay from '@/components/NoteDisplay';
+import { generateAssignmentGuidance, generateAssignmentGuidanceFromText } from '@/utils/assignmentGuidanceService';
+import AssignmentGuidanceDisplay from '@/components/AssignmentGuidanceDisplay';
 import { useTranslation } from '@/hooks/useTranslation';
-import { FiFileText, FiBook, FiZap } from 'react-icons/fi';
+import { FiClipboard, FiBook, FiZap, FiFileText, FiCheck } from 'react-icons/fi';
 
-export default function NotesPage() {
+export default function AssignmentGuidePage() {
   const { t } = useTranslation();
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState(null);
-  const [notes, setNotes] = useState([]);
+  const [guidances, setGuidances] = useState([]);
   const [dragActive, setDragActive] = useState(false);
   const [inputMode, setInputMode] = useState('file'); // 'file' or 'text'
   const [textInput, setTextInput] = useState('');
@@ -53,7 +53,7 @@ export default function NotesPage() {
         const result = await dispatch(fetchProfileByUserId(currentSession.user.id));
         
         if (result.payload === null) {
-          setError(t('notes.profileNotCreated'));
+          setError(t('assignmentGuide.setupDescription'));
           return;
         }
       } catch (err) {
@@ -72,7 +72,7 @@ export default function NotesPage() {
       <div className="min-h-screen flex items-center justify-center bg-background transition-colors duration-300">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-black/10 border-t-green-600 mx-auto"></div>
-          <p className="mt-4 opacity-70">{t('notes.loading')}</p>
+          <p className="mt-4 opacity-70">{t('assignmentGuide.loading')}</p>
         </div>
       </div>
     );
@@ -82,34 +82,30 @@ export default function NotesPage() {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="max-w-md w-full light-box p-8 border text-center shadow-xl">
-          <p className="opacity-70 mb-6">{t('notes.profileNotCreated')}</p>
+          <p className="opacity-70 mb-6">{t('assignmentGuide.profileNotCreated')}</p>
           <button
             onClick={() => router.push('/profile')}
             className="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold transition-all"
           >
-            {t('notes.profileRequired')}
+            {t('assignmentGuide.profileRequired')}
           </button>
         </div>
       </div>
     );
   }
 
-  // File and Text handler functions remain same...
+  // logic functions for processing files and text remain same...
   const handleFileUpload = async (files) => { /* ... (keep your existing logic) */ };
   const handleTextSubmit = async (e) => { /* ... (keep your existing logic) */ };
   const handleDrag = (e) => { /* ... (keep your existing logic) */ };
   const handleDrop = (e) => { /* ... (keep your existing logic) */ };
-  const handleDeleteNote = (noteId) => { /* ... (keep your existing logic) */ };
-  const handleDownloadNote = (note) => { /* ... (keep your existing logic) */ };
-
-  const backgroundStyle = {
-    '--light-bg-image': "url('https://cdn.vectorstock.com/i/500p/87/24/pastel-pink-and-blue-blur-backdrop-vector-63408724.jpg')",
-  };
+  const handleDeleteGuidance = (guidanceId) => { /* ... (keep your existing logic) */ };
+  const handleDownloadGuidance = (guidance) => { /* ... (keep your existing logic) */ };
 
   return (
     <main 
-      className="light-image-bg min-h-screen p-6 md:p-8 transition-colors duration-300 relative z-0" 
-      style={backgroundStyle}
+      className="light-image-bg min-h-screen p-6 md:p-8 transition-colors duration-300 relative z-0"
+      style={{ '--light-bg-image': "url('https://cdn.vectorstock.com/i/500p/87/24/pastel-pink-and-blue-blur-backdrop-vector-63408724.jpg')" }}
     >
       {/* DARK MODE BACKGROUND - Matches Home Page perfectly */}
       {isDark && (
@@ -130,44 +126,44 @@ export default function NotesPage() {
         {/* HEADER */}
         <div className="flex justify-between items-center mb-8">
           <div className="light-box px-6 py-4 border shadow-sm flex items-center gap-4">
-             <div className="p-3 bg-green-600/10 rounded-2xl text-green-600">
-                <FiFileText size={32} />
-             </div>
-             <div>
-                <h1 className="text-2xl font-bold leading-tight">{t('notes.title')}</h1>
-                <p className="text-sm opacity-70">
-                  {profile.name} • {t('notes.gradeText')} {profile.grade}
-                </p>
-             </div>
+            <div className="p-3 bg-green-600/10 rounded-2xl text-green-600">
+              <FiClipboard size={32} />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold leading-tight">{t('assignmentGuide.titleDisplay')}</h1>
+              <p className="text-sm opacity-70">
+                {t('assignmentGuide.getGuidedHelp')} {profile.name} • {t('profile.grade')} {profile.grade}
+              </p>
+            </div>
           </div>
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-600 dark:text-red-400 backdrop-blur-md">
-            ⚠️ {error}
-          </div>
-        )}
-
-        {/* Input Mode Toggle */}
-        <div className="mb-8 flex gap-2">
-          {['file', 'text'].map((mode) => (
-            <button
-              key={mode}
-              onClick={() => setInputMode(mode)}
-              className={`px-6 py-3 rounded-xl font-bold transition-all ${
-                inputMode === mode 
-                ? 'bg-green-600 text-white shadow-lg' 
-                : 'light-box border opacity-70 hover:opacity-100'
-              }`}
-            >
-              {mode === 'file' ? '📤 ' + t('notes.uploadFiles') : '✏️ ' + t('notes.pasteText')}
-            </button>
-          ))}
         </div>
 
         <div className="grid grid-cols-1 gap-8">
-          {/* Main Input Area */}
+          {/* Error Message */}
+          {error && (
+            <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-600 dark:text-red-400 backdrop-blur-md">
+              ⚠️ {error}
+            </div>
+          )}
+
+          {/* Mode Selector */}
+          <div className="flex gap-2">
+            {['file', 'text'].map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setInputMode(mode)}
+                className={`px-6 py-3 rounded-xl font-bold transition-all ${
+                  inputMode === mode 
+                  ? 'bg-green-600 text-white shadow-lg' 
+                  : 'light-box border opacity-70 hover:opacity-100'
+                }`}
+              >
+                {mode === 'file' ? '📤 ' + t('assignmentGuide.uploadFiles') : '✏️ ' + t('assignmentGuide.pasteText')}
+              </button>
+            ))}
+          </div>
+
+          {/* Input Area */}
           <div className="w-full">
             {inputMode === 'file' ? (
               <div
@@ -179,99 +175,121 @@ export default function NotesPage() {
                   dragActive ? 'border-green-500 bg-green-500/5' : 'border-black/10 dark:border-white/10'
                 }`}
               >
-                <div className="text-5xl mb-4">📂</div>
-                <h3 className="text-xl font-bold mb-2">{t('notes.uploadMaterials')}</h3>
-                <p className="opacity-60 mb-6">{t('notes.dragDropDescription')}</p>
+                <div className="text-5xl mb-4">📤</div>
+                <h3 className="text-xl font-bold mb-2">{t('assignmentGuide.uploadMaterials')}</h3>
+                <p className="opacity-60 mb-6">{t('assignmentGuide.dragDropDescription')}</p>
                 <input
                   type="file"
                   multiple
                   accept=".pdf,.docx,.doc"
                   onChange={(e) => handleFileUpload(e.target.files)}
                   className="hidden"
-                  id="file-input"
+                  id="assignment-file-input"
                   disabled={processing}
                 />
                 <label
-                  htmlFor="file-input"
+                  htmlFor="assignment-file-input"
                   className="inline-block px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold cursor-pointer transition-all"
                 >
-                  {processing ? t('notes.processing') : t('notes.chooseFiles')}
+                  {processing ? t('assignmentGuide.processing') : t('assignmentGuide.chooseFiles')}
                 </label>
               </div>
             ) : (
               <form onSubmit={handleTextSubmit} className="light-box p-8 border shadow-xl space-y-4">
-                <input
-                  type="text"
-                  value={textTitle}
-                  onChange={(e) => setTextTitle(e.target.value)}
-                  placeholder={t('notes.titlePlaceholder')}
-                  className="w-full p-4 rounded-xl light-box border focus:ring-2 focus:ring-green-500 transition-all"
-                />
-                <textarea
-                  value={textInput}
-                  onChange={(e) => setTextInput(e.target.value)}
-                  placeholder={t('notes.contentPlaceholder')}
-                  rows="8"
-                  className="w-full p-4 rounded-xl light-box border focus:ring-2 focus:ring-green-500 transition-all resize-none"
-                />
+                <div>
+                  <label className="block text-xs font-bold uppercase opacity-50 mb-2">{t('assignmentGuide.titleForAssignment')}</label>
+                  <input
+                    type="text"
+                    value={textTitle}
+                    onChange={(e) => setTextTitle(e.target.value)}
+                    placeholder={t('assignmentGuide.titlePlaceholder')}
+                    className="w-full p-4 rounded-xl light-box border focus:ring-2 focus:ring-green-500 transition-all outline-none"
+                    disabled={processing}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase opacity-50 mb-2">{t('assignmentGuide.pasteContent')}</label>
+                  <textarea
+                    value={textInput}
+                    onChange={(e) => setTextInput(e.target.value)}
+                    placeholder={t('assignmentGuide.contentPlaceholder')}
+                    rows="8"
+                    className="w-full p-4 rounded-xl light-box border focus:ring-2 focus:ring-green-500 transition-all resize-none outline-none"
+                    disabled={processing}
+                  />
+                </div>
                 <button
                   type="submit"
                   disabled={processing}
                   className="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold transition-all shadow-lg"
                 >
-                  {processing ? 'Processing...' : 'Generate Notes'}
+                  {processing ? t('assignmentGuide.processingText') : t('assignmentGuide.generateButton')}
                 </button>
               </form>
             )}
           </div>
 
-          {/* Stats Bar */}
+          {/* User Profile Summary */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: 'Level', value: profile.level },
-              { label: 'System', value: profile.studySystem.replace(/_/g, ' ') },
-              { label: 'Goal', value: profile.goal.replace(/_/g, ' ') },
-              { label: 'Notes', value: notes.length }
+              { label: t('profile.level'), value: profile.level },
+              { label: t('profile.studySystem'), value: profile.studySystem.replace(/_/g, ' ') },
+              { label: t('profile.goal'), value: profile.goal.replace(/_/g, ' ') },
+              { label: 'Guidances', value: guidances.length }
             ].map((stat, i) => (
               <div key={i} className="light-box p-4 border text-center">
-                <p className="text-xs opacity-50 uppercase font-bold tracking-wider mb-1">{stat.label}</p>
-                <p className="font-bold capitalize">{stat.value}</p>
+                <p className="text-[10px] opacity-50 uppercase font-black tracking-widest mb-1">{stat.label}</p>
+                <p className="font-bold capitalize text-sm">{stat.value}</p>
               </div>
             ))}
           </div>
 
-          {/* Notes Display Section */}
+          {/* Guidances Results */}
           <div className="space-y-6">
-            {notes.length > 0 ? (
+            {guidances.length > 0 ? (
               <>
-                <h2 className="text-2xl font-bold px-2">Your Generated Notes</h2>
-                {notes.map((note) => (
-                  <NoteDisplay
-                    key={note.id}
-                    note={note}
-                    onDelete={handleDeleteNote}
-                    onDownload={handleDownloadNote}
+                <h2 className="text-2xl font-bold px-2">{t('assignmentGuide.guidanceGenerated')}</h2>
+                {guidances.map((guidance) => (
+                  <AssignmentGuidanceDisplay
+                    key={guidance.id}
+                    guidance={guidance}
+                    onDelete={handleDeleteGuidance}
+                    onDownload={handleDownloadGuidance}
                   />
                 ))}
               </>
             ) : (
               <div className="light-box p-20 border text-center opacity-60">
                 <FiBook size={48} className="mx-auto mb-4 text-green-600" />
-                <p>{t('notes.noNotes') || "No notes generated yet. Upload a file to start."}</p>
+                <p className="font-bold">{t('assignmentGuide.guidanceNotFound')}</p>
+                <p className="text-sm">{t('assignmentGuide.guidanceNotFoundDesc')}</p>
               </div>
             )}
           </div>
 
-          {/* Info Section */}
-          <div className="light-box p-6 border-l-4 border-l-blue-500 shadow-sm">
-            <h3 className="font-bold mb-3 flex items-center gap-2 text-blue-600">
-              <FiZap /> How It Works
-            </h3>
-            <ul className="text-sm space-y-2 opacity-80">
-              <li>1. Upload your learning materials or paste text.</li>
-              <li>2. AI analyzes content based on your {profile.level} profile.</li>
-              <li>3. Get personalized study notes instantly.</li>
-            </ul>
+          {/* Information Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="light-box p-6 border-l-4 border-l-green-500 shadow-sm">
+              <h3 className="font-bold mb-3 flex items-center gap-2 text-green-600">
+                <FiZap /> {t('assignmentGuide.helpTitle')}
+              </h3>
+              <ol className="text-sm space-y-2 opacity-80">
+                <li>1. {t('assignmentGuide.uploadFiles')} / {t('assignmentGuide.pasteText')}</li>
+                <li>2. AI analyzes requirements using your profile.</li>
+                <li>3. Get a custom approach for your assignment.</li>
+              </ol>
+            </div>
+
+            <div className="light-box p-6 border-l-4 border-l-blue-500 shadow-sm">
+              <h3 className="font-bold mb-3 flex items-center gap-2 text-blue-600">
+                <FiFileText /> {t('assignmentGuide.whatYouGet')}
+              </h3>
+              <ul className="text-sm space-y-2 opacity-80">
+                <li className="flex items-center gap-2"><FiCheck size={14} /> Simplified requirements</li>
+                <li className="flex items-center gap-2"><FiCheck size={14} /> Critical thinking questions</li>
+                <li className="flex items-center gap-2"><FiCheck size={14} /> Step-by-step logic map</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

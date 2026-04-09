@@ -120,8 +120,9 @@ export const Navbar = () => {
                 />
               </div>
               <span 
-                className={`text-xl font-bold transition-all duration-300 ${theme === 'dark' ? 'text-white' : ''}`}
-                style={theme === 'light' ? { color: 'black', textShadow: 'none', background: 'none', WebkitTextFillColor: 'black' } : { textShadow: 'none', background: 'none' }}
+                className="text-xl font-bold transition-all duration-300"
+                style={mounted ? (theme === 'light' ? { color: 'black', textShadow: 'none', background: 'none', WebkitTextFillColor: 'black' } : { color: 'white', textShadow: 'none', background: 'none' }) : { color: 'black', textShadow: 'none', background: 'none', WebkitTextFillColor: 'black' }}
+                suppressHydrationWarning
               >
                 Qandil AI
               </span>
@@ -167,6 +168,7 @@ export const Navbar = () => {
                 onClick={() => dispatch(toggleTheme())}
                 className="p-2.5 rounded-full text-sm font-medium bg-gray-900/10 dark:bg-gray-800/50 border border-gray-900/20 dark:border-gray-600/50 text-gray-900 dark:text-gray-100 hover:bg-gray-900/20 dark:hover:bg-gray-700/70 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
                 title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+                suppressHydrationWarning
               >
                 {theme === 'light' ? (
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -194,7 +196,7 @@ export const Navbar = () => {
             )}
 
             {loading ? (
-              <div className="text-sm dark:text-gray-400" style={{ color: theme === 'light' ? 'black' : undefined }} suppressHydrationWarning>Loading...</div>
+              <div className="text-sm dark:text-gray-400" style={{ color: mounted && theme === 'light' ? 'black' : undefined }} suppressHydrationWarning>Loading...</div>
             ) : session?.user ? (
               <div className="flex items-center gap-3">
                 {/* Sign In/Sign Up - shown when not logged in */}
@@ -204,20 +206,22 @@ export const Navbar = () => {
                 <Link
                   href="/auth/login"
                   className="px-5 py-1.5 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none"
-                  style={theme === 'light' 
+                  style={mounted ? (theme === 'light' 
                     ? { color: 'black', backgroundColor: '#f3f4f6', border: '1px solid #9ca3af' }
                     : { color: 'white', backgroundColor: 'rgba(55,65,81,0.6)', border: '1px solid rgba(107,114,128,0.5)' }
-                  }
+                  ) : { color: 'black', backgroundColor: '#f3f4f6', border: '1px solid #9ca3af' }}
+                  suppressHydrationWarning
                 >
                   {t('navbar.signIn')}
                 </Link>
                 <Link
                   href="/auth/register"
                   className="px-5 py-1.5 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none"
-                  style={theme === 'light'
+                  style={mounted ? (theme === 'light'
                     ? { color: 'white', backgroundColor: 'black', border: '1px solid black' }
                     : { color: '#111827', backgroundImage: 'linear-gradient(to right, #d1d5db, #9ca3af)', border: 'none' }
-                  }
+                  ) : { color: 'white', backgroundColor: 'black', border: '1px solid black' }}
+                  suppressHydrationWarning
                 >
                   {t('navbar.signUp')}
                 </Link>

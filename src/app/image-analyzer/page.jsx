@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase';
 import { analyzeImage } from '@/utils/imageAnalysisService';
 import ImageAnalysisDisplay from '@/components/ImageAnalysisDisplay';
 import { useTranslation } from '@/hooks/useTranslation';
+import { FiImage, FiUploadCloud, FiInfo } from 'react-icons/fi';
 
 export default function ImageAnalyzerPage() {
   const { t } = useTranslation();
@@ -14,7 +15,6 @@ export default function ImageAnalyzerPage() {
   const profile = useSelector((state) => state.profile.profile);
   const profileLoading = useSelector((state) => state.profile.loading);
   const profileError = useSelector((state) => state.profile.error);
-  const theme = useSelector((state) => state.theme?.mode || 'light');
 
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -24,47 +24,37 @@ export default function ImageAnalyzerPage() {
   const [dragActive, setDragActive] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
-  // Listen for theme changes
+  // Unified Theme Detection
   useEffect(() => {
     const updateTheme = () => {
       setIsDark(document.documentElement.classList.contains('dark'));
     };
     
     updateTheme();
-    window.addEventListener('themechange', updateTheme);
-    
-    // Also watch for class changes on html element
     const observer = new MutationObserver(updateTheme);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     
-    return () => {
-      window.removeEventListener('themechange', updateTheme);
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session?.user) {
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        if (!currentSession?.user) {
           window.location.href = '/auth/login';
           return;
         }
 
-        setSession(session);
-
-        // Fetch student profile using Redux
-        const result = await dispatch(fetchProfileByUserId(session.user.id));
+        setSession(currentSession);
+        const result = await dispatch(fetchProfileByUserId(currentSession.user.id));
         
         if (result.payload === null) {
           setError(t('imageAnalyzer.setupDescription'));
           return;
         }
-
-
-      } catch (error) {
-        console.error('Error checking session:', error);
+      } catch (err) {
+        console.error('Error checking session:', err);
         window.location.href = '/auth/login';
       } finally {
         setLoading(false);
@@ -72,18 +62,12 @@ export default function ImageAnalyzerPage() {
     };
 
     checkSession();
-  }, [dispatch]);
+  }, [dispatch, t]);
 
-  const handleDragEnter = (e) => {
+  const handleDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setDragActive(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
+    setDragActive(e.type === 'dragenter' || e.type === 'dragover');
   };
 
   const handleDrop = (e) => {
@@ -91,15 +75,11 @@ export default function ImageAnalyzerPage() {
     e.stopPropagation();
     setDragActive(false);
     const files = e.dataTransfer.files;
-    if (files && files.length > 0) {
-      handleImageUpload(files[0]);
-    }
+    if (files?.[0]) handleImageUpload(files[0]);
   };
 
   const handleImageChange = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      handleImageUpload(e.target.files[0]);
-    }
+    if (e.target.files?.[0]) handleImageUpload(e.target.files[0]);
   };
 
   const handleImageUpload = async (file) => {
@@ -122,45 +102,12 @@ export default function ImageAnalyzerPage() {
     }
   };
 
-  const handleDeleteAnalysis = () => {
-    setImageAnalysis(null);
-    setError('');
-  };
-
   if (loading || profileLoading) {
-    const isDarkMode = theme === 'dark' || isDark;
     return (
-      <div 
-        className="min-h-screen flex items-center justify-center"
-        style={{
-          backgroundColor: isDarkMode ? '#0a0a0a' : '#ffffff',
-          background: isDarkMode 
-            ? 'linear-gradient(135deg, rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9))'
-            : 'linear-gradient(135deg, rgba(248, 250, 249, 0.32), rgba(240, 244, 242, 0.32), rgba(248, 250, 249, 0.32))',
-        }}
-      >
+      <div className="min-h-screen flex items-center justify-center bg-background transition-colors duration-300">
         <div className="text-center">
-          <div 
-            className="rounded-full h-12 w-12 border-b-2 mx-auto mb-4 animate-spin"
-            style={{ borderColor: isDarkMode ? '#3b82f6' : '#3b82f6' }}
-          ></div>
-          <p 
-            className=""
-            style={{ color: isDarkMode ? '#d1d5db' : '#666666' }}
-          >
-            {t('imageAnalyzer.loadingProfileMsg')}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (profileError && !profile) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-400 mb-4">{t('imageAnalyzer.profileErrorMsg')}</p>
-          <p className="text-gray-400">{t('imageAnalyzer.profileSetupReminder')}</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-black/10 border-t-blue-600 mx-auto mb-4"></div>
+          <p className="opacity-70">{t('imageAnalyzer.loadingProfileMsg')}</p>
         </div>
       </div>
     );
@@ -168,106 +115,123 @@ export default function ImageAnalyzerPage() {
 
   return (
     <main 
-      className="light-image-bg min-h-screen p-6 text-gray-800 dark:text-gray-100"
-      style={{
-        '--light-bg-image': "url('https://cdn.vectorstock.com/i/500p/87/24/pastel-pink-and-blue-blur-backdrop-vector-63408724.jpg')",
-        background: `
-          ${document.documentElement.classList.contains('dark') ? `
-            linear-gradient(135deg, rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9)),
-            url('https://i.pinimg.com/736x/de/0a/0e/de0a0eb1dd6af97630c3a6b90d162701.jpg') center/cover fixed
-          ` : 'none'}
-        `,
-        backgroundColor: document.documentElement.classList.contains('dark') ? '#0a0a0a' : '#ffffff'
-      }}
+      className="light-image-bg min-h-screen p-6 md:p-8 transition-colors duration-300 relative z-0"
+      style={{ '--light-bg-image': "url('https://cdn.vectorstock.com/i/500p/87/24/pastel-pink-and-blue-blur-backdrop-vector-63408724.jpg')" }}
     >
-      <div className="max-w-7xl mx-auto">
+      {/* DARK MODE BACKGROUND - Matches global style */}
+      {isDark && (
+        <div 
+          className="fixed inset-0 -z-10 pointer-events-none"
+          style={{
+            backgroundImage: `url('https://images.openai.com/static-rsc-4/UhK-ZnGnaOc26fOHcPEMngdrJMi0lBmw_eKNkaDh38qqO6xopIWrT3GyMD_7F0bUEwvEgsSxHAA7F9eZ0sIsr6zwzCbSZXRwDuam2ZAsT_4kprqEa4D6b_95yr-58SC2Fzcww7u8K9AFRoRHVUJ2ItNncyjWPfYYxDDhB96QIwwOEW1mvB1bi6CkXIYSZjje?purpose=inline')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            filter: 'blur(8px)',
+            transform: 'scale(1.05)', 
+          }}
+        />
+      )}
+
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* HEADER */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-700 to-yellow-500 bg-clip-text text-transparent">
-              🖼️ {t('imageAnalyzer.title')}
-            </h1>
-            <p className="text-gray-600 mt-1">
-              {profile && `${t('imageAnalyzer.uploadAnalysisFor')} ${profile.name}`}
-            </p>
+        <div className="flex justify-between items-center mb-10">
+          <div className="light-box px-6 py-4 border shadow-sm flex items-center gap-4">
+            <div className="p-3 bg-blue-600/10 rounded-2xl text-blue-600">
+              <FiImage size={32} />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold leading-tight">{t('imageAnalyzer.title')}</h1>
+              <p className="text-sm opacity-70">
+                {profile && `${t('imageAnalyzer.uploadAnalysisFor')} ${profile.name}`}
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* LAYOUT */}
-        <div className="grid grid-cols-1 gap-6">
-          {/* MAIN CONTENT */}
-          <div>
+        <div className="grid grid-cols-1 gap-8">
+          {/* Profile Status Bar */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { label: t('imageAnalyzer.studentNameCard'), value: profile?.name },
+              { label: t('imageAnalyzer.learningLevelCard'), value: profile?.level },
+              { label: t('imageAnalyzer.studySystemCard'), value: profile?.studySystem },
+              { label: t('imageAnalyzer.learningGoalCard'), value: profile?.goal }
+            ].map((stat, i) => (
+              <div key={i} className="light-box p-4 border text-center">
+                <p className="text-[10px] opacity-50 uppercase font-black tracking-widest mb-1">{stat.label}</p>
+                <p className="font-bold capitalize text-sm truncate">{stat.value}</p>
+              </div>
+            ))}
+          </div>
 
-            {/* Profile Info Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-8">
-              <div className="bg-white/60 dark:bg-gradient-to-br dark:from-blue-900 dark:to-blue-800 p-4 rounded-lg border border-white/70 dark:border-blue-700 backdrop-blur-lg">
-                <p className="text-blue-800 dark:text-blue-300 text-sm font-semibold">{t('imageAnalyzer.studentNameCard')}</p>
-                <p className="text-gray-900 dark:text-white font-bold text-lg">{profile?.name}</p>
-              </div>
-              <div className="bg-white/60 dark:bg-gradient-to-br dark:from-cyan-900 dark:to-cyan-800 p-4 rounded-lg border border-white/70 dark:border-cyan-700 backdrop-blur-lg">
-                <p className="text-cyan-800 dark:text-cyan-300 text-sm font-semibold">{t('imageAnalyzer.learningLevelCard')}</p>
-                <p className="text-gray-900 dark:text-white font-bold text-lg capitalize">{profile?.level}</p>
-              </div>
-              <div className="bg-white/60 dark:bg-gradient-to-br dark:from-purple-900 dark:to-purple-800 p-4 rounded-lg border border-white/70 dark:border-purple-700 backdrop-blur-lg">
-                <p className="text-purple-800 dark:text-purple-300 text-sm font-semibold">{t('imageAnalyzer.studySystemCard')}</p>
-                <p className="text-gray-900 dark:text-white font-bold text-lg">{profile?.studySystem}</p>
-              </div>
-              <div className="bg-white/60 dark:bg-gradient-to-br dark:from-orange-900 dark:to-orange-800 p-4 rounded-lg border border-white/70 dark:border-orange-700 backdrop-blur-lg">
-                <p className="text-orange-800 dark:text-orange-300 text-sm font-semibold">{t('imageAnalyzer.learningGoalCard')}</p>
-                <p className="text-gray-900 dark:text-white font-bold text-lg">{profile?.goal}</p>
-              </div>
-            </div>
-
-            {/* Upload Area */}
-            {!imageAnalysis ? (
-              <div className="mb-8">
-                <label
-                  onDragEnter={handleDragEnter}
-                  onDragLeave={handleDragLeave}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={handleDrop}
-                  className={`block border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-all ${
-                    dragActive
-                      ? 'border-blue-400 bg-blue-100/60 dark:bg-blue-500/10 backdrop-blur-lg'
-                      : 'border-white/70 dark:border-gray-500 hover:border-blue-300 bg-white/50 dark:bg-transparent backdrop-blur-lg'
-                  }`}
-                >
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    disabled={analyzing}
-                    className="hidden"
-                  />
-                  <div className="mb-4">
-                    <span className="text-5xl">🖼️</span>
+          {/* UPLOADER / ANALYZER AREA */}
+          {!imageAnalysis ? (
+            <div className="w-full max-w-4xl mx-auto">
+              <label
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+                className={`block relative overflow-hidden border-2 border-dashed rounded-3xl p-16 text-center cursor-pointer transition-all light-box ${
+                  dragActive ? 'border-blue-500 bg-blue-500/5 scale-[1.01]' : 'border-black/10 dark:border-white/10 hover:border-blue-400'
+                }`}
+              >
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  disabled={analyzing}
+                  className="hidden"
+                />
+                
+                <div className="flex flex-col items-center">
+                  <div className={`mb-6 p-6 rounded-full transition-transform duration-500 ${analyzing ? 'animate-bounce' : ''} bg-blue-600/10 text-blue-600`}>
+                    <FiUploadCloud size={48} />
                   </div>
-                  <p className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
+                  <h3 className="text-2xl font-bold mb-2">
                     {analyzing ? t('imageAnalyzer.analyzingText') : t('imageAnalyzer.dropImagePrompt')}
+                  </h3>
+                  <p className="opacity-60 mb-8 max-w-sm mx-auto">
+                    {t('imageAnalyzer.supportedImageFormats')}
                   </p>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">{t('imageAnalyzer.supportedImageFormats')}</p>
+                  
                   {analyzing && (
-                    <div className="mt-4 flex justify-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                    <div className="w-48 h-1.5 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden">
+                      <div className="h-full bg-blue-600 animate-progress"></div>
                     </div>
                   )}
-                </label>
+                </div>
+              </label>
 
-                {error && (
-                  <div className="mt-4 p-4 bg-red-50/75 dark:bg-red-900/50 border border-red-300 dark:border-red-700 rounded-lg backdrop-blur-lg">
-                    <p className="text-red-700 dark:text-red-200">{error}</p>
-                  </div>
-                )}
-              </div>
-            ) : (
+              {error && (
+                <div className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-600 dark:text-red-400 backdrop-blur-md flex items-center gap-3">
+                  <FiInfo /> <span>{error}</span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <ImageAnalysisDisplay
                 analysis={imageAnalysis}
-                onDelete={handleDeleteAnalysis}
+                onDelete={() => {
+                  setImageAnalysis(null);
+                  setError('');
+                }}
               />
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
+
+      <style jsx global>{`
+        @keyframes progress {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        .animate-progress {
+          animation: progress 1.5s infinite linear;
+        }
+      `}</style>
     </main>
   );
 }
