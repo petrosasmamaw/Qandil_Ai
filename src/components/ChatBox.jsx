@@ -4,14 +4,14 @@ import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendChatMessage, getInitialGreeting } from '@/utils/educationalChatService';
 import { translations } from '@/utils/translations';
-import { FiAward, FiZap } from 'react-icons/fi';
+import { FiAward, FiZap, FiSend } from 'react-icons/fi';
 
 export default function ChatBox({ 
   studentProfile, 
   onClose, 
-  chatType,                    // 'aiAssistance', 'notes', 'assignmentGuide', 'imageAnalyzer'
-  currentChatId,               // Current chat ID from Redux
-  onAddMessage                 // Callback to save message to DB
+  chatType,                    
+  currentChatId,               
+  onAddMessage                 
 }) {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -21,15 +21,12 @@ export default function ChatBox({
   const chatContainerRef = useRef(null);
   const dispatch = useDispatch();
   
-  // Get language from Redux
   const language = useSelector((state) => state.theme?.language || 'eng');
   
-  // Translation helper function
   const t = (key) => {
     return key.split('.').reduce((obj, k) => obj && obj[k], translations[language]) || key;
   };
 
-  // Load initial greeting
   useEffect(() => {
     const greeting = getInitialGreeting(studentProfile);
     setMessages([
@@ -42,7 +39,6 @@ export default function ChatBox({
     ]);
   }, [studentProfile]);
 
-  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -60,7 +56,6 @@ export default function ChatBox({
       return;
     }
 
-    // Add user message to local state
     const userMessage = {
       id: messages.length + 1,
       sender: 'user',
@@ -74,7 +69,6 @@ export default function ChatBox({
     setLoading(true);
 
     try {
-      // Save user message to database
       if (onAddMessage) {
         await onAddMessage({
           chatId: currentChatId,
@@ -84,7 +78,6 @@ export default function ChatBox({
         });
       }
 
-      // Prepare conversation history for API (only user messages, excluding AI greeting)
       const conversationHistory = messages
         .filter(msg => msg.sender === 'user')
         .map((msg) => ({
@@ -92,14 +85,12 @@ export default function ChatBox({
           content: msg.content,
         }));
 
-      // Send message to Gemini
       const response = await sendChatMessage(
         studentProfile,
         conversationHistory,
         inputValue
       );
 
-      // Add AI response to local state
       const aiMessage = {
         id: messages.length + 2,
         sender: 'ai',
@@ -109,7 +100,6 @@ export default function ChatBox({
 
       setMessages((prev) => [...prev, aiMessage]);
 
-      // Save AI response to database
       if (onAddMessage) {
         await onAddMessage({
           chatId: currentChatId,
@@ -127,17 +117,22 @@ export default function ChatBox({
   };
 
   return (
-    <div className="h-full flex flex-col bg-white/25 dark:bg-gray-900 rounded-lg shadow-md overflow-hidden border border-white/40 dark:border-gray-700 backdrop-blur-md">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-gray-800 text-white p-4 flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold flex items-center gap-2"><FiAward size={20} /> {t('common.educationalAiTutor')}</h3>
-          <p className="text-sm text-gray-300">{t('common.personalizedAssistant')} {studentProfile.name}</p>
+    <div className="h-full flex flex-col bg-transparent overflow-hidden">
+      {/* Header - Glassy with transition */}
+      <div className="bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 p-4 flex items-center justify-between backdrop-blur-md">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-green-500/20 rounded-lg text-green-600 dark:text-green-400">
+             <FiAward size={20} />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold uppercase tracking-wider">{t('common.educationalAiTutor')}</h3>
+            <p className="text-xs opacity-60 font-medium">{t('common.personalizedAssistant')} {studentProfile.name}</p>
+          </div>
         </div>
         {onClose && (
           <button
             onClick={onClose}
-            className="text-gray-300 hover:text-white transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
           >
             ✕
           </button>
@@ -147,48 +142,46 @@ export default function ChatBox({
       {/* Messages Container */}
       <div
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto p-4 space-y-4"
+        className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700"
       >
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${
-              message.sender === 'user' ? 'justify-end' : 'justify-start'
-            }`}
+            className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
+              className={`max-w-[85%] lg:max-w-[70%] px-5 py-3 rounded-2xl shadow-sm transition-all ${
                 message.sender === 'user'
-                  ? 'bg-blue-600 text-white rounded-br-none'
-                  : 'bg-white/35 dark:bg-gray-800 text-gray-900 dark:text-white rounded-bl-none border border-white/40 dark:border-gray-700'
+                  ? 'bg-green-600 text-white rounded-br-none shadow-green-500/20'
+                  : 'light-box text-inherit rounded-bl-none border border-black/5 dark:border-white/10'
               }`}
             >
               <p className="text-sm whitespace-pre-wrap leading-relaxed">
                 {message.content}
               </p>
-              <p
-                className={`text-xs mt-1 ${
-                  message.sender === 'user'
-                    ? 'text-blue-100'
-                    : 'text-gray-500 dark:text-gray-400'
+              <div
+                className={`text-[10px] mt-2 font-medium opacity-60 ${
+                  message.sender === 'user' ? 'text-white' : 'text-inherit'
                 }`}
               >
                 {message.timestamp.toLocaleTimeString([], {
                   hour: '2-digit',
                   minute: '2-digit',
                 })}
-              </p>
+              </div>
             </div>
           </div>
         ))}
 
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-white/35 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg rounded-bl-none px-4 py-3 border border-white/40 dark:border-gray-700">
-              <div className="flex items-center gap-2">
-                <div className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-gray-600 dark:border-gray-400"></div>
-                <span className="text-sm">{t('common.thinking')}</span>
-              </div>
+            <div className="light-box px-5 py-3 rounded-2xl rounded-bl-none border border-black/5 flex items-center gap-3">
+              <span className="flex gap-1">
+                <span className="w-1.5 h-1.5 bg-green-600 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                <span className="w-1.5 h-1.5 bg-green-600 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                <span className="w-1.5 h-1.5 bg-green-600 rounded-full animate-bounce"></span>
+              </span>
+              <span className="text-xs font-semibold opacity-60 uppercase tracking-tighter">{t('common.thinking')}</span>
             </div>
           </div>
         )}
@@ -198,33 +191,37 @@ export default function ChatBox({
 
       {/* Error Message */}
       {error && (
-        <div className="mx-4 mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-red-800 dark:text-red-300 text-sm">
-          {error}
+        <div className="mx-6 mb-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-600 dark:text-red-400 text-xs font-medium animate-pulse">
+          ⚠️ {error}
         </div>
       )}
 
-      {/* Input Area */}
-      <div className="border-t border-gray-200/70 dark:border-gray-700 p-4 bg-gray-50/70 dark:bg-gray-800 backdrop-blur-md">
-        <form onSubmit={handleSendMessage} className="flex gap-2">
+      {/* Input Area - Integrated Glass Design */}
+      <div className="p-4 md:p-6 bg-black/5 dark:bg-white/5 border-t border-black/5 dark:border-white/10 backdrop-blur-xl">
+        <form onSubmit={handleSendMessage} className="relative group">
           <input
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder={t('common.askQuestion')}
             disabled={loading}
-            className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+            className="w-full pl-5 pr-14 py-4 rounded-2xl border border-black/10 dark:border-white/10 bg-white/50 dark:bg-black/50 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all disabled:opacity-50 text-sm"
           />
           <button
             type="submit"
             disabled={loading || !inputValue.trim()}
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="absolute right-2 top-2 bottom-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-xl transition-all disabled:opacity-0 disabled:scale-90 flex items-center justify-center shadow-lg shadow-green-600/20"
           >
-            {loading ? '...' : t('common.send')}
+            <FiSend size={18} />
           </button>
         </form>
-        <div className="flex items-start gap-2 mt-2 p-2 bg-blue-50 dark:bg-blue-950 rounded text-xs text-blue-800 dark:text-blue-300">
-          <FiZap size={14} className="flex-shrink-0 mt-0.5" />
-          <p>{t('common.tutorDescription')}</p>
+        
+        {/* Footer info badge */}
+        <div className="flex items-center gap-2 mt-4 px-3 py-2 bg-green-500/5 rounded-lg border border-green-500/10">
+          <FiZap size={14} className="text-green-600" />
+          <p className="text-[10px] font-medium opacity-70 leading-tight">
+            {t('common.tutorDescription')}
+          </p>
         </div>
       </div>
     </div>
