@@ -3,6 +3,9 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
 
 export const createEducationalChatSession = (studentProfile) => {
+  if (!studentProfile) {
+    return 'You are a professional and adaptive educational mentor here to help students with their academic questions. Please provide helpful, clear explanations.';
+  }
   const systemPrompt = `You are a professional and adaptive educational mentor. Your identity is built on being a supportive guide for ${studentProfile.name}, a Grade ${studentProfile.grade} student currently focusing on a ${studentProfile.studySystem} approach to reach the goal of ${studentProfile.goal}.
 
 STUDENT CONTEXT:
@@ -41,6 +44,10 @@ Start now by greeting the student warmly. Mention your excitement to help them r
 export const sendChatMessage = async (studentProfile, conversationHistory, userMessage) => {
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
+
+    if (!studentProfile) {
+      throw new Error('Student profile not loaded. Please complete your profile setup first.');
+    }
 
     const systemPrompt = createEducationalChatSession(studentProfile);
 
@@ -81,6 +88,13 @@ export const sendChatMessage = async (studentProfile, conversationHistory, userM
 };
 
 export const getInitialGreeting = (studentProfile) => {
+  if (!studentProfile) {
+    return `👋 Welcome to your personalized learning assistant!
+
+I'm here to help you with your studies. Please complete your profile so I can tailor the learning experience to your needs.
+
+What subject or topic would you like help with today?`;
+  }
   return `Hello ${studentProfile.name}! 👋 Welcome to your personalized learning assistant.
 
 I'm here to help you with your studies tailored to your learning style. I understand that you:

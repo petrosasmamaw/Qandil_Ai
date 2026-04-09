@@ -155,7 +155,7 @@ export default function AIAssistance() {
 
         {/* LAYOUT */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-3 light-box p-4 md:p-6 flex flex-col h-[70vh] md:h-[75vh] border shadow-xl overflow-hidden relative">
+          <div className="lg:col-span-3 light-box p-4 md:p-6 flex flex-col h-[125vh] md:h-[90vh] border shadow-xl overflow-hidden relative">
              <ChatBox 
               studentProfile={profile}
               chatType="aiAssistance"

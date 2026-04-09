@@ -37,15 +37,17 @@ export default function ChatBox({
   }, []);
 
   useEffect(() => {
-    const greeting = getInitialGreeting(studentProfile);
-    setMessages([
-      {
-        id: 1,
-        sender: 'ai',
-        content: greeting,
-        timestamp: new Date(),
-      },
-    ]);
+    if (studentProfile) {
+      const greeting = getInitialGreeting(studentProfile);
+      setMessages([
+        {
+          id: 1,
+          sender: 'ai',
+          content: greeting,
+          timestamp: new Date(),
+        },
+      ]);
+    }
   }, [studentProfile]);
 
   useEffect(() => {
@@ -135,7 +137,7 @@ export default function ChatBox({
           </div>
           <div>
             <h3 className="text-sm font-bold uppercase tracking-wider">{t('common.educationalAiTutor')}</h3>
-            <p className="text-xs opacity-60 font-medium">{t('common.personalizedAssistant')} {studentProfile.name}</p>
+            <p className="text-xs opacity-60 font-medium">{t('common.personalizedAssistant')} {studentProfile?.name || 'Student'}</p>
           </div>
         </div>
         {onClose && (
