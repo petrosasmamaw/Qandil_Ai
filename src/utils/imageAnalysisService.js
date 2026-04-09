@@ -4,14 +4,16 @@ const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
 
 export const analyzeImage = async (imageFile, studentProfile) => {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
+    // Create analysis prompt based on student profile
+    const systemPrompt = createAnalysisPrompt(studentProfile);
+    const model = genAI.getGenerativeModel({ 
+      model: 'gemini-3.1-flash-lite-preview',
+      systemInstruction: systemPrompt
+    });
 
     // Read file as base64
     const fileData = await readFileAsBase64(imageFile);
     const mimeType = imageFile.type;
-
-    // Create analysis prompt based on student profile
-    const prompt = createAnalysisPrompt(studentProfile);
 
     // Analyze image
     const response = await model.generateContent([
@@ -21,7 +23,7 @@ export const analyzeImage = async (imageFile, studentProfile) => {
           mimeType: mimeType,
         },
       },
-      prompt,
+      "Please analyze this image based on my profile.",
     ]);
 
     const responseText = response.response.text();

@@ -4,14 +4,15 @@ const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
 
 export const processDocument = async (file, studentProfile) => {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
+    const systemPrompt = createDocumentPrompt(studentProfile);
+    const model = genAI.getGenerativeModel({ 
+      model: 'gemini-3.1-flash-lite-preview',
+      systemInstruction: systemPrompt
+    });
 
     // Read file as base64
     const fileData = await readFileAsBase64(file);
     const mimeType = getMimeType(file.type);
-
-    // Create prompt based on student profile
-    const prompt = createDocumentPrompt(studentProfile);
 
     // Upload file and process
     const response = await model.generateContent([
@@ -21,7 +22,7 @@ export const processDocument = async (file, studentProfile) => {
           mimeType: mimeType,
         },
       },
-      prompt,
+      "Please process this document into study notes based on my profile.",
     ]);
 
     const responseText = response.response.text();
@@ -40,17 +41,18 @@ export const processDocument = async (file, studentProfile) => {
 
 export const processTextContent = async (text, title, studentProfile) => {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
-
-    // Create prompt based on student profile
-    const prompt = createDocumentPrompt(studentProfile);
+    const systemPrompt = createDocumentPrompt(studentProfile);
+    const model = genAI.getGenerativeModel({ 
+      model: 'gemini-3.1-flash-lite-preview',
+      systemInstruction: systemPrompt
+    });
 
     // Process text content
     const response = await model.generateContent([
       {
         text: text,
       },
-      prompt,
+      "Please process this text into study notes based on my profile.",
     ]);
 
     const responseText = response.response.text();

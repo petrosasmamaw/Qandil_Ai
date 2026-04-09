@@ -4,14 +4,16 @@ const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
 
 export const generateAssignmentGuidance = async (file, studentProfile) => {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
+    // Create guidance prompt based on student profile
+    const systemPrompt = createGuidancePrompt(studentProfile);
+    const model = genAI.getGenerativeModel({ 
+      model: 'gemini-3.1-flash-lite-preview',
+      systemInstruction: systemPrompt
+    });
 
     // Read file as base64
     const fileData = await readFileAsBase64(file);
     const mimeType = getMimeType(file.type);
-
-    // Create guidance prompt based on student profile
-    const prompt = createGuidancePrompt(studentProfile);
 
     // Upload file and process
     const response = await model.generateContent([
@@ -21,7 +23,7 @@ export const generateAssignmentGuidance = async (file, studentProfile) => {
           mimeType: mimeType,
         },
       },
-      prompt,
+      "Please provide assignment guidance for this document based on my profile.",
     ]);
 
     const responseText = response.response.text();
@@ -40,17 +42,19 @@ export const generateAssignmentGuidance = async (file, studentProfile) => {
 
 export const generateAssignmentGuidanceFromText = async (text, title, studentProfile) => {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
-
     // Create guidance prompt based on student profile
-    const prompt = createGuidancePrompt(studentProfile);
+    const systemPrompt = createGuidancePrompt(studentProfile);
+    const model = genAI.getGenerativeModel({ 
+      model: 'gemini-3.1-flash-lite-preview',
+      systemInstruction: systemPrompt
+    });
 
     // Process text content
     const response = await model.generateContent([
       {
         text: text,
       },
-      prompt,
+      "Please provide assignment guidance for this text based on my profile.",
     ]);
 
     const responseText = response.response.text();
