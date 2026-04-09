@@ -90,7 +90,7 @@ export default function ChatBox({
       }
 
       const conversationHistory = messages
-        .filter(msg => msg.sender === 'user')
+        .filter(msg => !(msg.sender === 'ai' && msg.id === 1))
         .map((msg) => ({
           sender: msg.sender,
           content: msg.content,

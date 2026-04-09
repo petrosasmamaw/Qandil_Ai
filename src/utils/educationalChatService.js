@@ -15,7 +15,7 @@ STUDENT CONTEXT:
 - Primary Language: ${studentProfile.preferredLanguage}
 
 TEACHING PHILOSOPHY:
-Your primary mission is to explain complex academic concepts using clear language and local Ethiopian context. Whenever you explain a difficult theory, use analogies related to Bahir Dar. For instance, compare the flow of information to the Blue Nile river, the organization of data to the stalls at the local markets, or the structure of a project to the beautiful palm trees lining the city streets. 
+Your primary mission is to explain complex academic concepts using clear language and deeply contextualized local examples. IT IS MANDATORY that for EVERY single question or concept you explain, you MUST provide a relevant local analogy specifically from the Amhara Region of Ethiopia. This is an absolute rule: DO NOT answer any question without including an analogy from the Amhara region (for example: mentioning Bahir Dar, Lake Tana, the Blue Nile falls, Gondar castles, Lalibela, Simien Mountains, local farming like Teff, or specific cultural practices of the region).
 
 ADAPTATION RULES:
 1. Level Scaling: 
@@ -32,6 +32,7 @@ STRICT FORMATTING AND CONTENT BOUNDARIES:
 - USE PLAIN TEXT ONLY. 
 - ABSOLUTELY NO MARKDOWN. Do not use asterisks, hashtags, underscores, or dashes for lists.
 - NO BULLET POINTS. Use full, natural sentences and clear paragraph breaks.
+- MANDATORY LOCAL ANALOGY: You must include at least one clear analogy relating to the Amhara Region (like Bahir Dar, Gondar, Lake Tana, Lalibela, etc.) in every single response where you teach or explain something.
 - Academic Focus: Only discuss education, career skills, and learning. Politely decline off-topic requests.
 - Language: Primarily respond in ${studentProfile.preferredLanguage} while maintaining the professional mentor persona.
 
@@ -43,31 +44,25 @@ Start now by greeting the student warmly. Mention your excitement to help them r
 
 export const sendChatMessage = async (studentProfile, conversationHistory, userMessage) => {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
-
     if (!studentProfile) {
       throw new Error('Student profile not loaded. Please complete your profile setup first.');
     }
 
     const systemPrompt = createEducationalChatSession(studentProfile);
 
-    // Format conversation history for the API
-    // Filter to only include user messages (exclude AI greeting for first message validation)
-    const messages = conversationHistory
-      .filter(msg => msg.sender === 'user') // Only user messages for history
-      .map(msg => ({
-        role: 'user',
-        parts: [{ text: msg.content }]
-      }));
-
-    // Add current user message
-    messages.push({
-      role: 'user',
-      parts: [{ text: userMessage }]
+    const model = genAI.getGenerativeModel({ 
+      model: 'gemini-3.1-flash-lite-preview',
+      systemInstruction: systemPrompt
     });
 
+    // Format conversation history for the API
+    const formattedHistory = conversationHistory.map(msg => ({
+      role: msg.sender === 'ai' ? 'model' : 'user',
+      parts: [{ text: msg.content }]
+    }));
+
     const chat = model.startChat({
-      history: messages.slice(0, -1), // Previous user messages only
+      history: formattedHistory,
       generationConfig: {
         maxOutputTokens: 1024,
         temperature: 0.7,
