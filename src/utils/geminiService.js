@@ -24,9 +24,9 @@ const retryWithBackoff = async (fn, maxRetries = 3, baseDelay = 1000) => {
 
 export const generateLearningLevelQuiz = async (profileData) => {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' });
 
-    const prompt = `You are an educational assessment expert. Based on the student's profile information, generate exactly 5 multiple-choice quiz questions to assess their learning level.
+    const prompt = `You are an educational assessment expert. Based on the student's profile information, generate exactly 10 multiple-choice quiz questions to assess their learning level.
 
 Student Profile:
 - Name: ${profileData.name}
@@ -51,6 +51,7 @@ Format your response as a JSON array. Each question should have this structure:
   "id": 1,
   "question": "Question text",
   "options": ["Option A", "Option B", "Option C", "Option D"],
+  "correctAnswer": "The exact text of the correct option",
   "hint": "Optional hint for the question"
 }
 
@@ -70,13 +71,13 @@ Only respond with the JSON array, no additional text.`;
   }
 };
 
-export const determineLearningLevel = async (profileData, quizAnswers) => {
+export const determineLearningLevel = async (profileData, quizAnswers, questions) => {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' });
 
-    const answersText = quizAnswers
-      .map((answer, index) => `Q${index + 1}: ${answer}`)
-      .join('\n');
+    const answersText = questions
+      .map((q, index) => `Q${index + 1}: ${q.question}\nCorrect Answer: ${q.correctAnswer}\nStudent's Answer: ${quizAnswers[index]}`)
+      .join('\n\n');
 
     const prompt = `You are an educational psychologist specializing in learning level assessment. 
 
@@ -91,15 +92,16 @@ Student Profile:
 Student's Quiz Answers:
 ${answersText}
 
-Based on the answers and profile, determine the most appropriate learning level:
-1. Foundation - Needs step-by-step guidance, basic concepts, support for foundational skills
-2. Guided - Can work with structured approach, needs regular guidance, benefits from scaffolding
-3. Independent - Can work independently, minimal guidance needed, self-directed learner
-4. Analytical - Advanced learner, can analyze deeply, synthesize information, create original solutions
+Based on the answers and profile, calculate a score out of 10 based on how many questions they answered correctly, and determine the most appropriate learning level strictly using these criteria:
+- Foundation: Score < 5/10
+- Guided: Score 5-6/10
+- Independent: Score 7-8/10
+- Analytical: Score 9-10/10
 
-Respond with ONLY the learning level name (foundation, guided, independent, or analytical) and a brief explanation in this JSON format:
+Respond with ONLY the learning level name (foundation, guided, independent, or analytical), the calculated score (out of 10), and a brief explanation in this JSON format:
 {
   "level": "foundation|guided|independent|analytical",
+  "score": 7,
   "explanation": "Brief explanation of why this level was chosen"
 }
 

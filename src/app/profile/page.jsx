@@ -107,7 +107,17 @@ export default function ProfilePage() {
   };
 
   const handleQuizComplete = (levelData) => {
-    setFormData((prev) => ({ ...prev, level: levelData.level }));
+    const newLevel = levelData.level;
+    setFormData((prev) => ({ ...prev, level: newLevel }));
+    
+    // Auto-save the new level if the profile already exists
+    if (isEditing && profile && profile._id) {
+      dispatch(updateProfile({ 
+        profileId: profile._id, 
+        profileData: { ...formData, level: newLevel } 
+      }));
+    }
+    
     setShowQuiz(false);
   };
 

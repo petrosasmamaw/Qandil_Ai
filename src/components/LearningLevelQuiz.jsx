@@ -12,6 +12,7 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
   const [evaluating, setEvaluating] = useState(false);
   const [error, setError] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [quizResult, setQuizResult] = useState(null);
   const messagesEndRef = useRef(null);
 
   // Load quiz questions
@@ -67,8 +68,8 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
     try {
       setEvaluating(true);
       setError(null);
-      const levelData = await determineLearningLevel(profileData, finalAnswers);
-      onLevelDetermined(levelData);
+      const levelData = await determineLearningLevel(profileData, finalAnswers, questions);
+      setQuizResult(levelData);
     } catch (err) {
       setError(err.message || 'Failed to evaluate learning level');
     } finally {
@@ -86,6 +87,44 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
               Generating personalized quiz questions based on your profile...
             </p>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (quizResult) {
+    const scoreColor = quizResult.score >= 5 ? 'text-green-500' : 'text-orange-500';
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white/90 dark:bg-gray-800/90 rounded-2xl p-8 max-w-lg w-full shadow-2xl backdrop-blur-xl border border-white/40 dark:border-gray-700 flex flex-col items-center justify-center text-center text-gray-900 dark:text-gray-100">
+          <div className={`p-4 rounded-full bg-opacity-10 mb-4 ${scoreColor.replace('text', 'bg')}`}>
+             <FiCheckCircle size={48} className={scoreColor} />
+          </div>
+          <h2 className="text-3xl font-black mb-2">Quiz Completed!</h2>
+          <div className="mb-6 flex flex-col items-center">
+            <span className="text-sm font-bold uppercase tracking-widest opacity-60 mb-2">Your Score</span>
+            <span className={`text-6xl font-black ${scoreColor}`}>
+              {quizResult.score !== undefined ? `${quizResult.score}/10` : 'Done'}
+            </span>
+          </div>
+          
+          <div className="w-full bg-black/5 dark:bg-white/5 p-4 rounded-xl border border-black/10 dark:border-white/10 mb-6">
+            <span className="text-sm font-bold uppercase tracking-widest opacity-60 block mb-1">Determined Level</span>
+            <span className="text-xl font-bold uppercase text-blue-600 dark:text-blue-400">
+              {quizResult.level}
+            </span>
+          </div>
+
+          <p className="text-sm md:text-base opacity-80 leading-relaxed mb-8 text-balance">
+            {quizResult.explanation}
+          </p>
+
+          <button
+            onClick={() => onLevelDetermined(quizResult)}
+            className="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-all shadow-lg flex justify-center items-center gap-2"
+          >
+            Continue Profile Setup
+          </button>
         </div>
       </div>
     );
