@@ -94,13 +94,115 @@ export default function AssignmentGuidePage() {
     );
   }
 
-  // logic functions for processing files and text remain same...
-  const handleFileUpload = async (files) => { /* ... (keep your existing logic) */ };
-  const handleTextSubmit = async (e) => { /* ... (keep your existing logic) */ };
-  const handleDrag = (e) => { /* ... (keep your existing logic) */ };
-  const handleDrop = (e) => { /* ... (keep your existing logic) */ };
-  const handleDeleteGuidance = (guidanceId) => { /* ... (keep your existing logic) */ };
-  const handleDownloadGuidance = (guidance) => { /* ... (keep your existing logic) */ };
+  // Handle Drag & Drop
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      await handleFileUpload(e.dataTransfer.files);
+    }
+  };
+
+  // Handle Document Upload
+  const handleFileUpload = async (files) => {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    
+    // Check file type
+    const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
+    if (!validTypes.includes(file.type)) {
+      setError(t('assignmentGuide.invalidFileType') || 'Please upload PDF or Word documents only.');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+
+    setError(null);
+    setProcessing(true);
+    
+    try {
+      const result = await generateAssignmentGuidance(file, Object.fromEntries(Object.entries(profile).filter(([k]) => ['name', 'grade', 'level', 'studySystem', 'goal', 'preferredLanguage'].includes(k))));
+      
+      if (result.success) {
+        const newGuidance = {
+          id: Date.now().toString(),
+          title: result.fileName || file.name,
+          content: result.guidance,
+          date: new Date().toISOString(),
+        };
+        setGuidances([newGuidance, ...guidances]);
+      }
+    } catch (err) {
+      console.error(err);
+      setError(t('assignmentGuide.failedGenMessage') || err.message);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  // Handle Text Submission
+  const handleTextSubmit = async (e) => {
+    e.preventDefault();
+    if (!textInput.trim()) {
+      setError(t('assignmentGuide.emptyAssignmentMessage') || 'Please enter some text.');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    if (!textTitle.trim()) {
+      setError(t('assignmentGuide.emptyTitleMessage') || 'Please enter a title.');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+
+    setError(null);
+    setProcessing(true);
+    
+    try {
+      const result = await generateAssignmentGuidanceFromText(textInput, textTitle, Object.fromEntries(Object.entries(profile).filter(([k]) => ['name', 'grade', 'level', 'studySystem', 'goal', 'preferredLanguage'].includes(k))));
+      
+      if (result.success) {
+        const newGuidance = {
+          id: Date.now().toString(),
+          title: textTitle,
+          content: result.guidance,
+          date: new Date().toISOString(),
+        };
+        setGuidances([newGuidance, ...guidances]);
+        setTextInput('');
+        setTextTitle('');
+      }
+    } catch (err) {
+      console.error(err);
+      setError(t('assignmentGuide.failedGenMessage') || err.message);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  // Delete & Download
+  const handleDeleteGuidance = (guidanceId) => {
+    setGuidances(guidances.filter(g => g.id !== guidanceId));
+  };
+  
+  const handleDownloadGuidance = (guidance) => {
+    const element = document.createElement("a");
+    const file = new Blob([guidance.content], {type: 'text/plain'});
+    element.href = URL.createObjectURL(file);
+    element.download = `${guidance.title || 'assignment-guidance'}.txt`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
 
   return (
     <main 

@@ -13,7 +13,7 @@ import {
   clearSuccess,
 } from '@/store/slices/profileSlice';
 import { FiTarget, FiZap, FiBarChart2, FiCheck, FiX } from 'react-icons/fi';
-import { translations } from '@/utils/translations';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function ProfilePage() {
   const dispatch = useDispatch();
@@ -22,8 +22,7 @@ export default function ProfilePage() {
     (state) => state.profile
   );
   
-  const language = useSelector((state) => state.theme?.language || 'eng');
-  const t = (key) => key.split('.').reduce((obj, k) => obj && obj[k], translations[language]) || key;
+  const { t, language } = useTranslation();
 
   const [session, setSession] = useState(null);
   const [sessionLoading, setSessionLoading] = useState(true);
