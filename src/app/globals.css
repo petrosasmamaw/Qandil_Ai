@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+/* Root variables */
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -12,6 +13,7 @@ html.dark {
   color-scheme: dark;
 }
 
+/* Theme inline variables */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -19,6 +21,7 @@ html.dark {
   --font-mono: var(--font-geist-mono);
 }
 
+/* Global body */
 body {
   background: var(--background);
   color: var(--foreground);
@@ -31,7 +34,7 @@ body.dark-mode {
   color: #ededed !important;
 }
 
-/* Dark mode disabled transitions for specific animations */
+/* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
@@ -39,171 +42,120 @@ body.dark-mode {
   }
 }
 
-/* Allow element transitions for theme switching */
+/* Allow theme switching transitions */
 * {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Logo Animation Keyframes */
-@keyframes logoSpin {
-  0% {
-    transform: rotateY(0deg) rotateZ(0deg);
-  }
-  50% {
-    transform: rotateY(360deg) rotateZ(5deg);
-  }
-  100% {
-    transform: rotateY(0deg) rotateZ(0deg);
-  }
-}
-
-@keyframes logoBob {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-
-@keyframes logoGlow {
-  0%, 100% {
-    filter: drop-shadow(0 0 2px rgba(107, 114, 128, 0.3));
-  }
-  50% {
-    filter: drop-shadow(0 0 12px rgba(107, 114, 128, 0.6)) drop-shadow(0 0 20px rgba(156, 163, 175, 0.4));
-  }
-}
-
+/* Logo animations */
 @keyframes logoFloat {
-  0%, 100% {
-    transform: translateY(0px) scale(1);
-  }
-  25% {
-    transform: translateY(-4px) scale(1.02);
-  }
-  50% {
-    transform: translateY(-8px) scale(1.05);
-  }
-  75% {
-    transform: translateY(-4px) scale(1.02);
-  }
+  0%,100%{transform:translateY(0px) scale(1);}
+  25%{transform:translateY(-4px) scale(1.02);}
+  50%{transform:translateY(-8px) scale(1.05);}
+  75%{transform:translateY(-4px) scale(1.02);}
 }
-
-@keyframes navItemSlide {
-  0% {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes logoGlow {
+  0%,100%{filter: drop-shadow(0 0 2px rgba(107,114,128,0.3));}
+  50%{filter: drop-shadow(0 0 12px rgba(107,114,128,0.6)) drop-shadow(0 0 20px rgba(156,163,175,0.4));}
 }
-
-@keyframes glassShine {
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
-}
-
-/* Logo Animation Class */
 .logo-animate {
   animation: logoFloat 3s ease-in-out infinite, logoGlow 2s ease-in-out infinite;
   display: inline-block;
   perspective: 1000px;
 }
 
-/* Dark mode keeps page backgrounds visible while preserving readability */
-html.dark body {
-  color: #ededed;
+/* Navbar animations */
+@keyframes navItemSlide {
+  0%{opacity:0;transform:translateY(-10px);}
+  100%{opacity:1;transform:translateY(0);}
 }
+nav { animation: navItemSlide 0.6s ease-out; }
 
-/* Navbar Animations */
-nav {
-  animation: navItemSlide 0.6s ease-out;
-}
-
-/* Glassmorphism enhancement for tablets and smaller */
+/* Glassmorphism blur support */
 @supports (backdrop-filter: blur(1px)) {
-  .backdrop-blur-xl {
-    backdrop-filter: blur(16px);
-  }
+  .backdrop-blur-xl { backdrop-filter: blur(16px); }
 }
 
-/* Smooth transitions for all interactive elements */
+/* Smooth transitions for interactive elements */
 button, a {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
 }
 
-/* Dark mode specific navbar styling */
-@media (prefers-color-scheme: dark) {
-  nav {
-    background: radial-gradient(at top, rgba(31, 41, 55, 0.4), rgba(17, 24, 39, 0.2));
-  }
-}
-
-/* Premium light theme system - cool white background without affecting dark mode */
+/* Light theme - main background */
 html:not(.dark) body {
-  background: linear-gradient(180deg, #f0f4f8 0%, #e8f0f7 50%, #f0f4f8 100%);
+  background-image: url('https://cdn.vectorstock.com/i/500p/87/24/pastel-pink-and-blue-blur-backdrop-vector-63408724.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   color: #111827;
 }
 
-/* Disable backdrop blur on boxes in light mode - blur only background */
-html:not(.dark) .backdrop-blur-sm,
-html:not(.dark) .backdrop-blur-md,
-html:not(.dark) .backdrop-blur-lg,
-html:not(.dark) .backdrop-blur-xl {
-  backdrop-filter: blur(4px) !important;
-}
-
-/* Light theme - all boxes dark/black transparent with small blur */
+/* Light theme boxes */
 html:not(.dark) main [class*="bg-white"],
-html:not(.dark) nav [class*="bg-white"] {
-  background-color: rgba(20, 20, 30, 0.15) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-color: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(4px);
-}
-
-html:not(.dark) main [class*="bg-gray-50"],
-html:not(.dark) main [class*="bg-blue-50"],
-html:not(.dark) main [class*="bg-green-50"],
-html:not(.dark) main [class*="bg-yellow-50"],
-html:not(.dark) main [class*="bg-red-50"] {
-  background-color: rgba(222, 104, 21, 0.8) !important;
+html:not(.dark) nav [class*="bg-white"],
+html:not(.dark) .light-box {
+  background-color: transparent !important; /* Fully transparent */
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 12px;
   backdrop-filter: blur(6px);
 }
 
-/* Background image blur layer (light mode only) */
+/* Small inner boxes with blur */
+html:not(.dark) .inner-box {
+  background-color: rgba(255,255,255,0.3) !important;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+
+/* Input fields - light theme */
+html:not(.dark) input,
+html:not(.dark) textarea,
+html:not(.dark) select {
+  background-color: rgba(255,255,255,0.3);
+  border: 1px solid rgba(0,0,0,0.15);
+  color: #111827;
+  backdrop-filter: blur(4px);
+  border-radius: 8px;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+html:not(.dark) input:focus,
+html:not(.dark) textarea:focus,
+html:not(.dark) select:focus {
+  background-color: rgba(255,255,255,0.4);
+  border-color: rgba(0,0,0,0.25);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+}
+
+/* Placeholder text */
+html:not(.dark) input::placeholder,
+html:not(.dark) textarea::placeholder {
+  color: rgba(0,0,0,0.5);
+}
+
+/* Background image overlay blur layer */
 .light-image-bg {
   position: relative;
   isolation: isolate;
 }
-
 html:not(.dark) .light-image-bg::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -2;
-  background-image: var(--light-bg-image);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  filter: blur(10px);
+  filter: blur(8px);
   transform: scale(1);
 }
-
 html:not(.dark) .light-image-bg::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(135deg, rgba(130, 186, 249, 0.5), rgba(116, 201, 240, 0.5), rgba(132, 199, 250, 0.5));
+  background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(245,245,245,0.25));
 }
 
 html.dark .light-image-bg::before,

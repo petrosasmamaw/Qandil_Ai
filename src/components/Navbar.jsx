@@ -119,7 +119,10 @@ export const Navbar = () => {
                   className="transition-transform duration-300 group-hover:scale-110 w-8 h-8"
                 />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-200 bg-clip-text text-transparent transition-all duration-300 group-hover:from-gray-800 group-hover:to-gray-600">
+              <span 
+                className={`text-xl font-bold transition-all duration-300 ${theme === 'dark' ? 'text-white' : ''}`}
+                style={theme === 'light' ? { color: 'black', textShadow: 'none', background: 'none', WebkitTextFillColor: 'black' } : { textShadow: 'none', background: 'none' }}
+              >
                 Qandil AI
               </span>
             </Link>
@@ -127,15 +130,15 @@ export const Navbar = () => {
 
           {/* Center Navigation - Glassmorphic Pills */}
           {!loading && session?.user && (
-            <div className="hidden md:flex items-center gap-1.5 bg-white/15 dark:bg-gray-800/50 backdrop-blur-md rounded-full px-1.5 py-1.5 border border-white/30 dark:border-gray-700/30 shadow-sm">
+            <div className="hidden md:flex items-center gap-1.5 bg-gray-900/10 dark:bg-gray-800/50 backdrop-blur-md rounded-full px-1.5 py-1.5 border border-gray-900/10 dark:border-gray-700/30 shadow-sm">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 ${
                     isActive(item.href)
-                      ? 'bg-white/40 dark:bg-gray-700/80 text-gray-900 dark:text-white shadow-md scale-105'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/25 dark:hover:bg-gray-600/50'
+                      ? 'bg-gray-900/80 dark:bg-gray-700/80 text-white dark:text-white shadow-md scale-105'
+                      : 'text-gray-900 dark:text-gray-300 hover:text-black dark:hover:text-gray-100 hover:bg-gray-900/20 dark:hover:bg-gray-600/50'
                   }`}
                 >
                   {item.icon}
@@ -146,12 +149,12 @@ export const Navbar = () => {
           )}
 
           {/* Auth Buttons Section */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 text-black">
             {/* Language Toggle Button */}
             {mounted && session?.user && (
               <button
                 onClick={() => dispatch(toggleLanguage())}
-                className="px-4 py-1.5 rounded-full text-sm font-medium bg-white/75 dark:bg-gray-800/50 border border-blue-300/50 dark:border-blue-600/50 text-blue-900 dark:text-blue-100 hover:bg-blue-50/80 dark:hover:bg-blue-950/20 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
+                className="px-4 py-1.5 rounded-full text-sm font-medium bg-gray-900/10 dark:bg-gray-800/50 border border-gray-900/20 dark:border-blue-600/50 text-gray-900 dark:text-blue-100 hover:bg-gray-900/20 dark:hover:bg-blue-950/20 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
                 title="Toggle language"
               >
                 {language === 'eng' ? '🇺🇸 ENG' : '🇪🇹 AMH'}
@@ -162,7 +165,7 @@ export const Navbar = () => {
             {mounted && (
               <button
                 onClick={() => dispatch(toggleTheme())}
-                className="p-2.5 rounded-full text-sm font-medium bg-white/75 dark:bg-gray-800/50 border border-gray-300/50 dark:border-gray-600/50 text-gray-900 dark:text-gray-100 hover:bg-white dark:hover:bg-gray-700/70 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
+                className="p-2.5 rounded-full text-sm font-medium bg-gray-900/10 dark:bg-gray-800/50 border border-gray-900/20 dark:border-gray-600/50 text-gray-900 dark:text-gray-100 hover:bg-gray-900/20 dark:hover:bg-gray-700/70 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
                 title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
               >
                 {theme === 'light' ? (
@@ -184,14 +187,14 @@ export const Navbar = () => {
                   await supabase.auth.signOut();
                   window.location.href = '/auth/login';
                 }}
-                className="px-4 py-1.5 rounded-full text-sm font-medium text-red-600 dark:text-red-400 bg-white/75 dark:bg-gray-800/50 border-2 border-red-300 dark:border-red-600 hover:bg-red-50/85 dark:hover:bg-red-950/20 hover:border-red-400 dark:hover:border-red-500 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+                className="px-4 py-1.5 rounded-full text-sm font-medium text-red-600 dark:text-red-400 bg-red-50/80 dark:bg-gray-800/50 border-2 border-red-300 dark:border-red-600 hover:bg-red-100 dark:hover:bg-red-950/20 hover:border-red-500 dark:hover:border-red-500 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
               >
                 {t('navbar.signOut')}
               </button>
             )}
 
             {loading ? (
-              <div className="text-sm text-gray-600 dark:text-gray-400" suppressHydrationWarning>Loading...</div>
+              <div className="text-sm dark:text-gray-400" style={{ color: theme === 'light' ? 'black' : undefined }} suppressHydrationWarning>Loading...</div>
             ) : session?.user ? (
               <div className="flex items-center gap-3">
                 {/* Sign In/Sign Up - shown when not logged in */}
@@ -200,13 +203,21 @@ export const Navbar = () => {
               <div className="flex items-center gap-2">
                 <Link
                   href="/auth/login"
-                  className="px-5 py-1.5 rounded-full text-sm font-medium text-gray-900 dark:text-gray-100 bg-white/80 dark:bg-gray-700/60 hover:bg-white dark:hover:bg-gray-600 border border-gray-300/50 dark:border-gray-500/50 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                  className="px-5 py-1.5 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none"
+                  style={theme === 'light' 
+                    ? { color: 'black', backgroundColor: '#f3f4f6', border: '1px solid #9ca3af' }
+                    : { color: 'white', backgroundColor: 'rgba(55,65,81,0.6)', border: '1px solid rgba(107,114,128,0.5)' }
+                  }
                 >
                   {t('navbar.signIn')}
                 </Link>
                 <Link
                   href="/auth/register"
-                  className="px-5 py-1.5 rounded-full text-sm font-medium bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-300 dark:to-gray-400 hover:from-gray-900 hover:to-black dark:hover:from-gray-200 dark:hover:to-gray-300 text-white dark:text-gray-900 shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                  className="px-5 py-1.5 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none"
+                  style={theme === 'light'
+                    ? { color: 'white', backgroundColor: 'black', border: '1px solid black' }
+                    : { color: '#111827', backgroundImage: 'linear-gradient(to right, #d1d5db, #9ca3af)', border: 'none' }
+                  }
                 >
                   {t('navbar.signUp')}
                 </Link>

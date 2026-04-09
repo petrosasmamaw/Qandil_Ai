@@ -170,7 +170,7 @@ export default function ImageAnalyzerPage() {
     <main 
       className="light-image-bg min-h-screen p-6 text-gray-800 dark:text-gray-100"
       style={{
-        '--light-bg-image': "url('https://i.pinimg.com/736x/de/0a/0e/de0a0eb1dd6af97630c3a6b90d162701.jpg')",
+        '--light-bg-image': "url('https://cdn.vectorstock.com/i/500p/87/24/pastel-pink-and-blue-blur-backdrop-vector-63408724.jpg')",
         background: `
           ${document.documentElement.classList.contains('dark') ? `
             linear-gradient(135deg, rgba(15, 15, 15, 0.9), rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.9)),
