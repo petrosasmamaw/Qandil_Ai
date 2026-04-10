@@ -238,6 +238,14 @@ export default function AssignmentGuidePage() {
               </p>
             </div>
           </div>
+          <div className="flex gap-3 w-full md:w-auto">
+            <button
+              onClick={() => { /* UI-only: no functionality yet */ }}
+              className="flex-1 md:flex-none px-5 py-3 rounded-xl light-box border font-medium hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+            >
+              <FiBook size={18} className="text-blue-500" /> History
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-8">
