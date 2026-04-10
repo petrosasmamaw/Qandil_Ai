@@ -62,7 +62,7 @@ export const sendChatMessage = async (studentProfile, conversationHistory, userM
     const formattedHistory = conversationHistory.map(msg => ({
       role: msg.sender === 'ai' ? 'model' : 'user',
       parts: [{ text: msg.content }]
-    }));
+    }));}}
 
     const chat = model.startChat({
       history: formattedHistory,
