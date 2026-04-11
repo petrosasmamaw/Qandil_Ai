@@ -71,8 +71,12 @@ export default function AIAssistance() {
             title: t('aiAssistance.newChatTitle'),
           })
         );
+        console.log('Chat creation response:', chatAction);
         if (chatAction.payload) {
+          console.log('Setting currentChatId to:', chatAction.payload._id);
           setCurrentChatId(chatAction.payload._id);
+        } else {
+          console.error('No payload in chat creation response');
         }
       } catch (err) {
         console.error('Error initializing chat:', err);

@@ -25,15 +25,24 @@ export const addMessageToAIChat = createAsyncThunk(
   "aiAssistanceChat/addMessage",
   async ({ chatId, role, content, fileNames }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/ai-assistance-chat/message`, {
+      console.log('addMessageToAIChat thunk called with:', { chatId, role, content, fileNames });
+      const url = `${BACKEND_URL}/ai-assistance-chat/message`;
+      console.log('Calling API:', url);
+      
+      const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chatId, role, content, fileNames }),
       });
+      
+      console.log('Response status:', response.status);
       const data = await response.json();
+      console.log('Response data:', data);
+      
       if (!response.ok) throw new Error(data.message);
       return data.data;
     } catch (error) {
+      console.error('addMessageToAIChat error:', error);
       return rejectWithValue(error.message);
     }
   }

@@ -36,21 +36,6 @@ export default function ChatBox({
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    if (studentProfile) {
-      const greeting = getInitialGreeting(studentProfile, language);
-      // Only set greeting if there are no messages loaded from a stored chat
-      setMessages((prev) => (prev && prev.length > 0 ? prev : [
-        {
-          id: 1,
-          sender: 'ai',
-          content: greeting,
-          timestamp: new Date(),
-        },
-      ]));
-    }
-  }, [studentProfile, language]);
-
   // Read current chat from the appropriate slice so stored chat messages appear
   const getSliceState = () => {
     const sliceMap = {
@@ -64,9 +49,12 @@ export default function ChatBox({
 
   const sliceState = getSliceState();
 
+  // Load messages from history when currentChatId changes, or show greeting for new chats
   useEffect(() => {
     const current = sliceState?.currentChat;
-    if (current && current._id === currentChatId && Array.isArray(current.messages)) {
+    
+    // If we have messages in the current chat, load them
+    if (current && current._id === currentChatId && Array.isArray(current.messages) && current.messages.length > 0) {
       const loaded = current.messages.map((m, idx) => ({
         id: idx + 1,
         sender: m.role === 'assistant' || m.role === 'model' ? 'ai' : 'user',
@@ -75,8 +63,20 @@ export default function ChatBox({
         timestamp: m.timestamp ? new Date(m.timestamp) : new Date(),
       }));
       setMessages(loaded);
+    } 
+    // For new chats without messages yet, show greeting
+    else if (studentProfile && (!current || current.messages?.length === 0)) {
+      const greeting = getInitialGreeting(studentProfile, language);
+      setMessages([
+        {
+          id: 1,
+          sender: 'ai',
+          content: greeting,
+          timestamp: new Date(),
+        },
+      ]);
     }
-  }, [sliceState?.currentChat, currentChatId]);
+  }, [sliceState?.currentChat, currentChatId, studentProfile, language]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -92,8 +92,11 @@ export default function ChatBox({
 
     if (!currentChatId) {
       setError(t('common.chatNotInitialized'));
+      console.error('Error: currentChatId is not set or is null/undefined');
       return;
     }
+
+    console.log('Chat ID ready - type:', typeof currentChatId, 'value:', currentChatId);
 
     const userMessage = {
       id: messages.length + 1,
@@ -109,12 +112,19 @@ export default function ChatBox({
 
     try {
       if (onAddMessage) {
-        await onAddMessage({
+        console.log('Sending message to backend:', {
           chatId: currentChatId,
           role: 'user',
           content: inputValue,
           fileNames: [],
         });
+        const result = await onAddMessage({
+          chatId: currentChatId,
+          role: 'user',
+          content: inputValue,
+          fileNames: [],
+        });
+        console.log('Message saved:', result);
       }
 
       const conversationHistory = messages
@@ -141,16 +151,27 @@ export default function ChatBox({
       setMessages((prev) => [...prev, aiMessage]);
 
       if (onAddMessage) {
-        await onAddMessage({
+        console.log('Sending AI response to backend:', {
           chatId: currentChatId,
           role: 'assistant',
           content: response.message,
           fileNames: [],
         });
+        const result = await onAddMessage({
+          chatId: currentChatId,
+          role: 'assistant',
+          content: response.message,
+          fileNames: [],
+        });
+        console.log('AI response saved:', result);
       }
     } catch (err) {
       setError(err.message || t('common.failedToSend'));
-      console.error('Chat error:', err);
+      console.error('Chat error full details:', {
+        error: err,
+        message: err.message,
+        stack: err.stack,
+      });
     } finally {
       setLoading(false);
     }

@@ -25,15 +25,24 @@ export const addMessageToNotesChat = createAsyncThunk(
   "notesChat/addMessage",
   async ({ chatId, role, content, fileNames }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/notes-chat/message`, {
+      console.log('addMessageToNotesChat thunk called with:', { chatId, role, content, fileNames });
+      const url = `${BACKEND_URL}/notes-chat/message`;
+      console.log('Calling API:', url);
+      
+      const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chatId, role, content, fileNames }),
       });
+      
+      console.log('Response status:', response.status);
       const data = await response.json();
+      console.log('Response data:', data);
+      
       if (!response.ok) throw new Error(data.message);
       return data.data;
     } catch (error) {
+      console.error('addMessageToNotesChat error:', error);
       return rejectWithValue(error.message);
     }
   }

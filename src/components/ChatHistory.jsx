@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { FiArrowLeft, FiTrash2, FiClock } from "react-icons/fi";
 import {
   fetchAIAssistanceChatHistory as fetchAIHistory,
   fetchAIAssistanceChatById as fetchAIChatById,
@@ -35,7 +36,7 @@ const ChatHistory = ({
   isOpen,
 }) => {
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedChatId, setSelectedChatId] = useState(null);
 
   // Select appropriate slice based on chatType
   const getSliceState = () => {
@@ -86,113 +87,189 @@ const ChatHistory = ({
 
   useEffect(() => {
     if (isOpen && userId) {
+      console.log(`Fetching ${chatType} history for user:`, userId);
       dispatch(thunks.fetchHistory(userId));
     }
-  }, [isOpen, userId, dispatch]);
+  }, [isOpen, userId, chatType, dispatch]);
 
   const handleSelectChat = async (chatId) => {
+    setSelectedChatId(chatId);
+    // Fetch individual chat to ensure messages are fully loaded
     await dispatch(thunks.fetchChatById(chatId));
-    onHistorySelect?.(chatId);
   };
 
-  const handleDeleteChat = async (chatId, e) => {
-    e.stopPropagation();
+  const handleOpenChat = async (chatId) => {
+    await dispatch(thunks.fetchChatById(chatId));
+    onHistorySelect?.(chatId);
+    onClose?.();
+  };
+
+  const handleDeleteChat = async (chatId) => {
     if (window.confirm("Are you sure you want to delete this chat?")) {
       await dispatch(thunks.deleteChat(chatId));
+      if (selectedChatId === chatId) {
+        setSelectedChatId(null);
+      }
     }
   };
+
+  const selectedChat = selectedChatId 
+    ? (state?.currentChat && state.currentChat._id === selectedChatId 
+        ? state.currentChat  // Use the freshly fetched full chat
+        : chatHistory.find((c) => c._id === selectedChatId))  // Fallback to history
+    : null;
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-      <div className="bg-white/25 dark:bg-gray-800 rounded-lg shadow-md w-full max-w-md max-h-96 overflow-hidden flex flex-col border border-white/40 dark:border-gray-700 backdrop-blur-md">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-6xl h-[90vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-white/20 dark:border-gray-800">
         {/* Header */}
-        <div className="bg-blue-600 text-white p-4 flex justify-between items-center">
-          <h2 className="text-lg font-semibold">Chat History</h2>
+        <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <FiClock size={24} />
+            <div>
+              <h2 className="text-2xl font-bold">Chat History</h2>
+              <p className="text-sm text-green-100">{chatHistory.length} conversations</p>
+            </div>
+          </div>
           <button
             onClick={onClose}
-            className="text-white hover:bg-blue-700 p-1 rounded"
+            className="text-white hover:bg-white/20 p-2 rounded-full transition-all"
           >
             ✕
           </button>
         </div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2">
-            {error}
-            <button
-              onClick={() => dispatch(thunks.clearError())}
-              className="ml-2 text-sm underline"
-            >
-              Dismiss
-            </button>
-          </div>
-        )}
-
-        {/* Chat List */}
-        <div className="flex-1 overflow-y-auto">
-          {loading ? (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-gray-500">Loading history...</p>
-            </div>
-          ) : chatHistory.length === 0 ? (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-gray-500">No chat history yet</p>
-            </div>
-          ) : (
-            <div className="space-y-4 p-3">
-              {chatHistory.map((chat) => (
-                <div
-                  key={chat._id}
-                  className="p-3 bg-white/50 dark:bg-gray-800 rounded-lg border dark:border-gray-700"
+        {/* Main Container */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* Left Panel - Chat List */}
+          <div className="w-full md:w-80 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
+            {error && (
+              <div className="bg-red-100 dark:bg-red-900 border-b border-red-300 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3">
+                <div className="text-sm">{error}</div>
+                <button
+                  onClick={() => dispatch(thunks.clearError())}
+                  className="text-xs underline mt-1"
                 >
-                  <div className="flex justify-between items-start mb-2">
-                    <div className="flex-1">
-                      <h3 className="font-medium text-gray-900 dark:text-white">{chat.title}</h3>
-                      <p className="text-xs text-gray-500">{new Date(chat.createdAt).toLocaleString()}</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={(e) => handleDeleteChat(chat._id, e)}
-                        className="text-red-500 hover:text-red-700 text-sm"
-                      >
-                        Delete
-                      </button>
-                      <button
-                        onClick={() => handleSelectChat(chat._id)}
-                        className="text-sm bg-blue-600 text-white px-3 py-1 rounded-md"
-                      >
-                        Open
-                      </button>
-                    </div>
-                  </div>
+                  Dismiss
+                </button>
+              </div>
+            )}
 
-                  {/* Messages preview */}
-                  <div className="max-h-48 overflow-y-auto space-y-3 p-2 bg-white/0">
-                    {Array.isArray(chat.messages) && chat.messages.length > 0 ? (
-                      chat.messages.map((m, i) => (
-                        <div key={i} className={`p-2 rounded-md ${m.role === 'assistant' ? 'bg-gray-100 dark:bg-gray-700' : 'bg-green-50 dark:bg-green-900/30'}`}>
-                          <div className="text-[11px] font-semibold mb-1">{m.role === 'assistant' ? 'AI' : 'You'}</div>
-                          <div className="text-sm whitespace-pre-wrap">{m.content}</div>
+            {loading ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent mx-auto mb-4"></div>
+                  <p className="text-gray-600 dark:text-gray-400">Loading history...</p>
+                </div>
+              </div>
+            ) : chatHistory.length === 0 ? (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-gray-500 dark:text-gray-400">No conversations yet</p>
+              </div>
+            ) : (
+              <div className="space-y-2 p-4">
+                {chatHistory.map((chat) => (
+                  <div
+                    key={chat._id}
+                    onClick={() => handleSelectChat(chat._id)}
+                    className={`p-3 rounded-lg cursor-pointer transition-all border-2 ${
+                      selectedChatId === chat._id
+                        ? "bg-green-100 dark:bg-green-900/30 border-green-500"
+                        : "bg-white dark:bg-gray-700 border-transparent hover:bg-gray-100 dark:hover:bg-gray-600"
+                    }`}
+                  >
+                    <h3 className="font-semibold text-gray-900 dark:text-white truncate">{chat.title}</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {new Date(chat.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right Panel - Chat Content */}
+          <div className="flex-1 flex flex-col bg-white dark:bg-gray-900">
+            {selectedChat ? (
+              <>
+                {/* Chat Header */}
+                <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-6 border-b border-gray-200 dark:border-gray-700">
+                  <h3 className="text-xl font-bold">{selectedChat.title}</h3>
+                  <p className="text-sm text-green-100">
+                    {selectedChat.messages?.length || 0} messages
+                  </p>
+                </div>
+
+                {/* Messages */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                  {Array.isArray(selectedChat.messages) && selectedChat.messages.length > 0 ? (
+                    selectedChat.messages.map((m, i) => (
+                      <div
+                        key={i}
+                        className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div
+                          className={`max-w-md px-4 py-3 rounded-lg ${
+                            m.role === 'user'
+                              ? 'bg-green-600 text-white rounded-br-none'
+                              : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-bl-none'
+                          }`}
+                        >
+                          <div className="text-xs font-semibold mb-1 opacity-70">
+                            {m.role === 'user' ? 'You' : 'Assistant'}
+                          </div>
+                          <p className="text-sm whitespace-pre-wrap">{m.content}</p>
                           {m.fileNames && m.fileNames.length > 0 && (
-                            <div className="text-xs mt-1 opacity-80">
+                            <div className="mt-2 pt-2 border-t border-current border-opacity-20">
                               {m.fileNames.map((fn, idx) => (
-                                <div key={idx} className="underline decoration-dotted">{fn}</div>
+                                <div key={idx} className="text-xs opacity-80 underline decoration-dotted">
+                                  📎 {fn}
+                                </div>
                               ))}
                             </div>
                           )}
+                          <div className="text-xs mt-2 opacity-60">
+                            {new Date(m.timestamp).toLocaleTimeString()}
+                          </div>
                         </div>
-                      ))
-                    ) : (
-                      <div className="text-xs text-gray-500">No messages</div>
-                    )}
-                  </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="flex items-center justify-center h-full">
+                      <p className="text-gray-400">No messages in this chat</p>
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
-          )}
+
+                {/* Action Buttons */}
+                <div className="border-t border-gray-200 dark:border-gray-700 p-4 flex gap-3">
+                  <button
+                    onClick={() => handleOpenChat(selectedChat._id)}
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-all"
+                  >
+                    Continue Chatting
+                  </button>
+                  <button
+                    onClick={() => handleDeleteChat(selectedChat._id)}
+                    className="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center gap-2"
+                  >
+                    <FiTrash2 size={18} />
+                    Delete
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <p className="text-gray-500 dark:text-gray-400 text-lg">
+                    Select a chat to view
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
