@@ -11,7 +11,8 @@ export default function ChatBox({
   onClose, 
   chatType,                    
   currentChatId,               
-  onAddMessage                 
+  onAddMessage,
+  onCreateChat                 
 }) {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -90,48 +91,65 @@ export default function ChatBox({
       return;
     }
 
-    if (!currentChatId) {
-      setError(t('common.chatNotInitialized'));
-      console.error('Error: currentChatId is not set or is null/undefined');
-      return;
-    }
-
-    console.log('Chat ID ready - type:', typeof currentChatId, 'value:', currentChatId);
-
-    const userMessage = {
-      id: messages.length + 1,
-      sender: 'user',
-      content: inputValue,
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setInputValue('');
-    setError(null);
     setLoading(true);
+    setError(null);
+    let chatIdToUse = currentChatId;
 
     try {
+      // If no chat exists, create one before sending message
+      if (!chatIdToUse) {
+        console.log('No chat exists. Creating new chat before sending message...');
+        if (onCreateChat) {
+          const newChatId = await onCreateChat();
+          if (!newChatId) {
+            setError('Failed to create chat. Please try again.');
+            console.error('Failed to create chat - no ID returned');
+            setLoading(false);
+            return;
+          }
+          chatIdToUse = newChatId;
+          console.log('New chat created with ID:', newChatId);
+        } else {
+          setError('Chat creation function not available');
+          console.error('onCreateChat callback not provided');
+          setLoading(false);
+          return;
+        }
+      }
+
+      console.log('Chat ID ready - type:', typeof chatIdToUse, 'value:', chatIdToUse);
+
+      // Validate chatId before sending
+      if (!chatIdToUse || typeof chatIdToUse !== 'string' || chatIdToUse.trim() === '') {
+        const errorMsg = 'Chat ID is invalid. Please try again.';
+        setError(errorMsg);
+        console.error(errorMsg, { chatIdToUse });
+        setLoading(false);
+        return;
+      }
+
+      const userMessage = {
+        id: messages.length + 1,
+        sender: 'user',
+        content: inputValue,
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, userMessage]);
+      setInputValue('');
+
       if (onAddMessage) {
         console.log('Sending message to backend:', {
-          chatId: currentChatId,
-          chatIdType: typeof currentChatId,
-          chatIdLength: currentChatId?.length,
+          chatId: chatIdToUse,
+          chatIdType: typeof chatIdToUse,
+          chatIdLength: chatIdToUse?.length,
           role: 'user',
           content: inputValue,
           fileNames: [],
         });
 
-        // Validate chatId before sending
-        if (!currentChatId || typeof currentChatId !== 'string' || currentChatId.trim() === '') {
-          const errorMsg = 'Chat ID is invalid. Please refresh and try again.';
-          setError(errorMsg);
-          console.error(errorMsg, { currentChatId });
-          setMessages((prev) => prev.slice(0, -1)); // Remove the message we just added
-          return;
-        }
-
         const result = await onAddMessage({
-          chatId: currentChatId,
+          chatId: chatIdToUse,
           role: 'user',
           content: inputValue,
           fileNames: [],
@@ -164,13 +182,13 @@ export default function ChatBox({
 
       if (onAddMessage) {
         console.log('Sending AI response to backend:', {
-          chatId: currentChatId,
+          chatId: chatIdToUse,
           role: 'assistant',
           content: response.message,
           fileNames: [],
         });
         const result = await onAddMessage({
-          chatId: currentChatId,
+          chatId: chatIdToUse,
           role: 'assistant',
           content: response.message,
           fileNames: [],
@@ -198,6 +216,26 @@ export default function ChatBox({
 
     const names = Array.from(files).map((f) => f.name);
 
+    // Create chat if it doesn't exist
+    let chatIdToUse = currentChatId;
+    if (!chatIdToUse && onCreateChat) {
+      try {
+        const newChatId = await onCreateChat();
+        if (newChatId) {
+          chatIdToUse = newChatId;
+          console.log('Chat created for file upload, ID:', newChatId);
+        }
+      } catch (err) {
+        console.error('Failed to create chat for file upload:', err);
+        return;
+      }
+    }
+
+    if (!chatIdToUse) {
+      console.error('No chat ID for file upload');
+      return;
+    }
+
     const userFileMessage = {
       id: messages.length + 1,
       sender: 'user',
@@ -211,7 +249,7 @@ export default function ChatBox({
     if (onAddMessage) {
       try {
         await onAddMessage({
-          chatId: currentChatId,
+          chatId: chatIdToUse,
           role: 'user',
           content: '',
           fileNames: names,

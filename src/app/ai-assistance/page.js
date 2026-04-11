@@ -59,7 +59,7 @@ export default function AIAssistance() {
   }, []);
 
   useEffect(() => {
-    const initializeChat = async () => {
+    const initializeSession = async () => {
       try {
         const { data: { session: currentSession } } = await supabase.auth.getSession();
         if (!currentSession?.user) {
@@ -75,28 +75,42 @@ export default function AIAssistance() {
           return;
         }
 
-        const chatAction = await dispatch(
-          createAIAssistanceChat({
-            userId: currentSession.user.id,
-            title: t('aiAssistance.newChatTitle'),
-          })
-        );
-        console.log('Chat creation response:', chatAction);
-        if (chatAction.payload && chatAction.payload._id) {
-          console.log('Setting currentChatId to:', chatAction.payload._id);
-          setCurrentChatId(chatAction.payload._id);
-        } else {
-          console.error('Chat creation failed - no payload or _id:', chatAction);
-          setError('Failed to initialize chat. Please refresh the page.');
-        }
+        // Don't create chat here - let ChatBox create it when user sends first message
+        console.log('Session initialized, waiting for user to send message to create chat');
       } catch (err) {
-        console.error('Error initializing chat:', err);
-        setError(err.message || 'Failed to load chat');
+        console.error('Error initializing session:', err);
+        setError(err.message || 'Failed to load session');
       }
     };
 
-    initializeChat();
+    initializeSession();
   }, [router, dispatch, t]);
+
+  // Function to create a new chat (called when user sends first message)
+  const handleCreateChat = async () => {
+    try {
+      const chatAction = await dispatch(
+        createAIAssistanceChat({
+          userId: session?.user?.id,
+          title: 'New Conversation',
+        })
+      );
+      
+      console.log('Chat created on first message:', chatAction);
+      
+      if (chatAction.payload && chatAction.payload._id) {
+        console.log('Setting currentChatId to:', chatAction.payload._id);
+        setCurrentChatId(chatAction.payload._id);
+        return chatAction.payload._id;
+      } else {
+        console.error('Failed to create chat:', chatAction);
+        return null;
+      }
+    } catch (err) {
+      console.error('Error creating chat:', err);
+      return null;
+    }
+  };
 
   if (loading) {
     return (
@@ -176,6 +190,7 @@ export default function AIAssistance() {
               chatType="aiAssistance"
               currentChatId={currentChatId}
               onAddMessage={(messageData) => dispatch(addMessageToAIChat(messageData))}
+              onCreateChat={handleCreateChat}
             />
           </div>
 
