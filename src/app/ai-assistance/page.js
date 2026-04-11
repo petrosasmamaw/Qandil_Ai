@@ -23,6 +23,16 @@ import {
   FiEdit2 
 } from 'react-icons/fi';
 
+// Helper function to extract first 5 words for chat title
+const getFirstFiveWords = (text) => {
+  if (!text) return 'New Conversation';
+  return text
+    .split(' ')
+    .slice(0, 5)
+    .filter(word => word.length > 0)
+    .join(' ') || 'New Conversation';
+};
+
 // Helper function to extract first 4 words for chat title
 const getFirstFourWords = (text) => {
   if (!text) return 'New Conversation';
@@ -87,12 +97,13 @@ export default function AIAssistance() {
   }, [router, dispatch, t]);
 
   // Function to create a new chat (called when user sends first message)
-  const handleCreateChat = async () => {
+  const handleCreateChat = async (messageContent = '') => {
     try {
+      const chatTitle = getFirstFiveWords(messageContent);
       const chatAction = await dispatch(
         createAIAssistanceChat({
           userId: session?.user?.id,
-          title: 'New Conversation',
+          title: chatTitle,
         })
       );
       

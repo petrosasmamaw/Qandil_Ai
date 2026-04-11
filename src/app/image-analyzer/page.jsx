@@ -27,6 +27,7 @@ export default function ImageAnalyzerPage() {
   const profile = useSelector((state) => state.profile.profile);
   const profileLoading = useSelector((state) => state.profile.loading);
   const profileError = useSelector((state) => state.profile.error);
+  const language = useSelector((state) => state.language?.language || 'eng');
 
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);

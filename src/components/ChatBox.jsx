@@ -100,7 +100,7 @@ export default function ChatBox({
       if (!chatIdToUse) {
         console.log('No chat exists. Creating new chat before sending message...');
         if (onCreateChat) {
-          const newChatId = await onCreateChat();
+          const newChatId = await onCreateChat(inputValue);
           if (!newChatId) {
             setError('Failed to create chat. Please try again.');
             console.error('Failed to create chat - no ID returned');
@@ -220,7 +220,7 @@ export default function ChatBox({
     let chatIdToUse = currentChatId;
     if (!chatIdToUse && onCreateChat) {
       try {
-        const newChatId = await onCreateChat();
+        const newChatId = await onCreateChat(names.join(', '));
         if (newChatId) {
           chatIdToUse = newChatId;
           console.log('Chat created for file upload, ID:', newChatId);

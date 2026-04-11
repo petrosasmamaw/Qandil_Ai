@@ -40,6 +40,7 @@ export default function AssignmentGuidePage() {
   const dispatch = useDispatch();
 
   const { profile } = useSelector((state) => state.profile);
+  const language = useSelector((state) => state.language?.language || 'eng');
 
   // Match Home page theme detection exactly
   useEffect(() => {
