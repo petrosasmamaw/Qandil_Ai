@@ -5,6 +5,7 @@ import {
   getNotesChatHistory,
   getNotesChatById,
   deleteNotesChat,
+  updateNotesChatTitle,
 } from "../controllers/NotesChatController.js";
 
 const router = express.Router();
@@ -20,6 +21,9 @@ router.get("/history/:userId", getNotesChatHistory);
 
 // Get specific chat
 router.get("/:chatId", getNotesChatById);
+
+// Update chat title
+router.patch("/:chatId", updateNotesChatTitle);
 
 // Delete chat
 router.delete("/:chatId", deleteNotesChat);

@@ -8,8 +8,19 @@ import { fetchProfileByUserId } from '@/store/slices/profileSlice';
 import { createNotesChat, addMessageToNotesChat } from '@/store/slices/notesChatSlice';
 import { processDocument, processTextContent } from '@/utils/documentProcessingService';
 import NoteDisplay from '@/components/NoteDisplay';
+import ChatHistory from '@/components/ChatHistory';
 import { useTranslation } from '@/hooks/useTranslation';
-import { FiFileText, FiBook, FiZap } from 'react-icons/fi';
+import { FiFileText, FiBook, FiZap, FiPlus } from 'react-icons/fi';
+
+// Helper function to extract first 4 words for chat title
+const getFirstFourWords = (text) => {
+  if (!text) return 'Notes Chat';
+  return text
+    .split(' ')
+    .slice(0, 4)
+    .filter(word => word.length > 0)
+    .join(' ') || 'Notes Chat';
+};
 
 export default function NotesPage() {
   const { t } = useTranslation();
@@ -24,6 +35,7 @@ export default function NotesPage() {
   const [textInput, setTextInput] = useState('');
   const [textTitle, setTextTitle] = useState('');
   const [isDark, setIsDark] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -147,11 +159,13 @@ export default function NotesPage() {
         try {
           // Ensure a notes chat exists, create if not
           if (!notesChatId) {
-            const chatAction = await dispatch(createNotesChat({ userId: session?.user?.id, title: result.fileName || 'Notes Chat' }));
+            const chatTitle = getFirstFourWords(result.notes);
+            const chatAction = await dispatch(createNotesChat({ userId: session?.user?.id, title: chatTitle }));
             if (chatAction.payload) setNotesChatId(chatAction.payload._id);
           }
 
-          const chatIdToUse = notesChatId || (await dispatch(createNotesChat({ userId: session?.user?.id, title: result.fileName || 'Notes Chat' }))).payload?._id;
+          const chatTitle = getFirstFourWords(result.notes);
+          const chatIdToUse = notesChatId || (await dispatch(createNotesChat({ userId: session?.user?.id, title: chatTitle }))).payload?._id;
 
           // Add user file message (store file name)
           await dispatch(addMessageToNotesChat({ chatId: chatIdToUse, role: 'user', content: '', fileNames: [file.name] }));
@@ -202,11 +216,13 @@ export default function NotesPage() {
         setTextTitle('');
         try {
           if (!notesChatId) {
-            const chatAction = await dispatch(createNotesChat({ userId: session?.user?.id, title: textTitle || 'Notes Chat' }));
+            const chatTitle = getFirstFourWords(textInput);
+            const chatAction = await dispatch(createNotesChat({ userId: session?.user?.id, title: chatTitle }));
             if (chatAction.payload) setNotesChatId(chatAction.payload._id);
           }
 
-          const chatIdToUse = notesChatId || (await dispatch(createNotesChat({ userId: session?.user?.id, title: textTitle || 'Notes Chat' }))).payload?._id;
+          const chatTitle = getFirstFourWords(textInput);
+          const chatIdToUse = notesChatId || (await dispatch(createNotesChat({ userId: session?.user?.id, title: chatTitle }))).payload?._id;
 
           // store user text message
           await dispatch(addMessageToNotesChat({ chatId: chatIdToUse, role: 'user', content: textInput, fileNames: [] }));
@@ -280,7 +296,7 @@ export default function NotesPage() {
           </div>
           <div className="flex gap-3 w-full md:w-auto">
             <button
-              onClick={() => { /* UI-only: no functionality yet */ }}
+              onClick={() => setIsHistoryOpen(true)}
               className="flex-1 md:flex-none px-5 py-3 rounded-xl light-box border font-medium hover:bg-white/10 transition-all flex items-center justify-center gap-2"
             >
               <FiBook size={18} className="text-blue-500" /> History
@@ -421,6 +437,17 @@ export default function NotesPage() {
           </div>
         </div>
       </div>
+
+      <ChatHistory
+        userId={session?.user?.id}
+        chatType="notes"
+        onHistorySelect={(chatId) => {
+          setNotesChatId(chatId);
+          setIsHistoryOpen(false);
+        }}
+        onClose={() => setIsHistoryOpen(false)}
+        isOpen={isHistoryOpen}
+      />
     </main>
   );
 }

@@ -8,8 +8,19 @@ import { fetchProfileByUserId } from '@/store/slices/profileSlice';
 import { createAssignmentGuideChat, addMessageToAssignmentGuideChat } from '@/store/slices/assignmentGuideChatSlice';
 import { generateAssignmentGuidance, generateAssignmentGuidanceFromText } from '@/utils/assignmentGuidanceService';
 import AssignmentGuidanceDisplay from '@/components/AssignmentGuidanceDisplay';
+import ChatHistory from '@/components/ChatHistory';
 import { useTranslation } from '@/hooks/useTranslation';
 import { FiClipboard, FiBook, FiZap, FiFileText, FiCheck } from 'react-icons/fi';
+
+// Helper function to extract first 4 words for chat title
+const getFirstFourWords = (text) => {
+  if (!text) return 'Assignment Guidance';
+  return text
+    .split(' ')
+    .slice(0, 4)
+    .filter(word => word.length > 0)
+    .join(' ') || 'Assignment Guidance';
+};
 
 export default function AssignmentGuidePage() {
   const { t } = useTranslation();
@@ -24,6 +35,7 @@ export default function AssignmentGuidePage() {
   const [textInput, setTextInput] = useState('');
   const [textTitle, setTextTitle] = useState('');
   const [isDark, setIsDark] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -147,11 +159,13 @@ export default function AssignmentGuidePage() {
         try {
           // ensure assignment chat exists
           if (!assignmentChatId) {
-            const chatAction = await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: result.fileName || 'Assignment Guidance' }));
+            const chatTitle = getFirstFourWords(result.guidance);
+            const chatAction = await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: chatTitle }));
             if (chatAction.payload) setAssignmentChatId(chatAction.payload._id);
           }
 
-          const chatIdToUse = assignmentChatId || (await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: result.fileName || 'Assignment Guidance' }))).payload?._id;
+          const chatTitle = getFirstFourWords(result.guidance);
+          const chatIdToUse = assignmentChatId || (await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: chatTitle }))).payload?._id;
 
           // store file name as user message
           await dispatch(addMessageToAssignmentGuideChat({ chatId: chatIdToUse, role: 'user', content: '', fileNames: [file.name] }));
@@ -202,11 +216,13 @@ export default function AssignmentGuidePage() {
         setTextTitle('');
         try {
           if (!assignmentChatId) {
-            const chatAction = await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: textTitle || 'Assignment Guidance' }));
+            const chatTitle = getFirstFourWords(textInput);
+            const chatAction = await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: chatTitle }));
             if (chatAction.payload) setAssignmentChatId(chatAction.payload._id);
           }
 
-          const chatIdToUse = assignmentChatId || (await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: textTitle || 'Assignment Guidance' }))).payload?._id;
+          const chatTitle = getFirstFourWords(textInput);
+          const chatIdToUse = assignmentChatId || (await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: chatTitle }))).payload?._id;
 
           // store user text message
           await dispatch(addMessageToAssignmentGuideChat({ chatId: chatIdToUse, role: 'user', content: textInput, fileNames: [] }));
@@ -276,7 +292,7 @@ export default function AssignmentGuidePage() {
           </div>
           <div className="flex gap-3 w-full md:w-auto">
             <button
-              onClick={() => { /* UI-only: no functionality yet */ }}
+              onClick={() => setIsHistoryOpen(true)}
               className="flex-1 md:flex-none px-5 py-3 rounded-xl light-box border font-medium hover:bg-white/10 transition-all flex items-center justify-center gap-2"
             >
               <FiBook size={18} className="text-blue-500" /> History
@@ -439,6 +455,17 @@ export default function AssignmentGuidePage() {
           </div>
         </div>
       </div>
+
+      <ChatHistory
+        userId={session?.user?.id}
+        chatType="assignmentGuide"
+        onHistorySelect={(chatId) => {
+          setAssignmentChatId(chatId);
+          setIsHistoryOpen(false);
+        }}
+        onClose={() => setIsHistoryOpen(false)}
+        isOpen={isHistoryOpen}
+      />
     </main>
   );
 }

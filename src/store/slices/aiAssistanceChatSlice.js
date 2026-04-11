@@ -94,6 +94,24 @@ export const deleteAIAssistanceChatThunk = createAsyncThunk(
   }
 );
 
+export const updateAIAssistanceChatTitle = createAsyncThunk(
+  "aiAssistanceChat/updateTitle",
+  async ({ chatId, title }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/ai-assistance-chat/${chatId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Slice
 const aiAssistanceChatSlice = createSlice({
   name: "aiAssistanceChat",
@@ -190,6 +208,22 @@ const aiAssistanceChatSlice = createSlice({
         state.success = true;
       })
       .addCase(deleteAIAssistanceChatThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Update Title
+    builder
+      .addCase(updateAIAssistanceChatTitle.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateAIAssistanceChatTitle.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentChat = action.payload;
+        state.success = true;
+      })
+      .addCase(updateAIAssistanceChatTitle.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

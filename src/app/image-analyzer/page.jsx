@@ -7,8 +7,19 @@ import { createImageAnalyzerChat, addMessageToImageAnalyzerChat } from '@/store/
 import { supabase } from '@/lib/supabase';
 import { analyzeImage } from '@/utils/imageAnalysisService';
 import ImageAnalysisDisplay from '@/components/ImageAnalysisDisplay';
+import ChatHistory from '@/components/ChatHistory';
 import { useTranslation } from '@/hooks/useTranslation';
 import { FiImage, FiUploadCloud, FiInfo, FiBook } from 'react-icons/fi';
+
+// Helper function to extract first 4 words for chat title
+const getFirstFourWords = (text) => {
+  if (!text) return 'Image Analysis';
+  return text
+    .split(' ')
+    .slice(0, 4)
+    .filter(word => word.length > 0)
+    .join(' ') || 'Image Analysis';
+};
 
 export default function ImageAnalyzerPage() {
   const { t } = useTranslation();
@@ -24,6 +35,8 @@ export default function ImageAnalyzerPage() {
   const [error, setError] = useState('');
   const [dragActive, setDragActive] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [imageChatId, setImageChatId] = useState(null);
 
   // Unified Theme Detection
   useEffect(() => {
@@ -97,7 +110,8 @@ export default function ImageAnalyzerPage() {
       setImageAnalysis(result);
       try {
         // create or reuse image-analyzer chat and save file name + analysis
-        const chatAction = await dispatch(createImageAnalyzerChat({ userId: session?.user?.id, title: result.fileName || 'Image Analysis' }));
+        const chatTitle = getFirstFourWords(result.analysis);
+        const chatAction = await dispatch(createImageAnalyzerChat({ userId: session?.user?.id, title: chatTitle }));
         const chatId = chatAction.payload?._id;
         if (chatId) {
           await dispatch(addMessageToImageAnalyzerChat({ chatId, role: 'user', content: '', fileNames: [result.fileName] }));
@@ -160,7 +174,7 @@ export default function ImageAnalyzerPage() {
           </div>
           <div className="flex gap-3 w-full md:w-auto">
             <button
-              onClick={() => { /* UI-only: no functionality yet */ }}
+              onClick={() => setIsHistoryOpen(true)}
               className="flex-1 md:flex-none px-5 py-3 rounded-xl light-box border font-medium hover:bg-white/10 transition-all flex items-center justify-center gap-2"
             >
               <FiBook size={18} className="text-blue-500" /> History
@@ -242,6 +256,17 @@ export default function ImageAnalyzerPage() {
           )}
         </div>
       </div>
+
+      <ChatHistory
+        userId={session?.user?.id}
+        chatType="imageAnalyzer"
+        onHistorySelect={(chatId) => {
+          setImageChatId(chatId);
+          setIsHistoryOpen(false);
+        }}
+        onClose={() => setIsHistoryOpen(false)}
+        isOpen={isHistoryOpen}
+      />
 
       <style jsx global>{`
         @keyframes progress {

@@ -5,6 +5,7 @@ import {
   getImageAnalyzerChatHistory,
   getImageAnalyzerChatById,
   deleteImageAnalyzerChat,
+  updateImageAnalyzerChatTitle,
 } from "../controllers/ImageAnalyzerChatController.js";
 
 const router = express.Router();
@@ -20,6 +21,9 @@ router.get("/history/:userId", getImageAnalyzerChatHistory);
 
 // Get specific chat
 router.get("/:chatId", getImageAnalyzerChatById);
+
+// Update chat title
+router.patch("/:chatId", updateImageAnalyzerChatTitle);
 
 // Delete chat
 router.delete("/:chatId", deleteImageAnalyzerChat);

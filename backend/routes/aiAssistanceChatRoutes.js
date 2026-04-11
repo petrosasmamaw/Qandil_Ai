@@ -5,6 +5,7 @@ import {
   getAIAssistanceChatHistory,
   getAIAssistanceChatById,
   deleteAIAssistanceChat,
+  updateAIAssistanceChatTitle,
 } from "../controllers/AIAssistanceChatController.js";
 
 const router = express.Router();
@@ -20,6 +21,9 @@ router.get("/history/:userId", getAIAssistanceChatHistory);
 
 // Get specific chat
 router.get("/:chatId", getAIAssistanceChatById);
+
+// Update chat title
+router.patch("/:chatId", updateAIAssistanceChatTitle);
 
 // Delete chat
 router.delete("/:chatId", deleteAIAssistanceChat);

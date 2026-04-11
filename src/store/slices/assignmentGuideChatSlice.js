@@ -102,6 +102,24 @@ export const deleteAssignmentGuideChatThunk = createAsyncThunk(
   }
 );
 
+export const updateAssignmentGuideChatTitle = createAsyncThunk(
+  "assignmentGuideChat/updateTitle",
+  async ({ chatId, title }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/assignment-guide-chat/${chatId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Slice
 const assignmentGuideChatSlice = createSlice({
   name: "assignmentGuideChat",

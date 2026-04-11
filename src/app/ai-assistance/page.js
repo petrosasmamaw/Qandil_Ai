@@ -23,6 +23,16 @@ import {
   FiEdit2 
 } from 'react-icons/fi';
 
+// Helper function to extract first 4 words for chat title
+const getFirstFourWords = (text) => {
+  if (!text) return 'New Conversation';
+  return text
+    .split(' ')
+    .slice(0, 4)
+    .filter(word => word.length > 0)
+    .join(' ') || 'New Conversation';
+};
+
 export default function AIAssistance() {
   const { t } = useTranslation();
   const [session, setSession] = useState(null);

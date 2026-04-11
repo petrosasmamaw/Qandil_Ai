@@ -163,3 +163,42 @@ export const deleteAssignmentGuideChat = async (req, res) => {
     });
   }
 };
+
+export const updateAssignmentGuideChatTitle = async (req, res) => {
+  try {
+    const { chatId } = req.params;
+    const { title } = req.body;
+
+    if (!title || title.trim() === '') {
+      return res.status(400).json({
+        success: false,
+        message: "Title is required",
+      });
+    }
+
+    const chat = await AssignmentGuideChat.findByIdAndUpdate(
+      chatId,
+      { title: title.trim() },
+      { new: true }
+    );
+
+    if (!chat) {
+      return res.status(404).json({
+        success: false,
+        message: "Chat not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Assignment guide title updated successfully",
+      data: chat,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error updating assignment guide title",
+      error: error.message,
+    });
+  }
+};
