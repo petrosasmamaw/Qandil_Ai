@@ -68,9 +68,10 @@ export const getAIAssistanceChatHistory = async (req, res) => {
   try {
     const { userId } = req.params;
 
+    // Return full chats including messages so frontend can display contents in history modal
     const chats = await AIAssistanceChat.find({ userId })
       .sort({ createdAt: -1 })
-      .select("_id title learningLevel createdAt updatedAt");
+      .select("_id title learningLevel createdAt updatedAt messages");
 
     res.status(200).json({
       success: true,

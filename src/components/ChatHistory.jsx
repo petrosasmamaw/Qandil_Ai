@@ -142,32 +142,56 @@ const ChatHistory = ({
               <p className="text-gray-500">No chat history yet</p>
             </div>
           ) : (
-            <ul className="divide-y">
+            <div className="space-y-4 p-3">
               {chatHistory.map((chat) => (
-                <li
+                <div
                   key={chat._id}
-                  className="p-3 hover:bg-gray-100 cursor-pointer transition"
-                  onClick={() => handleSelectChat(chat._id)}
+                  className="p-3 bg-white/50 dark:bg-gray-800 rounded-lg border dark:border-gray-700"
                 >
-                  <div className="flex justify-between items-start">
+                  <div className="flex justify-between items-start mb-2">
                     <div className="flex-1">
-                      <h3 className="font-medium text-gray-900">
-                        {chat.title}
-                      </h3>
-                      <p className="text-xs text-gray-500">
-                        {new Date(chat.createdAt).toLocaleDateString()}
-                      </p>
+                      <h3 className="font-medium text-gray-900 dark:text-white">{chat.title}</h3>
+                      <p className="text-xs text-gray-500">{new Date(chat.createdAt).toLocaleString()}</p>
                     </div>
-                    <button
-                      onClick={(e) => handleDeleteChat(chat._id, e)}
-                      className="text-red-500 hover:text-red-700 text-sm"
-                    >
-                      Delete
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={(e) => handleDeleteChat(chat._id, e)}
+                        className="text-red-500 hover:text-red-700 text-sm"
+                      >
+                        Delete
+                      </button>
+                      <button
+                        onClick={() => handleSelectChat(chat._id)}
+                        className="text-sm bg-blue-600 text-white px-3 py-1 rounded-md"
+                      >
+                        Open
+                      </button>
+                    </div>
                   </div>
-                </li>
+
+                  {/* Messages preview */}
+                  <div className="max-h-48 overflow-y-auto space-y-3 p-2 bg-white/0">
+                    {Array.isArray(chat.messages) && chat.messages.length > 0 ? (
+                      chat.messages.map((m, i) => (
+                        <div key={i} className={`p-2 rounded-md ${m.role === 'assistant' ? 'bg-gray-100 dark:bg-gray-700' : 'bg-green-50 dark:bg-green-900/30'}`}>
+                          <div className="text-[11px] font-semibold mb-1">{m.role === 'assistant' ? 'AI' : 'You'}</div>
+                          <div className="text-sm whitespace-pre-wrap">{m.content}</div>
+                          {m.fileNames && m.fileNames.length > 0 && (
+                            <div className="text-xs mt-1 opacity-80">
+                              {m.fileNames.map((fn, idx) => (
+                                <div key={idx} className="underline decoration-dotted">{fn}</div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-xs text-gray-500">No messages</div>
+                    )}
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           )}
         </div>
       </div>

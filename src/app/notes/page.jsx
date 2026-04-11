@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
+import { createNotesChat, addMessageToNotesChat } from '@/store/slices/notesChatSlice';
 import { processDocument, processTextContent } from '@/utils/documentProcessingService';
 import NoteDisplay from '@/components/NoteDisplay';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -17,6 +18,7 @@ export default function NotesPage() {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState(null);
   const [notes, setNotes] = useState([]);
+  const [notesChatId, setNotesChatId] = useState(null);
   const [dragActive, setDragActive] = useState(false);
   const [inputMode, setInputMode] = useState('file'); // 'file' or 'text'
   const [textInput, setTextInput] = useState('');
@@ -141,6 +143,24 @@ export default function NotesPage() {
           date: new Date().toISOString(),
         };
         setNotes([newNote, ...notes]);
+
+        try {
+          // Ensure a notes chat exists, create if not
+          if (!notesChatId) {
+            const chatAction = await dispatch(createNotesChat({ userId: session?.user?.id, title: result.fileName || 'Notes Chat' }));
+            if (chatAction.payload) setNotesChatId(chatAction.payload._id);
+          }
+
+          const chatIdToUse = notesChatId || (await dispatch(createNotesChat({ userId: session?.user?.id, title: result.fileName || 'Notes Chat' }))).payload?._id;
+
+          // Add user file message (store file name)
+          await dispatch(addMessageToNotesChat({ chatId: chatIdToUse, role: 'user', content: '', fileNames: [file.name] }));
+
+          // Add assistant generated note message
+          await dispatch(addMessageToNotesChat({ chatId: chatIdToUse, role: 'assistant', content: result.notes, fileNames: [] }));
+        } catch (err) {
+          console.error('Failed to save notes to chat:', err);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -180,6 +200,22 @@ export default function NotesPage() {
         setNotes([newNote, ...notes]);
         setTextInput('');
         setTextTitle('');
+        try {
+          if (!notesChatId) {
+            const chatAction = await dispatch(createNotesChat({ userId: session?.user?.id, title: textTitle || 'Notes Chat' }));
+            if (chatAction.payload) setNotesChatId(chatAction.payload._id);
+          }
+
+          const chatIdToUse = notesChatId || (await dispatch(createNotesChat({ userId: session?.user?.id, title: textTitle || 'Notes Chat' }))).payload?._id;
+
+          // store user text message
+          await dispatch(addMessageToNotesChat({ chatId: chatIdToUse, role: 'user', content: textInput, fileNames: [] }));
+
+          // store assistant generated notes
+          await dispatch(addMessageToNotesChat({ chatId: chatIdToUse, role: 'assistant', content: result.notes, fileNames: [] }));
+        } catch (err) {
+          console.error('Failed to save text notes to chat:', err);
+        }
       }
     } catch (err) {
       console.error(err);

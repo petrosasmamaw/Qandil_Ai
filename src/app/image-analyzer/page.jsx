@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
+import { createImageAnalyzerChat, addMessageToImageAnalyzerChat } from '@/store/slices/imageAnalyzerChatSlice';
 import { supabase } from '@/lib/supabase';
 import { analyzeImage } from '@/utils/imageAnalysisService';
 import ImageAnalysisDisplay from '@/components/ImageAnalysisDisplay';
@@ -94,6 +95,17 @@ export default function ImageAnalyzerPage() {
     try {
       const result = await analyzeImage(file, profile, language);
       setImageAnalysis(result);
+      try {
+        // create or reuse image-analyzer chat and save file name + analysis
+        const chatAction = await dispatch(createImageAnalyzerChat({ userId: session?.user?.id, title: result.fileName || 'Image Analysis' }));
+        const chatId = chatAction.payload?._id;
+        if (chatId) {
+          await dispatch(addMessageToImageAnalyzerChat({ chatId, role: 'user', content: '', fileNames: [result.fileName] }));
+          await dispatch(addMessageToImageAnalyzerChat({ chatId, role: 'assistant', content: result.analysis || '', fileNames: [] }));
+        }
+      } catch (err) {
+        console.error('Failed to save image analysis to chat:', err);
+      }
     } catch (err) {
       setError(err.message || t('imageAnalyzer.failedAnalysis'));
       console.error('Image analysis error:', err);

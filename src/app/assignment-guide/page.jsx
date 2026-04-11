@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
+import { createAssignmentGuideChat, addMessageToAssignmentGuideChat } from '@/store/slices/assignmentGuideChatSlice';
 import { generateAssignmentGuidance, generateAssignmentGuidanceFromText } from '@/utils/assignmentGuidanceService';
 import AssignmentGuidanceDisplay from '@/components/AssignmentGuidanceDisplay';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -17,6 +18,7 @@ export default function AssignmentGuidePage() {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState(null);
   const [guidances, setGuidances] = useState([]);
+  const [assignmentChatId, setAssignmentChatId] = useState(null);
   const [dragActive, setDragActive] = useState(false);
   const [inputMode, setInputMode] = useState('file'); // 'file' or 'text'
   const [textInput, setTextInput] = useState('');
@@ -141,6 +143,24 @@ export default function AssignmentGuidePage() {
           date: new Date().toISOString(),
         };
         setGuidances([newGuidance, ...guidances]);
+
+        try {
+          // ensure assignment chat exists
+          if (!assignmentChatId) {
+            const chatAction = await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: result.fileName || 'Assignment Guidance' }));
+            if (chatAction.payload) setAssignmentChatId(chatAction.payload._id);
+          }
+
+          const chatIdToUse = assignmentChatId || (await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: result.fileName || 'Assignment Guidance' }))).payload?._id;
+
+          // store file name as user message
+          await dispatch(addMessageToAssignmentGuideChat({ chatId: chatIdToUse, role: 'user', content: '', fileNames: [file.name] }));
+
+          // store assistant guidance
+          await dispatch(addMessageToAssignmentGuideChat({ chatId: chatIdToUse, role: 'assistant', content: result.guidance, fileNames: [] }));
+        } catch (err) {
+          console.error('Failed to save assignment guidance to chat:', err);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -180,6 +200,22 @@ export default function AssignmentGuidePage() {
         setGuidances([newGuidance, ...guidances]);
         setTextInput('');
         setTextTitle('');
+        try {
+          if (!assignmentChatId) {
+            const chatAction = await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: textTitle || 'Assignment Guidance' }));
+            if (chatAction.payload) setAssignmentChatId(chatAction.payload._id);
+          }
+
+          const chatIdToUse = assignmentChatId || (await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: textTitle || 'Assignment Guidance' }))).payload?._id;
+
+          // store user text message
+          await dispatch(addMessageToAssignmentGuideChat({ chatId: chatIdToUse, role: 'user', content: textInput, fileNames: [] }));
+
+          // store assistant guidance
+          await dispatch(addMessageToAssignmentGuideChat({ chatId: chatIdToUse, role: 'assistant', content: result.guidance, fileNames: [] }));
+        } catch (err) {
+          console.error('Failed to save assignment guidance text to chat:', err);
+        }
       }
     } catch (err) {
       console.error(err);

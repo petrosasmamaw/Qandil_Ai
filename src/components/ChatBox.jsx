@@ -39,16 +39,44 @@ export default function ChatBox({
   useEffect(() => {
     if (studentProfile) {
       const greeting = getInitialGreeting(studentProfile, language);
-      setMessages([
+      // Only set greeting if there are no messages loaded from a stored chat
+      setMessages((prev) => (prev && prev.length > 0 ? prev : [
         {
           id: 1,
           sender: 'ai',
           content: greeting,
           timestamp: new Date(),
         },
-      ]);
+      ]));
     }
   }, [studentProfile, language]);
+
+  // Read current chat from the appropriate slice so stored chat messages appear
+  const getSliceState = () => {
+    const sliceMap = {
+      aiAssistance: 'aiAssistanceChat',
+      notes: 'notesChat',
+      assignmentGuide: 'assignmentGuideChat',
+      imageAnalyzer: 'imageAnalyzerChat',
+    };
+    return useSelector((state) => state[sliceMap[chatType]]);
+  };
+
+  const sliceState = getSliceState();
+
+  useEffect(() => {
+    const current = sliceState?.currentChat;
+    if (current && current._id === currentChatId && Array.isArray(current.messages)) {
+      const loaded = current.messages.map((m, idx) => ({
+        id: idx + 1,
+        sender: m.role === 'assistant' || m.role === 'model' ? 'ai' : 'user',
+        content: m.content || (m.fileNames && m.fileNames.join(', ')) || '',
+        fileNames: m.fileNames || [],
+        timestamp: m.timestamp ? new Date(m.timestamp) : new Date(),
+      }));
+      setMessages(loaded);
+    }
+  }, [sliceState?.currentChat, currentChatId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -128,6 +156,41 @@ export default function ChatBox({
     }
   };
 
+  // Handle file uploads: store file names and send as a message with fileNames
+  const fileInputRef = useRef(null);
+
+  const handleFileChange = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const names = Array.from(files).map((f) => f.name);
+
+    const userFileMessage = {
+      id: messages.length + 1,
+      sender: 'user',
+      content: names.join(', '),
+      fileNames: names,
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userFileMessage]);
+
+    if (onAddMessage) {
+      try {
+        await onAddMessage({
+          chatId: currentChatId,
+          role: 'user',
+          content: '',
+          fileNames: names,
+        });
+      } catch (err) {
+        console.error('Failed to add file message:', err);
+      }
+    }
+    // reset input
+    e.target.value = null;
+  };
+
   return (
     <div className="h-full flex flex-col bg-transparent overflow-hidden">
       {/* Header - Glassy with transition */}
@@ -171,6 +234,15 @@ export default function ChatBox({
             >
               <p className="text-sm whitespace-pre-wrap leading-relaxed">
                 {message.content}
+                {message.fileNames && message.fileNames.length > 0 && (
+                  <div className="mt-2 text-xs opacity-80">
+                    {message.fileNames.map((fn, i) => (
+                      <div key={i} className="underline decoration-dotted">
+                        {fn}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </p>
               <div
                 className={`text-[10px] mt-2 font-medium opacity-60 ${
@@ -211,19 +283,36 @@ export default function ChatBox({
 
       {/* Input Area - Integrated Glass Design */}
       <div className="p-4 md:p-6 bg-black/5 dark:bg-white/5 border-t border-black/5 dark:border-white/10 backdrop-blur-xl">
-        <form onSubmit={handleSendMessage} className="relative group">
+        <form onSubmit={handleSendMessage} className="relative group flex items-center gap-2">
+          <input
+            ref={fileInputRef}
+            type="file"
+            onChange={handleFileChange}
+            className="hidden"
+            accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+            multiple
+          />
+
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="px-3 py-2 rounded-xl border border-black/10 dark:border-white/10 bg-white/50 dark:bg-black/50 text-sm"
+          >
+            Upload
+          </button>
+
           <input
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder={t('common.askQuestion')}
             disabled={loading}
-            className="w-full pl-5 pr-14 py-4 rounded-2xl border border-black/10 dark:border-white/10 bg-white/50 dark:bg-black/50 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all disabled:opacity-50 text-sm"
+            className="flex-1 pl-5 pr-14 py-4 rounded-2xl border border-black/10 dark:border-white/10 bg-white/50 dark:bg-black/50 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all disabled:opacity-50 text-sm"
           />
           <button
             type="submit"
             disabled={loading || !inputValue.trim()}
-            className="absolute right-2 top-2 bottom-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-xl transition-all disabled:opacity-0 disabled:scale-90 flex items-center justify-center shadow-lg shadow-green-600/20"
+            className="px-4 bg-green-600 hover:bg-green-700 text-white rounded-xl transition-all disabled:opacity-0 disabled:scale-90 flex items-center justify-center shadow-lg shadow-green-600/20"
           >
             <FiSend size={18} />
           </button>
