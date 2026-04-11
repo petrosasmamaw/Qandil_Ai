@@ -5,18 +5,32 @@ export const createNotesChat = async (req, res) => {
   try {
     const { userId, title } = req.body;
 
+    console.log('createNotesChat controller called with:', { userId, title });
+
+    if (!userId) {
+      console.error('Error: userId is missing');
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
     const chat = new NotesChat({
       userId,
       title: title || "New Notes",
     });
 
     await chat.save();
+    
+    console.log('Notes chat created successfully:', { chatId: chat._id, userId, title });
+
     res.status(201).json({
       success: true,
       message: "Notes chat created successfully",
       data: chat,
     });
   } catch (error) {
+    console.error('Error creating notes chat:', error);
     res.status(500).json({
       success: false,
       message: "Error creating notes chat",

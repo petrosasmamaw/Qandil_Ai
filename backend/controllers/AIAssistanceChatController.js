@@ -5,18 +5,32 @@ export const createAIAssistanceChat = async (req, res) => {
   try {
     const { userId, title } = req.body;
 
+    console.log('createAIAssistanceChat controller called with:', { userId, title });
+
+    if (!userId) {
+      console.error('Error: userId is missing');
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
     const chat = new AIAssistanceChat({
       userId,
       title: title || "New Chat",
     });
 
     await chat.save();
+    
+    console.log('Chat created successfully:', { chatId: chat._id, userId, title });
+
     res.status(201).json({
       success: true,
       message: "Chat created successfully",
       data: chat,
     });
   } catch (error) {
+    console.error('Error creating chat:', error);
     res.status(500).json({
       success: false,
       message: "Error creating chat",

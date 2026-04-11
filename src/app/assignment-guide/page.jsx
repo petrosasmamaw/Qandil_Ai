@@ -161,11 +161,23 @@ export default function AssignmentGuidePage() {
           if (!assignmentChatId) {
             const chatTitle = getFirstFourWords(result.guidance);
             const chatAction = await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: chatTitle }));
-            if (chatAction.payload) setAssignmentChatId(chatAction.payload._id);
+            if (chatAction.payload && chatAction.payload._id) {
+              setAssignmentChatId(chatAction.payload._id);
+            } else {
+              console.error('Failed to create assignment chat:', chatAction);
+              setError('Failed to save chat. Please try again.');
+              return;
+            }
           }
 
           const chatTitle = getFirstFourWords(result.guidance);
           const chatIdToUse = assignmentChatId || (await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: chatTitle }))).payload?._id;
+
+          if (!chatIdToUse) {
+            console.error('No valid chatId for saving message');
+            setError('Failed to initialize chat. Please try again.');
+            return;
+          }
 
           // store file name as user message
           await dispatch(addMessageToAssignmentGuideChat({ chatId: chatIdToUse, role: 'user', content: '', fileNames: [file.name] }));
@@ -218,11 +230,23 @@ export default function AssignmentGuidePage() {
           if (!assignmentChatId) {
             const chatTitle = getFirstFourWords(textInput);
             const chatAction = await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: chatTitle }));
-            if (chatAction.payload) setAssignmentChatId(chatAction.payload._id);
+            if (chatAction.payload && chatAction.payload._id) {
+              setAssignmentChatId(chatAction.payload._id);
+            } else {
+              console.error('Failed to create assignment chat:', chatAction);
+              setError('Failed to save chat. Please try again.');
+              return;
+            }
           }
 
           const chatTitle = getFirstFourWords(textInput);
           const chatIdToUse = assignmentChatId || (await dispatch(createAssignmentGuideChat({ userId: session?.user?.id, title: chatTitle }))).payload?._id;
+
+          if (!chatIdToUse) {
+            console.error('No valid chatId for saving message');
+            setError('Failed to initialize chat. Please try again.');
+            return;
+          }
 
           // store user text message
           await dispatch(addMessageToAssignmentGuideChat({ chatId: chatIdToUse, role: 'user', content: textInput, fileNames: [] }));

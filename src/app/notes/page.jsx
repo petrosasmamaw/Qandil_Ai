@@ -161,11 +161,23 @@ export default function NotesPage() {
           if (!notesChatId) {
             const chatTitle = getFirstFourWords(result.notes);
             const chatAction = await dispatch(createNotesChat({ userId: session?.user?.id, title: chatTitle }));
-            if (chatAction.payload) setNotesChatId(chatAction.payload._id);
+            if (chatAction.payload && chatAction.payload._id) {
+              setNotesChatId(chatAction.payload._id);
+            } else {
+              console.error('Failed to create notes chat:', chatAction);
+              setError('Failed to save chat. Please try again.');
+              return;
+            }
           }
 
           const chatTitle = getFirstFourWords(result.notes);
           const chatIdToUse = notesChatId || (await dispatch(createNotesChat({ userId: session?.user?.id, title: chatTitle }))).payload?._id;
+
+          if (!chatIdToUse) {
+            console.error('No valid chatId for saving message');
+            setError('Failed to initialize chat. Please try again.');
+            return;
+          }
 
           // Add user file message (store file name)
           await dispatch(addMessageToNotesChat({ chatId: chatIdToUse, role: 'user', content: '', fileNames: [file.name] }));
@@ -218,11 +230,23 @@ export default function NotesPage() {
           if (!notesChatId) {
             const chatTitle = getFirstFourWords(textInput);
             const chatAction = await dispatch(createNotesChat({ userId: session?.user?.id, title: chatTitle }));
-            if (chatAction.payload) setNotesChatId(chatAction.payload._id);
+            if (chatAction.payload && chatAction.payload._id) {
+              setNotesChatId(chatAction.payload._id);
+            } else {
+              console.error('Failed to create notes chat:', chatAction);
+              setError('Failed to save chat. Please try again.');
+              return;
+            }
           }
 
           const chatTitle = getFirstFourWords(textInput);
           const chatIdToUse = notesChatId || (await dispatch(createNotesChat({ userId: session?.user?.id, title: chatTitle }))).payload?._id;
+
+          if (!chatIdToUse) {
+            console.error('No valid chatId for saving message');
+            setError('Failed to initialize chat. Please try again.');
+            return;
+          }
 
           // store user text message
           await dispatch(addMessageToNotesChat({ chatId: chatIdToUse, role: 'user', content: textInput, fileNames: [] }));

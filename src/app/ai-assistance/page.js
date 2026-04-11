@@ -82,11 +82,12 @@ export default function AIAssistance() {
           })
         );
         console.log('Chat creation response:', chatAction);
-        if (chatAction.payload) {
+        if (chatAction.payload && chatAction.payload._id) {
           console.log('Setting currentChatId to:', chatAction.payload._id);
           setCurrentChatId(chatAction.payload._id);
         } else {
-          console.error('No payload in chat creation response');
+          console.error('Chat creation failed - no payload or _id:', chatAction);
+          setError('Failed to initialize chat. Please refresh the page.');
         }
       } catch (err) {
         console.error('Error initializing chat:', err);

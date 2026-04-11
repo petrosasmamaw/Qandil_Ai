@@ -94,6 +94,24 @@ export const deleteImageAnalyzerChatThunk = createAsyncThunk(
   }
 );
 
+export const updateImageAnalyzerChatTitle = createAsyncThunk(
+  "imageAnalyzerChat/updateTitle",
+  async ({ chatId, title }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/image-analyzer-chat/${chatId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Slice
 const imageAnalyzerChatSlice = createSlice({
   name: "imageAnalyzerChat",
@@ -190,6 +208,22 @@ const imageAnalyzerChatSlice = createSlice({
         state.success = true;
       })
       .addCase(deleteImageAnalyzerChatThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Update Title
+    builder
+      .addCase(updateImageAnalyzerChatTitle.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateImageAnalyzerChatTitle.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentChat = action.payload;
+        state.success = true;
+      })
+      .addCase(updateImageAnalyzerChatTitle.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

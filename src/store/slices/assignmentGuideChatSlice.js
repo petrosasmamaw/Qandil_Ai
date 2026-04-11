@@ -219,6 +219,22 @@ const assignmentGuideChatSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
+
+    // Update Title
+    builder
+      .addCase(updateAssignmentGuideChatTitle.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateAssignmentGuideChatTitle.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentChat = action.payload;
+        state.success = true;
+      })
+      .addCase(updateAssignmentGuideChatTitle.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 

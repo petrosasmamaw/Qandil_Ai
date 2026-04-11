@@ -114,10 +114,22 @@ export default function ChatBox({
       if (onAddMessage) {
         console.log('Sending message to backend:', {
           chatId: currentChatId,
+          chatIdType: typeof currentChatId,
+          chatIdLength: currentChatId?.length,
           role: 'user',
           content: inputValue,
           fileNames: [],
         });
+
+        // Validate chatId before sending
+        if (!currentChatId || typeof currentChatId !== 'string' || currentChatId.trim() === '') {
+          const errorMsg = 'Chat ID is invalid. Please refresh and try again.';
+          setError(errorMsg);
+          console.error(errorMsg, { currentChatId });
+          setMessages((prev) => prev.slice(0, -1)); // Remove the message we just added
+          return;
+        }
+
         const result = await onAddMessage({
           chatId: currentChatId,
           role: 'user',

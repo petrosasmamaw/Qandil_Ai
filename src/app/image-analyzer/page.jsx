@@ -113,12 +113,18 @@ export default function ImageAnalyzerPage() {
         const chatTitle = getFirstFourWords(result.analysis);
         const chatAction = await dispatch(createImageAnalyzerChat({ userId: session?.user?.id, title: chatTitle }));
         const chatId = chatAction.payload?._id;
+        
         if (chatId) {
+          setImageChatId(chatId);
           await dispatch(addMessageToImageAnalyzerChat({ chatId, role: 'user', content: '', fileNames: [result.fileName] }));
           await dispatch(addMessageToImageAnalyzerChat({ chatId, role: 'assistant', content: result.analysis || '', fileNames: [] }));
+        } else {
+          console.error('Failed to create image analyzer chat:', chatAction);
+          setError('Failed to save image analysis. Please try again.');
         }
       } catch (err) {
         console.error('Failed to save image analysis to chat:', err);
+        setError('Failed to save image analysis. Please try again.');
       }
     } catch (err) {
       setError(err.message || t('imageAnalyzer.failedAnalysis'));

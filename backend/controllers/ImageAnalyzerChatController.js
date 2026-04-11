@@ -5,18 +5,32 @@ export const createImageAnalyzerChat = async (req, res) => {
   try {
     const { userId, title } = req.body;
 
+    console.log('createImageAnalyzerChat controller called with:', { userId, title });
+
+    if (!userId) {
+      console.error('Error: userId is missing');
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
     const chat = new ImageAnalyzerChat({
       userId,
       title: title || "Image Analysis",
     });
 
     await chat.save();
+    
+    console.log('Image analyzer chat created successfully:', { chatId: chat._id, userId, title });
+
     res.status(201).json({
       success: true,
       message: "Image analyzer chat created successfully",
       data: chat,
     });
   } catch (error) {
+    console.error('Error creating image analyzer chat:', error);
     res.status(500).json({
       success: false,
       message: "Error creating image analyzer chat",

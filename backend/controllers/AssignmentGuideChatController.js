@@ -5,18 +5,32 @@ export const createAssignmentGuideChat = async (req, res) => {
   try {
     const { userId, title } = req.body;
 
+    console.log('createAssignmentGuideChat controller called with:', { userId, title });
+
+    if (!userId) {
+      console.error('Error: userId is missing');
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
     const chat = new AssignmentGuideChat({
       userId,
       title: title || "Assignment Guidance",
     });
 
     await chat.save();
+    
+    console.log('Assignment guide chat created successfully:', { chatId: chat._id, userId, title });
+
     res.status(201).json({
       success: true,
       message: "Assignment guide chat created successfully",
       data: chat,
     });
   } catch (error) {
+    console.error('Error creating assignment guide chat:', error);
     res.status(500).json({
       success: false,
       message: "Error creating assignment guide chat",
