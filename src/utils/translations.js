@@ -3,6 +3,7 @@ export const translations = {
     navbar: {
       home: 'Home',
       dashboard: 'Dashboard',
+      aiTools: 'AI Tools',
       aiAssistance: 'AI Assistance',
       notes: 'Notes',
       assignment: 'Assignment',
@@ -346,6 +347,7 @@ export const translations = {
     navbar: {
       home: 'ዋና ገጽ',
       dashboard: ' dashboard',
+      aiTools: 'የኤአይ መሣሪያዎች',
       aiAssistance: 'የኤአይ (AI) አስተማሪ',
       notes: 'ማስታወሻዎች',
       assignment: 'የቤት ሥራ አጋዥ',

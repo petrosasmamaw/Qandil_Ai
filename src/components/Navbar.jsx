@@ -61,39 +61,11 @@ export const Navbar = () => {
       ),
     },
     {
-      href: '/ai-assistance',
-      labelKey: 'navbar.aiAssistance',
+      href: '/ai-tools',
+      labelKey: 'navbar.aiTools',
       icon: (
         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.343a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM15.657 14.657a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM11 17a1 1 0 102 0v-1a1 1 0 10-2 0v1zM5.343 15.657a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM2 10a1 1 0 011-1h1a1 1 0 110 2H3a1 1 0 01-1-1zM5.343 4.343a1 1 0 00-1.414 1.414l.707.707a1 1 0 001.414-1.414l-.707-.707zM10 13a3 3 0 100-6 3 3 0 000 6z" />
-        </svg>
-      ),
-    },
-    {
-      href: '/notes',
-      labelKey: 'navbar.notes',
-      icon: (
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M4 4a2 2 0 012-2h6a2 2 0 012 2v12a1 1 0 110 2h-2.343l-2.828-2.828A1 1 0 0010 14H8V9a1 1 0 000 2h2V4z" />
-        </svg>
-      ),
-    },
-    {
-      href: '/assignment-guide',
-      labelKey: 'navbar.assignment',
-      icon: (
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-          <path fillRule="evenodd" d="M4 5a2 2 0 012-2 1 1 0 000 2H6a1 1 0 100-2H5a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2 1 1 0 000 2h1a1 1 0 100-2h-1a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a1 1 0 10-2 0v10a1 1 0 11-2 0V5a1 1 0 10-2 0v10a1 1 0 11-2 0V5z" clipRule="evenodd" />
-        </svg>
-      ),
-    },
-    {
-      href: '/image-analyzer',
-      labelKey: 'navbar.image',
-      icon: (
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" />
+          <path d="M3 3h4v4H3V3zm6 0h4v4h-4V3zm6 0h2v4h-2V3zM3 9h4v4H3V9zm6 0h4v4h-4V9zm6 0h2v4h-2V9zM3 15h4v2H3v-2zm6 0h4v2h-4v-2zm6 0h2v2h-2v-2z" />
         </svg>
       ),
     },
