@@ -111,10 +111,34 @@ export default function DashboardPage() {
 
   if (!mounted || loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-16 h-16 border-4 border-blue-200 dark:border-blue-900 border-t-blue-600 dark:border-t-blue-400 rounded-full animate-spin"></div>
-          <p className="text-gray-600 dark:text-gray-400 font-medium">{t('common.loading') || 'Loading...'}</p>
+      <div className="light-image-bg min-h-screen flex items-center justify-center transition-colors duration-300 relative z-0">
+        {/* DARK MODE BACKGROUND IMAGE WITH BLUR ONLY */}
+        {isDark && (
+          <div 
+            className="fixed inset-0 -z-10 pointer-events-none"
+            style={{
+              backgroundImage: `url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTAxL3Jhd3BpeGVsX29mZmljZV8zNF9taW5pbWFsX2Fic3RyYWN0X2JsdWVfYW5kX3B1cnBsZV9uZW9uX3dhdnlfZ282ZWQyZmJmMS05ZWMzLTQxNmItOWY4My0yZmJmNThjOWUyMjc1XzEuanBn.jpg')`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              filter: 'blur(8px)',
+              transform: 'scale(1.05)',
+            }}
+          />
+        )}
+        <div className="text-center">
+          <div className="flex flex-col items-center gap-4">
+            <div 
+              className="w-16 h-16 border-4 rounded-full animate-spin"
+              style={{ 
+                borderColor: isDark ? 'rgba(107, 114, 128, 0.5)' : 'rgba(26, 50, 99, 0.2)',
+                borderTopColor: isDark ? '#10B981' : '#1A3263'
+              }}
+            ></div>
+            <p style={{ color: isDark ? '#D1D5DB' : '#1A3263' }} className="font-medium">
+              {t('common.loading') || 'Loading...'}
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -254,9 +278,9 @@ export default function DashboardPage() {
         {/* Header Section */}
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-2" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>
-            Welcome back, <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-green-500">{profile?.name?.split(' ')[0] || 'Student'}</span> 👋
+            {t('dashboard.welcome')} <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-green-500">{profile?.name?.split(' ')[0] || 'Student'}</span> 👋
           </h1>
-          <p style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>Here's your learning progress and activity summary</p>
+          <p style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.tagline')}</p>
         </div>
 
         {/* Overview Stats - 4 Column Grid */}
@@ -267,9 +291,9 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between mb-3">
               <FiMessageSquare className="text-green-600 w-6 h-6" />
             </div>
-            <p className="text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>AI Assistance</p>
+            <p className="text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.stats.aiAssistance')}</p>
             <p className="text-3xl font-bold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{chatStats.aiAssistance.chats}</p>
-            <p className="text-xs mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.aiAssistance.messages} messages</p>
+            <p className="text-xs mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.aiAssistance.messages} {t('dashboard.stats.messages')}</p>
           </div>
 
           {/* Notes Card */}
@@ -277,9 +301,9 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between mb-3">
               <FiBook className="text-green-600 w-6 h-6" />
             </div>
-            <p className="text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>Notes</p>
+            <p className="text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.stats.notes')}</p>
             <p className="text-3xl font-bold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{chatStats.notes.chats}</p>
-            <p className="text-xs mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.notes.messages} messages</p>
+            <p className="text-xs mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.notes.messages} {t('dashboard.stats.messages')}</p>
           </div>
 
           {/* Assignment Guide Card */}
@@ -287,9 +311,9 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between mb-3">
               <FiClipboard className="text-green-600 w-6 h-6" />
             </div>
-            <p className="text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>Assignment Guide</p>
+            <p className="text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.stats.assignmentGuide')}</p>
             <p className="text-3xl font-bold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{chatStats.assignmentGuide.chats}</p>
-            <p className="text-xs mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.assignmentGuide.messages} messages</p>
+            <p className="text-xs mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.assignmentGuide.messages} {t('dashboard.stats.messages')}</p>
           </div>
 
           {/* Image Analyzer Card */}
@@ -297,9 +321,9 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between mb-3">
               <FiImage className="text-green-600 w-6 h-6" />
             </div>
-            <p className="text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>Image Analyzer</p>
+            <p className="text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.stats.imageAnalyzer')}</p>
             <p className="text-3xl font-bold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{chatStats.imageAnalyzer.chats}</p>
-            <p className="text-xs mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.imageAnalyzer.messages} messages</p>
+            <p className="text-xs mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.imageAnalyzer.messages} {t('dashboard.stats.messages')}</p>
           </div>
         </div>
 
@@ -308,12 +332,17 @@ export default function DashboardPage() {
           
           {/* Left Column - Chat Distribution */}
           <div className="lg:col-span-2 light-box p-6 rounded-2xl border">
-            <h3 className="text-lg font-semibold mb-6" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>Chat Distribution</h3>
+            <h3 className="text-lg font-semibold mb-6" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.charts.chatDistribution')}</h3>
             <div className="h-80 -mx-6">
               <Plot
                 data={[
                   {
-                    x: ['AI Assistance', 'Notes', 'Assignment', 'Image Analyzer'],
+                    x: [
+                      t('dashboard.stats.aiAssistance'),
+                      t('dashboard.stats.notes'),
+                      t('dashboard.stats.assignmentGuide'),
+                      t('dashboard.stats.imageAnalyzer')
+                    ],
                     y: [
                       chatStats.aiAssistance.chats || 0,
                       chatStats.notes.chats || 0,
@@ -359,20 +388,20 @@ export default function DashboardPage() {
               </div>
               <div className="text-center mb-6 border-b border-gray-200 dark:border-gray-700 pb-6">
                 <p className="text-lg font-semibold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{profile?.name || 'Student'}</p>
-                <p className="text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>Grade {profile?.grade || 'N/A'}</p>
+                <p className="text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.profile.grade')} {profile?.grade || 'N/A'}</p>
               </div>
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>Level</span>
+                  <span className="text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.profile.level')}</span>
                   <span className="text-sm font-semibold text-green-600 dark:text-green-400 capitalize">{profile?.level || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>Total Chats</span>
+                  <span className="text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.profile.totalChats')}</span>
                   <span className="text-sm font-semibold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{totalChats}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>Total Messages</span>
+                  <span className="text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.profile.totalMessages')}</span>
                   <span className="text-sm font-semibold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{totalMessages}</span>
                 </div>
               </div>
@@ -380,24 +409,24 @@ export default function DashboardPage() {
 
             {/* Quick Stats */}
             <div className="light-box bg-gradient-to-br from-green-500/10 to-green-600/10 dark:from-green-500/5 dark:to-green-600/5 rounded-2xl border border-green-200/50 dark:border-green-800/30 p-6 text-gray-900 dark:text-white">
-              <h3 className="text-sm font-medium opacity-90 mb-2" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>Learning Activity</h3>
+              <h3 className="text-sm font-medium opacity-90 mb-2" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.charts.learningActivity')}</h3>
               <p className="text-3xl font-bold mb-4" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{totalMessages}</p>
-              <p className="text-xs opacity-75" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>Total messages across all learning sessions</p>
+              <p className="text-xs opacity-75" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{t('dashboard.charts.activityDesc')}</p>
             </div>
           </div>
         </div>
 
         {/* Learning Sessions Table */}
         <div className="light-box p-6 rounded-2xl border">
-          <h3 className="text-lg font-semibold mb-6" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>Your Learning Sessions</h3>
+          <h3 className="text-lg font-semibold mb-6" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.table.title')}</h3>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="border-b border-gray-200 dark:border-gray-700">
                 <tr>
-                  <th className="text-left py-4 px-4 font-semibold text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>Learning Type</th>
-                  <th className="text-left py-4 px-4 font-semibold text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>Chats</th>
-                  <th className="text-left py-4 px-4 font-semibold text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>Messages</th>
-                  <th className="text-left py-4 px-4 font-semibold text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>Status</th>
+                  <th className="text-left py-4 px-4 font-semibold text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.table.type')}</th>
+                  <th className="text-left py-4 px-4 font-semibold text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.table.chats')}</th>
+                  <th className="text-left py-4 px-4 font-semibold text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.table.messages')}</th>
+                  <th className="text-left py-4 px-4 font-semibold text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.table.status')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -405,40 +434,40 @@ export default function DashboardPage() {
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-green-600 rounded-full"></div>
-                      <span className="font-medium" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>AI Assistance</span>
+                      <span className="font-medium" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.stats.aiAssistance')}</span>
                     </div>
                   </td>
                   <td className="py-4 px-4" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.aiAssistance.chats}</td>
                   <td className="py-4 px-4" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.aiAssistance.messages}</td>
                   <td className="py-4 px-4">
-                    <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-medium">Active</span>
+                    <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-medium">{t('dashboard.table.active')}</span>
                   </td>
                 </tr>
                 <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition">
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="font-medium" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>Notes Study</span>
+                      <span className="font-medium" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.stats.notes')}</span>
                     </div>
                   </td>
                   <td className="py-4 px-4" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.notes.chats}</td>
                   <td className="py-4 px-4" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.notes.messages}</td>
                   <td className="py-4 px-4">
-                    <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-medium">Active</span>
+                    <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-medium">{t('dashboard.table.active')}</span>
                   </td>
                 </tr>
                 <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition">
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                      <span className="font-medium" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>Assignment Guide</span>
+                      <span className="font-medium" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.stats.assignmentGuide')}</span>
                     </div>
                   </td>
                   <td className="py-4 px-4" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.assignmentGuide.chats}</td>
                   <td className="py-4 px-4" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.assignmentGuide.messages}</td>
                   <td className="py-4 px-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${chatStats.assignmentGuide.chats > 0 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-400'}`}>
-                      {chatStats.assignmentGuide.chats > 0 ? 'Active' : 'Not Started'}
+                      {chatStats.assignmentGuide.chats > 0 ? t('dashboard.table.active') : t('dashboard.table.notStarted')}
                     </span>
                   </td>
                 </tr>
@@ -446,14 +475,14 @@ export default function DashboardPage() {
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-green-300 rounded-full"></div>
-                      <span className="font-medium" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>Image Analyzer</span>
+                      <span className="font-medium" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.stats.imageAnalyzer')}</span>
                     </div>
                   </td>
                   <td className="py-4 px-4" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.imageAnalyzer.chats}</td>
                   <td className="py-4 px-4" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.imageAnalyzer.messages}</td>
                   <td className="py-4 px-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${chatStats.imageAnalyzer.chats > 0 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-400'}`}>
-                      {chatStats.imageAnalyzer.chats > 0 ? 'Active' : 'Not Started'}
+                      {chatStats.imageAnalyzer.chats > 0 ? t('dashboard.table.active') : t('dashboard.table.notStarted')}
                     </span>
                   </td>
                 </tr>
