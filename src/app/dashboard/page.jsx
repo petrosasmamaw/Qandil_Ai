@@ -6,9 +6,8 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { supabase } from '@/lib/supabase';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
 import dynamic from 'next/dynamic';
-import { FiMessageSquare, FiBook, FiClipboard, FiImage, FiCalendar, FiClock, FiSearch } from 'react-icons/fi';
+import { FiMessageSquare, FiBook, FiClipboard, FiImage, FiArrowRight } from 'react-icons/fi';
 import { IoStatsChart } from 'react-icons/io5';
-import { MdNotifications } from 'react-icons/md';
 
 // Dynamically import Plotly to avoid SSR issues
 const Plot = dynamic(() => import('react-plotly.js'), { ssr: false });
@@ -224,291 +223,216 @@ export default function DashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            {/* Greeting */}
-            <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white">
-                Hello <span className="text-indigo-600 dark:text-indigo-400">{profile?.name?.split(' ')[0] || 'Student'}</span> 👋
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">Let's learn something new today!</p>
-            </div>
+        <div className="mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-2">
+            Welcome back, <span className="text-indigo-600 dark:text-indigo-400">{profile?.name?.split(' ')[0] || 'Student'}</span> 👋
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">Here's your learning progress and activity summary</p>
+        </div>
 
-            {/* Search & Notification */}
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <div className="flex-1 sm:flex-none flex items-center gap-2 bg-white dark:bg-gray-800 px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-                <FiSearch className="text-gray-400 w-5 h-5" />
-                <input 
-                  type="text" 
-                  placeholder="Search..." 
-                  className="bg-transparent outline-none text-sm text-gray-600 dark:text-gray-400 flex-1 placeholder-gray-400"
-                />
-              </div>
-              <button className="relative p-2.5 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                <MdNotifications className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-              </button>
+        {/* Overview Stats - 4 Column Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          
+          {/* AI Assistance Card */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg border-l-4 border-indigo-600 dark:border-indigo-500 p-6 shadow-sm hover:shadow-md transition duration-300">
+            <div className="flex items-center justify-between mb-3">
+              <FiMessageSquare className="text-indigo-600 dark:text-indigo-400 w-6 h-6" />
             </div>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">AI Assistance</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{chatStats.aiAssistance.chats}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">{chatStats.aiAssistance.messages} messages</p>
+          </div>
+
+          {/* Notes Card */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg border-l-4 border-green-500 dark:border-green-400 p-6 shadow-sm hover:shadow-md transition duration-300">
+            <div className="flex items-center justify-between mb-3">
+              <FiBook className="text-green-500 w-6 h-6" />
+            </div>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Notes</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{chatStats.notes.chats}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">{chatStats.notes.messages} messages</p>
+          </div>
+
+          {/* Assignment Guide Card */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg border-l-4 border-orange-500 dark:border-orange-400 p-6 shadow-sm hover:shadow-md transition duration-300">
+            <div className="flex items-center justify-between mb-3">
+              <FiClipboard className="text-orange-500 w-6 h-6" />
+            </div>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Assignment Guide</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{chatStats.assignmentGuide.chats}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">{chatStats.assignmentGuide.messages} messages</p>
+          </div>
+
+          {/* Image Analyzer Card */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg border-l-4 border-purple-600 dark:border-purple-500 p-6 shadow-sm hover:shadow-md transition duration-300">
+            <div className="flex items-center justify-between mb-3">
+              <FiImage className="text-purple-600 w-6 h-6" />
+            </div>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Image Analyzer</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{chatStats.imageAnalyzer.chats}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">{chatStats.imageAnalyzer.messages} messages</p>
           </div>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
+        {/* Main Content - 2 Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           
-          {/* Left Column - Overview & Charts */}
-          <div className="xl:col-span-2 space-y-6">
-            
-            {/* Overview Stats */}
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Overview</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                
-                {/* AI Assistance Card */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg border-l-4 border-indigo-600 dark:border-indigo-500 p-5 shadow-sm hover:shadow-lg transition duration-300 transform hover:scale-105">
-                  <div className="flex items-center justify-between mb-3">
-                    <FiMessageSquare className="text-indigo-600 dark:text-indigo-400 w-5 h-5" />
-                  </div>
-                  <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">AI Assistance</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{chatStats.aiAssistance.chats}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">{chatStats.aiAssistance.messages} messages</p>
-                </div>
-
-                {/* Notes Card */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg border-l-4 border-green-500 dark:border-green-400 p-5 shadow-sm hover:shadow-lg transition duration-300 transform hover:scale-105">
-                  <div className="flex items-center justify-between mb-3">
-                    <FiBook className="text-green-500 w-5 h-5" />
-                  </div>
-                  <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Notes</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{chatStats.notes.chats}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">{chatStats.notes.messages} messages</p>
-                </div>
-
-                {/* Assignment Card */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg border-l-4 border-blue-500 dark:border-blue-400 p-5 shadow-sm hover:shadow-lg transition duration-300 transform hover:scale-105">
-                  <div className="flex items-center justify-between mb-3">
-                    <FiClipboard className="text-blue-500 w-5 h-5" />
-                  </div>
-                  <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Certificate</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{chatStats.assignmentGuide.chats}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">{chatStats.assignmentGuide.messages} completed</p>
-                </div>
-
-                {/* Image Analyzer Card */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg border-l-4 border-purple-600 dark:border-purple-500 p-5 shadow-sm hover:shadow-lg transition duration-300 transform hover:scale-105">
-                  <div className="flex items-center justify-between mb-3">
-                    <FiImage className="text-purple-600 w-5 h-5" />
-                  </div>
-                  <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Community</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{chatStats.imageAnalyzer.chats * 10}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">Support members</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Activity Hours Chart */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Activity Hours</h3>
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">Weekly</span>
-                  <select defaultValue="Weekly" className="bg-transparent text-gray-600 dark:text-gray-400 text-sm border-none outline-none cursor-pointer font-medium">
-                    <option>Daily</option>
-                    <option>Weekly</option>
-                    <option>Monthly</option>
-                  </select>
-                </div>
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                <p>Time spent: <span className="font-semibold text-gray-900 dark:text-white">28 hrs</span> <span className="text-green-600">↑ 95%</span></p>
-                <p className="mt-2">Lessons taken: <span className="font-semibold text-gray-900 dark:text-white">60</span> <span className="text-yellow-600">→ 75%</span></p>
-                <p className="mt-2">Exam passed: <span className="font-semibold text-gray-900 dark:text-white">10</span> <span className="text-green-600">→ 100%</span></p>
-              </div>
-              <div className="h-72 -mx-6">
-                <Plot
-                  data={[
-                    {
-                      x: ['S', 'M', 'W', 'T', 'F', 'S', 'S'],
-                      y: [20, 35, 25, 40, 30, 25, 35],
-                      type: 'bar',
-                      marker: {
-                        color: ['#6366F1', '#10B981', '#3B82F6', '#EC4899', '#F59E0B', '#8B5CF6', '#EC4899'],
-                      },
+          {/* Left Column - Chat Distribution */}
+          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Chat Distribution</h3>
+            <div className="h-80 -mx-6">
+              <Plot
+                data={[
+                  {
+                    x: ['AI Assistance', 'Notes', 'Assignment', 'Image Analyzer'],
+                    y: [
+                      chatStats.aiAssistance.chats || 0,
+                      chatStats.notes.chats || 0,
+                      chatStats.assignmentGuide.chats || 0,
+                      chatStats.imageAnalyzer.chats || 0,
+                    ],
+                    type: 'bar',
+                    marker: {
+                      color: ['#6366F1', '#10B981', '#F59E0B', '#8B5CF6'],
                     },
-                  ]}
-                  layout={{
-                    plot_bgcolor: 'rgba(0,0,0,0)',
-                    paper_bgcolor: 'rgba(0,0,0,0)',
-                    font: { color: '#111827' },
-                    margin: { l: 40, r: 20, t: 20, b: 40 },
-                    xaxis: { showgrid: false },
-                    yaxis: { showgrid: true, gridcolor: 'rgba(200,200,200,0.2)' },
-                  }}
-                  config={{ responsive: true, displayModeBar: false }}
-                  style={{ width: '100%', height: '100%' }}
-                />
-              </div>
-            </div>
-
-            {/* Performance Chart */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Performance</h3>
-              <div className="mb-4 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Your productivity is 40% higher</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">40%</span>
-                </div>
-                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">compared to last month</p>
-              </div>
-              <div className="h-72 -mx-6">
-                <Plot
-                  data={[
-                    {
-                      x: ['S', 'M', 'W', 'T', 'F', 'S', 'S'],
-                      y: [30, 40, 35, 45, 40, 38, 42],
-                      type: 'scatter',
-                      mode: 'lines+markers',
-                      line: { color: '#6366F1', width: 3 },
-                      marker: { size: 8, color: '#6366F1' },
-                      fill: 'tozeroy',
-                      name: 'Messages',
-                    },
-                  ]}
-                  layout={{
-                    plot_bgcolor: 'rgba(0,0,0,0)',
-                    paper_bgcolor: 'rgba(0,0,0,0)',
-                    font: { color: '#111827' },
-                    margin: { l: 40, r: 20, t: 20, b: 40 },
-                    xaxis: { showgrid: false },
-                    yaxis: { showgrid: true, gridcolor: 'rgba(200,200,200,0.2)' },
-                  }}
-                  config={{ responsive: true, displayModeBar: false }}
-                  style={{ width: '100%', height: '100%' }}
-                />
-              </div>
+                    text: [
+                      chatStats.aiAssistance.chats || 0,
+                      chatStats.notes.chats || 0,
+                      chatStats.assignmentGuide.chats || 0,
+                      chatStats.imageAnalyzer.chats || 0,
+                    ],
+                    textposition: 'outside',
+                  },
+                ]}
+                layout={{
+                  plot_bgcolor: 'rgba(0,0,0,0)',
+                  paper_bgcolor: 'rgba(0,0,0,0)',
+                  font: { color: '#111827' },
+                  margin: { l: 40, r: 20, t: 20, b: 40 },
+                  xaxis: { showgrid: false },
+                  yaxis: { showgrid: true, gridcolor: 'rgba(200,200,200,0.2)' },
+                }}
+                config={{ responsive: true, displayModeBar: false }}
+                style={{ width: '100%', height: '100%' }}
+              />
             </div>
           </div>
 
-          {/* Right Sidebar - Profile & Events */}
+          {/* Right Column - Profile & Stats */}
           <div className="space-y-6">
             
             {/* Profile Card */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Profile</h3>
               <div className="flex justify-center mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                <div className="w-24 h-24 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-full flex items-center justify-center text-white text-5xl font-bold shadow-lg">
                   {profile?.name?.charAt(0).toUpperCase() || '👤'}
                 </div>
               </div>
               <div className="text-center mb-6 border-b border-gray-200 dark:border-gray-700 pb-6">
                 <p className="text-lg font-semibold text-gray-900 dark:text-white">{profile?.name || 'Student'}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">College Student</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Grade {profile?.grade || 'N/A'}</p>
               </div>
 
-              {/* Profile Stats */}
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Learning Level</span>
-                  <span className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">{profile?.level?.charAt(0).toUpperCase() + profile?.level?.slice(1) || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Grade</span>
-                  <span className="text-sm font-semibold text-gray-900 dark:text-white">{profile?.grade}</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Level</span>
+                  <span className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 capitalize">{profile?.level || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600 dark:text-gray-400">Total Chats</span>
                   <span className="text-sm font-semibold text-gray-900 dark:text-white">{totalChats}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Study Streak</span>
-                  <span className="text-sm font-semibold text-orange-600 dark:text-orange-400">7 days 🔥</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Total Messages</span>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">{totalMessages}</span>
                 </div>
               </div>
             </div>
 
-            {/* Upcoming Events */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Upcoming Events</h3>
-              <div className="space-y-3">
-                <button className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-red-100 dark:bg-red-900/20 hover:bg-red-200 dark:hover:bg-red-900/30 text-red-700 dark:text-red-400 rounded-lg text-sm font-medium transition">
-                  👥 Team Meetup
-                </button>
-                <button className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium transition">
-                  🎬 Illustration
-                </button>
-                <button className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-blue-100 dark:bg-blue-900/20 hover:bg-blue-200 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg text-sm font-medium transition">
-                  🔍 Research
-                </button>
-                <button className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-green-100 dark:bg-green-900/20 hover:bg-green-200 dark:hover:bg-green-900/30 text-green-700 dark:text-green-400 rounded-lg text-sm font-medium transition">
-                  📊 Report
-                </button>
-              </div>
-            </div>
-
-            {/* Study Progress */}
+            {/* Quick Stats */}
             <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 dark:from-indigo-600 dark:to-indigo-700 rounded-lg shadow-sm p-6 text-white">
-              <h3 className="text-lg font-semibold mb-4">40%</h3>
-              <p className="text-sm mb-4 opacity-90">Your productivity is 40% higher compared to last month</p>
-              <div className="w-full bg-white/20 rounded-full h-2.5">
-                <div className="bg-white h-2.5 rounded-full" style={{ width: '40%' }}></div>
-              </div>
-              <p className="text-xs mt-3 opacity-75">Keep it up! You're making great progress 💪</p>
+              <h3 className="text-sm font-medium opacity-90 mb-2">Learning Activity</h3>
+              <p className="text-3xl font-bold mb-4">{totalMessages}</p>
+              <p className="text-xs opacity-75">Total messages across all learning sessions</p>
             </div>
           </div>
         </div>
 
-        {/* My Assignments / Chat Sessions */}
+        {/* Learning Sessions Table */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">My Chat Sessions</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Your Learning Sessions</h3>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="border-b border-gray-200 dark:border-gray-700">
                 <tr>
-                  <th className="text-left py-4 px-4 font-semibold text-sm text-gray-600 dark:text-gray-400">Task</th>
-                  <th className="text-left py-4 px-4 font-semibold text-sm text-gray-600 dark:text-gray-400">Grade</th>
-                  <th className="text-left py-4 px-4 font-semibold text-sm text-gray-600 dark:text-gray-400">Update</th>
+                  <th className="text-left py-4 px-4 font-semibold text-sm text-gray-600 dark:text-gray-400">Learning Type</th>
+                  <th className="text-left py-4 px-4 font-semibold text-sm text-gray-600 dark:text-gray-400">Chats</th>
+                  <th className="text-left py-4 px-4 font-semibold text-sm text-gray-600 dark:text-gray-400">Messages</th>
+                  <th className="text-left py-4 px-4 font-semibold text-sm text-gray-600 dark:text-gray-400">Status</th>
                 </tr>
               </thead>
               <tbody>
                 <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                      <span className="font-medium text-gray-900 dark:text-white">AI Assistance Chat</span>
+                      <div className="w-3 h-3 bg-indigo-600 rounded-full"></div>
+                      <span className="font-medium text-gray-900 dark:text-white">AI Assistance</span>
                     </div>
                   </td>
-                  <td className="py-4 px-4 text-gray-600 dark:text-gray-400">{chatStats.aiAssistance.messages}/200</td>
+                  <td className="py-4 px-4 text-gray-600 dark:text-gray-400">{chatStats.aiAssistance.chats}</td>
+                  <td className="py-4 px-4 text-gray-600 dark:text-gray-400">{chatStats.aiAssistance.messages}</td>
                   <td className="py-4 px-4">
-                    <span className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-full text-xs font-medium">Completed</span>
+                    <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-xs font-medium">Active</span>
                   </td>
                 </tr>
                 <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="font-medium text-gray-900 dark:text-white">Notes Study Session</span>
+                      <span className="font-medium text-gray-900 dark:text-white">Notes Study</span>
                     </div>
                   </td>
-                  <td className="py-4 px-4 text-gray-600 dark:text-gray-400">{chatStats.notes.messages}/200</td>
+                  <td className="py-4 px-4 text-gray-600 dark:text-gray-400">{chatStats.notes.chats}</td>
+                  <td className="py-4 px-4 text-gray-600 dark:text-gray-400">{chatStats.notes.messages}</td>
                   <td className="py-4 px-4">
-                    <span className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-full text-xs font-medium">Completed</span>
+                    <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-medium">Active</span>
                   </td>
                 </tr>
                 <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                      <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
                       <span className="font-medium text-gray-900 dark:text-white">Assignment Guide</span>
                     </div>
                   </td>
-                  <td className="py-4 px-4 text-gray-600 dark:text-gray-400">--/200</td>
+                  <td className="py-4 px-4 text-gray-600 dark:text-gray-400">{chatStats.assignmentGuide.chats}</td>
+                  <td className="py-4 px-4 text-gray-600 dark:text-gray-400">{chatStats.assignmentGuide.messages}</td>
                   <td className="py-4 px-4">
-                    <span className="px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-full text-xs font-medium">Upcoming</span>
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${chatStats.assignmentGuide.chats > 0 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-400'}`}>
+                      {chatStats.assignmentGuide.chats > 0 ? 'Active' : 'Not Started'}
+                    </span>
+                  </td>
+                </tr>
+                <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                  <td className="py-4 px-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                      <span className="font-medium text-gray-900 dark:text-white">Image Analyzer</span>
+                    </div>
+                  </td>
+                  <td className="py-4 px-4 text-gray-600 dark:text-gray-400">{chatStats.imageAnalyzer.chats}</td>
+                  <td className="py-4 px-4 text-gray-600 dark:text-gray-400">{chatStats.imageAnalyzer.messages}</td>
+                  <td className="py-4 px-4">
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${chatStats.imageAnalyzer.chats > 0 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-400'}`}>
+                      {chatStats.imageAnalyzer.chats > 0 ? 'Active' : 'Not Started'}
+                    </span>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
+
       </div>
     </div>
   );
