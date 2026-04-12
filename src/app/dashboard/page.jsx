@@ -18,6 +18,7 @@ export default function DashboardPage() {
   
   const profile = useSelector((state) => state.profile.profile);
   const [user, setUser] = useState(null);
+  const [isDark, setIsDark] = useState(false);
   const [chatStats, setChatStats] = useState({
     aiAssistance: { chats: 0, messages: 0 },
     notes: { chats: 0, messages: 0 },
@@ -29,6 +30,19 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Detect dark mode
+  useEffect(() => {
+    const dark = document.documentElement.classList.contains('dark');
+    setIsDark(dark);
+
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
   }, []);
 
   // Fetch user session and profile
@@ -218,14 +232,29 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-20 pb-12">
+    <main className="light-image-bg min-h-screen transition-colors duration-300 relative z-0">
+      {/* DARK MODE BACKGROUND IMAGE WITH BLUR ONLY */}
+      {isDark && (
+        <div 
+          className="fixed inset-0 -z-10 pointer-events-none"
+          style={{
+            backgroundImage: `url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTAxL3Jhd3BpeGVsX29mZmljZV8zNF9taW5pbWFsX2Fic3RyYWN0X2JsdWVfYW5kX3B1cnBsZV9uZW9uX3dhdnlfZ182ZWQyZmJmMS05ZWMzLTQxNmItOWY4My0yZmJmNThjOWUyNzVfMS5qcGc.jpg')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            filter: 'blur(8px)',
+            transform: 'scale(1.05)',
+          }}
+        />
+      )}
+
       {/* Main Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12 relative z-10">
         
         {/* Header Section */}
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-2">
-            Welcome back, <span className="text-indigo-600 dark:text-indigo-400">{profile?.name?.split(' ')[0] || 'Student'}</span> 👋
+            Welcome back, <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-green-500">{profile?.name?.split(' ')[0] || 'Student'}</span> 👋
           </h1>
           <p className="text-gray-600 dark:text-gray-400">Here's your learning progress and activity summary</p>
         </div>
@@ -234,9 +263,9 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           
           {/* AI Assistance Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg border-l-4 border-indigo-600 dark:border-indigo-500 p-6 shadow-sm hover:shadow-md transition duration-300">
+          <div className="light-box p-6 rounded-2xl border hover:scale-105 transition duration-300">
             <div className="flex items-center justify-between mb-3">
-              <FiMessageSquare className="text-indigo-600 dark:text-indigo-400 w-6 h-6" />
+              <FiMessageSquare className="text-green-600 w-6 h-6" />
             </div>
             <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">AI Assistance</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">{chatStats.aiAssistance.chats}</p>
@@ -244,9 +273,9 @@ export default function DashboardPage() {
           </div>
 
           {/* Notes Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg border-l-4 border-green-500 dark:border-green-400 p-6 shadow-sm hover:shadow-md transition duration-300">
+          <div className="light-box p-6 rounded-2xl border hover:scale-105 transition duration-300">
             <div className="flex items-center justify-between mb-3">
-              <FiBook className="text-green-500 w-6 h-6" />
+              <FiBook className="text-green-600 w-6 h-6" />
             </div>
             <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Notes</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">{chatStats.notes.chats}</p>
@@ -254,9 +283,9 @@ export default function DashboardPage() {
           </div>
 
           {/* Assignment Guide Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg border-l-4 border-orange-500 dark:border-orange-400 p-6 shadow-sm hover:shadow-md transition duration-300">
+          <div className="light-box p-6 rounded-2xl border hover:scale-105 transition duration-300">
             <div className="flex items-center justify-between mb-3">
-              <FiClipboard className="text-orange-500 w-6 h-6" />
+              <FiClipboard className="text-green-600 w-6 h-6" />
             </div>
             <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Assignment Guide</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">{chatStats.assignmentGuide.chats}</p>
@@ -264,9 +293,9 @@ export default function DashboardPage() {
           </div>
 
           {/* Image Analyzer Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg border-l-4 border-purple-600 dark:border-purple-500 p-6 shadow-sm hover:shadow-md transition duration-300">
+          <div className="light-box p-6 rounded-2xl border hover:scale-105 transition duration-300">
             <div className="flex items-center justify-between mb-3">
-              <FiImage className="text-purple-600 w-6 h-6" />
+              <FiImage className="text-green-600 w-6 h-6" />
             </div>
             <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Image Analyzer</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">{chatStats.imageAnalyzer.chats}</p>
@@ -278,7 +307,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           
           {/* Left Column - Chat Distribution */}
-          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+          <div className="lg:col-span-2 light-box p-6 rounded-2xl border">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Chat Distribution</h3>
             <div className="h-80 -mx-6">
               <Plot
@@ -293,7 +322,7 @@ export default function DashboardPage() {
                     ],
                     type: 'bar',
                     marker: {
-                      color: ['#6366F1', '#10B981', '#F59E0B', '#8B5CF6'],
+                      color: ['#16a34a', '#22c55e', '#84cc16', '#4ade80'],
                     },
                     text: [
                       chatStats.aiAssistance.chats || 0,
@@ -307,10 +336,10 @@ export default function DashboardPage() {
                 layout={{
                   plot_bgcolor: 'rgba(0,0,0,0)',
                   paper_bgcolor: 'rgba(0,0,0,0)',
-                  font: { color: '#111827' },
+                  font: { color: isDark ? '#ededed' : '#111827' },
                   margin: { l: 40, r: 20, t: 20, b: 40 },
                   xaxis: { showgrid: false },
-                  yaxis: { showgrid: true, gridcolor: 'rgba(200,200,200,0.2)' },
+                  yaxis: { showgrid: true, gridcolor: isDark ? 'rgba(200,200,200,0.1)' : 'rgba(200,200,200,0.2)' },
                 }}
                 config={{ responsive: true, displayModeBar: false }}
                 style={{ width: '100%', height: '100%' }}
@@ -322,9 +351,9 @@ export default function DashboardPage() {
           <div className="space-y-6">
             
             {/* Profile Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+            <div className="light-box p-6 rounded-2xl border">
               <div className="flex justify-center mb-6">
-                <div className="w-24 h-24 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-full flex items-center justify-center text-white text-5xl font-bold shadow-lg">
+                <div className="w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white text-5xl font-bold shadow-lg">
                   {profile?.name?.charAt(0).toUpperCase() || '👤'}
                 </div>
               </div>
@@ -336,7 +365,7 @@ export default function DashboardPage() {
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600 dark:text-gray-400">Level</span>
-                  <span className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 capitalize">{profile?.level || 'N/A'}</span>
+                  <span className="text-sm font-semibold text-green-600 dark:text-green-400 capitalize">{profile?.level || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600 dark:text-gray-400">Total Chats</span>
@@ -350,7 +379,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Quick Stats */}
-            <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 dark:from-indigo-600 dark:to-indigo-700 rounded-lg shadow-sm p-6 text-white">
+            <div className="light-box bg-gradient-to-br from-green-500/10 to-green-600/10 dark:from-green-500/5 dark:to-green-600/5 rounded-2xl border border-green-200/50 dark:border-green-800/30 p-6 text-gray-900 dark:text-white">
               <h3 className="text-sm font-medium opacity-90 mb-2">Learning Activity</h3>
               <p className="text-3xl font-bold mb-4">{totalMessages}</p>
               <p className="text-xs opacity-75">Total messages across all learning sessions</p>
@@ -359,7 +388,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Learning Sessions Table */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+        <div className="light-box p-6 rounded-2xl border">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Your Learning Sessions</h3>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -372,20 +401,20 @@ export default function DashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition">
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-indigo-600 rounded-full"></div>
+                      <div className="w-3 h-3 bg-green-600 rounded-full"></div>
                       <span className="font-medium text-gray-900 dark:text-white">AI Assistance</span>
                     </div>
                   </td>
                   <td className="py-4 px-4 text-gray-600 dark:text-gray-400">{chatStats.aiAssistance.chats}</td>
                   <td className="py-4 px-4 text-gray-600 dark:text-gray-400">{chatStats.aiAssistance.messages}</td>
                   <td className="py-4 px-4">
-                    <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-xs font-medium">Active</span>
+                    <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-medium">Active</span>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition">
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 bg-green-500 rounded-full"></div>
@@ -398,10 +427,10 @@ export default function DashboardPage() {
                     <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-medium">Active</span>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition">
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                      <div className="w-3 h-3 bg-green-400 rounded-full"></div>
                       <span className="font-medium text-gray-900 dark:text-white">Assignment Guide</span>
                     </div>
                   </td>
@@ -413,10 +442,10 @@ export default function DashboardPage() {
                     </span>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition">
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                      <div className="w-3 h-3 bg-green-300 rounded-full"></div>
                       <span className="font-medium text-gray-900 dark:text-white">Image Analyzer</span>
                     </div>
                   </td>
@@ -434,6 +463,6 @@ export default function DashboardPage() {
         </div>
 
       </div>
-    </div>
+    </main>
   );
 }
