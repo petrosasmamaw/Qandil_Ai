@@ -1,56 +1,48 @@
-'use client';
+"use client";
 
-import { useEffect, useState, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { useTranslation } from '@/hooks/useTranslation';
 
-// Dynamically import the existing tool pages to render inside this container
-const AIAssistancePage = dynamic(() => import('@/app/ai-assistance/page.js').then(m => m.default), { ssr: false });
-const NotesPage = dynamic(() => import('@/app/notes/page.jsx').then(m => m.default), { ssr: false });
-const AssignmentGuidePage = dynamic(() => import('@/app/assignment-guide/page.jsx').then(m => m.default), { ssr: false });
-const ImageAnalyzerPage = dynamic(() => import('@/app/image-analyzer/page.jsx').then(m => m.default), { ssr: false });
+const AIAssistance = dynamic(() => import('../ai-assistance/page'), { ssr: false });
+const NotesPage = dynamic(() => import('../notes/page'), { ssr: false });
+const AssignmentGuidePage = dynamic(() => import('../assignment-guide/page'), { ssr: false });
+const ImageAnalyzerPage = dynamic(() => import('../image-analyzer/page'), { ssr: false });
 
 export default function AIToolsPage() {
-  const { t } = useTranslation();
-  const [selected, setSelected] = useState('ai-assistance');
+  const [selected, setSelected] = useState(null);
   const [isDark, setIsDark] = useState(false);
 
+  // Detect and sync theme changes
   useEffect(() => {
-    const dark = document.documentElement.classList.contains('dark');
-    setIsDark(dark);
-
-    const observer = new MutationObserver(() => {
+    const updateTheme = () => {
       setIsDark(document.documentElement.classList.contains('dark'));
-    });
-
+    };
+    
+    updateTheme();
+    const observer = new MutationObserver(updateTheme);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    return () => observer.disconnect();
+    
+    window.addEventListener('themechange', updateTheme);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('themechange', updateTheme);
+    };
   }, []);
 
-  const tabs = [
-    { key: 'ai-assistance', label: t('navbar.aiAssistance') },
-    { key: 'notes', label: t('navbar.notes') },
-    { key: 'assignment-guide', label: t('navbar.assignment') },
-    { key: 'image-analyzer', label: t('navbar.image') },
+  const tools = [
+    { id: 'ai-assistance', label: 'AI Assistance' },
+    { id: 'notes', label: 'Notes' },
+    { id: 'assignment-guide', label: 'Assignment Guide' },
+    { id: 'image-analyzer', label: 'Image Analyzer' },
   ];
 
-  const renderSelected = () => {
-    switch (selected) {
-      case 'ai-assistance':
-        return <AIAssistancePage />;
-      case 'notes':
-        return <NotesPage />;
-      case 'assignment-guide':
-        return <AssignmentGuidePage />;
-      case 'image-analyzer':
-        return <ImageAnalyzerPage />;
-      default:
-        return <AIAssistancePage />;
-    }
+  const backgroundStyle = {
+    '--light-bg-image': "url('https://cdn.vectorstock.com/i/500p/87/24/pastel-pink-and-blue-blur-backdrop-vector-63408724.jpg')",
   };
 
   return (
-    <main className="light-image-bg min-h-screen transition-colors duration-300 relative z-0">
+    <main className="light-image-bg min-h-screen p-6 md:p-8 transition-colors duration-300 relative z-0 flex flex-col items-center" style={backgroundStyle}>
+      {/* DARK MODE BACKGROUND - Matches Home page */}
       {isDark && (
         <div 
           className="fixed inset-0 -z-10 pointer-events-none"
@@ -65,34 +57,39 @@ export default function AIToolsPage() {
         />
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12 relative z-10">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('navbar.aiTools') || 'AI Tools'}</h1>
-          <p className="text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.tagline') || 'Manage AI tools and related features'}</p>
-        </div>
+      <div className="w-full max-w-7xl relative z-10">
+        {/* header intentionally removed per UX request */}
 
-        <div className="light-box p-4 rounded-2xl border mb-8">
-          <div className="flex items-center gap-2 flex-wrap">
-            {tabs.map((tab) => {
-              const active = selected === tab.key;
-              return (
-                <button
-                  key={tab.key}
-                  onClick={() => setSelected(tab.key)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${active ? 'scale-105 shadow-md' : 'hover:scale-105'}`}
-                  style={active ? (isDark ? { backgroundColor: '#1f2937', color: '#fff' } : { backgroundColor: '#0f172a', color: '#fff' }) : (isDark ? { backgroundColor: 'transparent', color: '#d1d5db' } : { backgroundColor: 'transparent', color: '#1A3263' })}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
+        <section className="w-full mb-6 sticky top-6 z-50">
+          <div className="mx-auto max-w-3xl light-box rounded-2xl p-3 border shadow-sm flex flex-wrap justify-center gap-3">
+            {tools.map((tool) => (
+              <button
+                key={tool.id}
+                onClick={() => setSelected(selected === tool.id ? null : tool.id)}
+                className={`flex items-center gap-2 px-3 py-1 rounded-md text-xs transition-colors ${
+                  selected === tool.id ? 'bg-green-600 text-white' : 'text-black dark:text-white hover:bg-white/10 dark:hover:bg-white/5'
+                }`}
+                style={selected === tool.id ? { color: '#ffffff' } : { color: isDark ? '#ededed' : '#111827' }}
+              >
+                <span className={`inline-flex w-5 h-5 items-center justify-center rounded-sm ${selected === tool.id ? 'bg-white/20' : 'bg-green-50 dark:bg-green-900/20'}`}>
+                  <svg className={`w-3 h-3 ${selected === tool.id ? 'text-white' : 'text-green-600'}`} fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v7a2 2 0 01-2 2h-4l-4 3v-3H4a2 2 0 01-2-2V5z"/></svg>
+                </span>
+                <span className="font-medium">{tool.label}</span>
+              </button>
+            ))}
           </div>
-        </div>
+        </section>
 
-        <div>
-          <Suspense fallback={<div className="text-center py-12">Loading tool...</div>}>
-            {renderSelected()}
-          </Suspense>
+        <div className="w-full relative z-0 overflow-y-auto">
+          {selected === 'ai-assistance' && <AIAssistance />}
+          {selected === 'notes' && <NotesPage />}
+          {selected === 'assignment-guide' && <AssignmentGuidePage />}
+          {selected === 'image-analyzer' && <ImageAnalyzerPage />}
+          {!selected && (
+            <div className="light-box p-12 rounded-xl border border-dashed text-center" style={{ color: isDark ? '#9ca3af' : '#6b7280' }}>
+              Select a tool above to open it here.
+            </div>
+          )}
         </div>
       </div>
     </main>

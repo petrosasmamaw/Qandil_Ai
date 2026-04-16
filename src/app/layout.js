@@ -49,6 +49,9 @@ export default function RootLayout({ children }) {
           <ThemeProvider>
             <Navbar />
             {children}
+            <script type="module" />
+            {/* Persistent AI Tools widget shown on all pages */}
+            <div id="__ai_tools_widget_root" />
           </ThemeProvider>
         </ReduxProvider>
       </body>
