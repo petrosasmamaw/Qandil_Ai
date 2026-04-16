@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const AIAssistance = dynamic(() => import('../ai-assistance/page'), { ssr: false });
 const NotesPage = dynamic(() => import('../notes/page'), { ssr: false });
@@ -29,11 +30,13 @@ export default function AIToolsPage() {
     };
   }, []);
 
+  const { t } = useTranslation();
+
   const tools = [
-    { id: 'ai-assistance', label: 'AI Assistance' },
-    { id: 'notes', label: 'Notes' },
-    { id: 'assignment-guide', label: 'Assignment Guide' },
-    { id: 'image-analyzer', label: 'Image Analyzer' },
+    { id: 'ai-assistance', label: t('navbar.aiAssistance') || 'AI Assistance' },
+    { id: 'notes', label: t('navbar.notes') || 'Notes' },
+    { id: 'assignment-guide', label: t('navbar.assignment') || 'Assignment Guide' },
+    { id: 'image-analyzer', label: t('navbar.image') || 'Image Analyzer' },
   ];
 
   const backgroundStyle = {
