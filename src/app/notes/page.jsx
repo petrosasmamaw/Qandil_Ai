@@ -324,7 +324,7 @@ export default function NotesPage() {
               onClick={() => setIsHistoryOpen(true)}
               className="flex-1 md:flex-none px-5 py-3 rounded-xl light-box border font-medium hover:bg-white/10 transition-all flex items-center justify-center gap-2"
             >
-              <FiBook size={18} className="text-blue-500" /> History
+              <FiBook size={18} className="text-blue-500" /> {t('common.history')}
             </button>
           </div>
         </div>
