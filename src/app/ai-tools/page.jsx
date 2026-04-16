@@ -90,7 +90,7 @@ export default function AIToolsPage() {
           {selected === 'image-analyzer' && <ImageAnalyzerPage />}
           {!selected && (
             <div className="light-box p-12 rounded-xl border border-dashed text-center" style={{ color: isDark ? '#9ca3af' : '#6b7280' }}>
-              Select a tool above to open it here.
+              {t('common.selectToolPlaceholder') || 'Select a tool above to open it here.'}
             </div>
           )}
         </div>
