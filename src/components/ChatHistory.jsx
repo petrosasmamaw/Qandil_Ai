@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FiArrowLeft, FiTrash2, FiClock } from "react-icons/fi";
+import { useTranslation } from '@/hooks/useTranslation';
 import {
   fetchAIAssistanceChatHistory as fetchAIHistory,
   fetchAIAssistanceChatById as fetchAIChatById,
@@ -37,6 +38,7 @@ const ChatHistory = ({
 }) => {
   const dispatch = useDispatch();
   const [selectedChatId, setSelectedChatId] = useState(null);
+  const { t } = useTranslation();
 
   // Select appropriate slice based on chatType
   const getSliceState = () => {
@@ -129,8 +131,8 @@ const ChatHistory = ({
           <div className="flex items-center gap-3">
             <FiClock size={24} />
             <div>
-              <h2 className="text-2xl font-bold">Chat History</h2>
-              <p className="text-sm text-green-100">{chatHistory.length} conversations</p>
+              <h2 className="text-2xl font-bold">{t('common.historyTitle')}</h2>
+              <p className="text-sm text-green-100">{chatHistory.length} {t('common.conversations')}</p>
             </div>
           </div>
           <button
@@ -161,12 +163,12 @@ const ChatHistory = ({
               <div className="flex items-center justify-center h-full">
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent mx-auto mb-4"></div>
-                  <p className="text-gray-600 dark:text-gray-400">Loading history...</p>
+                  <p className="text-gray-600 dark:text-gray-400">{t('common.loadingHistory')}</p>
                 </div>
               </div>
             ) : chatHistory.length === 0 ? (
               <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500 dark:text-gray-400">No conversations yet</p>
+                <p className="text-gray-500 dark:text-gray-400">{t('common.noConversations')}</p>
               </div>
             ) : (
               <div className="space-y-2 p-4">
@@ -218,7 +220,7 @@ const ChatHistory = ({
                           }`}
                         >
                           <div className="text-xs font-semibold mb-1 opacity-70">
-                            {m.role === 'user' ? 'You' : 'Assistant'}
+                            {m.role === 'user' ? t('common.you') : t('common.assistant')}
                           </div>
                           <p className="text-sm whitespace-pre-wrap">{m.content}</p>
                           {m.fileNames && m.fileNames.length > 0 && (
@@ -238,7 +240,7 @@ const ChatHistory = ({
                     ))
                   ) : (
                     <div className="flex items-center justify-center h-full">
-                      <p className="text-gray-400">No messages in this chat</p>
+                      <p className="text-gray-400">{t('common.noConversations')}</p>
                     </div>
                   )}
                 </div>
@@ -249,14 +251,14 @@ const ChatHistory = ({
                     onClick={() => handleOpenChat(selectedChat._id)}
                     className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-all"
                   >
-                    Continue Chatting
+                    {t('common.continueChat')}
                   </button>
                   <button
                     onClick={() => handleDeleteChat(selectedChat._id)}
                     className="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center gap-2"
                   >
                     <FiTrash2 size={18} />
-                    Delete
+                    {t('common.delete')}
                   </button>
                 </div>
               </>
