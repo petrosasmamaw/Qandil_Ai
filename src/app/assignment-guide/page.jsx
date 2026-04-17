@@ -462,8 +462,8 @@ export default function AssignmentGuidePage() {
               </h3>
               <ol className="text-sm space-y-2 opacity-80">
                 <li>1. {t('assignmentGuide.uploadFiles')} / {t('assignmentGuide.pasteText')}</li>
-                <li>2. AI analyzes requirements using your profile.</li>
-                <li>3. Get a custom approach for your assignment.</li>
+                <li>{t('assignmentGuide.howItWorksStep2')}</li>
+                <li>{t('assignmentGuide.howItWorksStep3')}</li>
               </ol>
             </div>
 
@@ -472,9 +472,9 @@ export default function AssignmentGuidePage() {
                 <FiFileText /> {t('assignmentGuide.whatYouGet')}
               </h3>
               <ul className="text-sm space-y-2 opacity-80">
-                <li className="flex items-center gap-2"><FiCheck size={14} /> Simplified requirements</li>
-                <li className="flex items-center gap-2"><FiCheck size={14} /> Critical thinking questions</li>
-                <li className="flex items-center gap-2"><FiCheck size={14} /> Step-by-step logic map</li>
+                <li className="flex items-center gap-2"><FiCheck size={14} /> {t('assignmentGuide.whatYouGetItem1')}</li>
+                <li className="flex items-center gap-2"><FiCheck size={14} /> {t('assignmentGuide.whatYouGetItem2')}</li>
+                <li className="flex items-center gap-2"><FiCheck size={14} /> {t('assignmentGuide.whatYouGetItem3')}</li>
               </ul>
             </div>
           </div>
