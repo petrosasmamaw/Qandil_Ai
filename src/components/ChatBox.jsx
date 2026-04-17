@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendChatMessage, getInitialGreeting } from '@/utils/educationalChatService';
+import { speakText, stopSpeaking, isSpeaking } from '@/utils/tts';
 import { translations } from '@/utils/translations';
 import { FiAward, FiZap, FiSend } from 'react-icons/fi';
 
@@ -91,6 +92,9 @@ export default function ChatBox({
       return;
     }
 
+    // stop any playing speech when user sends a new message
+    stopSpeaking();
+    setPlayingMessageId(null);
     setLoading(true);
     setError(null);
     let chatIdToUse = currentChatId;
@@ -207,6 +211,15 @@ export default function ChatBox({
     }
   };
 
+  // TTS playback state
+  const [playingMessageId, setPlayingMessageId] = useState(null);
+
+  useEffect(() => {
+    return () => {
+      stopSpeaking();
+    };
+  }, []);
+
   // Handle file uploads: store file names and send as a message with fileNames
   const fileInputRef = useRef(null);
 
@@ -303,18 +316,46 @@ export default function ChatBox({
               }`}
               style={message.sender === 'ai' ? { color: isDark ? '#ffffff' : '#000000' } : {}}
             >
-              <p className="text-sm whitespace-pre-wrap leading-relaxed">
-                {message.content}
-                {message.fileNames && message.fileNames.length > 0 && (
-                  <div className="mt-2 text-xs opacity-80">
-                    {message.fileNames.map((fn, i) => (
-                      <div key={i} className="underline decoration-dotted">
-                        {fn}
-                      </div>
-                    ))}
+              <div className="flex items-start gap-3">
+                <p className="text-sm whitespace-pre-wrap leading-relaxed flex-1">
+                  {message.content}
+                  {message.fileNames && message.fileNames.length > 0 && (
+                    <div className="mt-2 text-xs opacity-80">
+                      {message.fileNames.map((fn, i) => (
+                        <div key={i} className="underline decoration-dotted">
+                          {fn}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </p>
+
+                {/* Voice button for AI messages */}
+                {message.sender === 'ai' && (
+                  <div className="flex-shrink-0 self-start mt-1">
+                    <button
+                      aria-label="Play voice"
+                      onClick={() => {
+                        if (playingMessageId === message.id) {
+                          stopSpeaking();
+                          setPlayingMessageId(null);
+                          return;
+                        }
+
+                        // Start speaking and update UI
+                        speakText(message.content, null, {
+                          onStart: () => setPlayingMessageId(message.id),
+                          onEnd: () => setPlayingMessageId(null),
+                        });
+                      }}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${playingMessageId === message.id ? 'bg-green-600 text-white' : 'bg-white/80 dark:bg-black/60 text-gray-700 dark:text-gray-200'}`}
+                    >
+                      {playingMessageId === message.id ? '■' : '🔊'}
+                    </button>
                   </div>
                 )}
-              </p>
+              </div>
+
               <div
                 className={`text-[10px] mt-2 font-medium opacity-60 ${
                   message.sender === 'user' ? 'text-white' : ''
