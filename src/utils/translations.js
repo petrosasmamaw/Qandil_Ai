@@ -147,6 +147,10 @@ export const translations = {
     },
     notes: {
       title: 'Smart Notes',
+      howItWorksTitle: 'How It Works',
+      howItWorksStep1: '1. Upload your learning materials or paste text.',
+      howItWorksStep2: '2. AI analyzes content based on your guided profile.',
+      howItWorksStep3: '3. Get personalized study notes instantly.',
       generateNotes: 'Generate Notes',
       uploadDocument: 'Upload Document',
       loading: 'Loading notes...',
@@ -497,6 +501,10 @@ export const translations = {
     },
     notes: {
       title: 'ብልህ ማስታወሻ አዘጋጅ',
+      howItWorksTitle: 'እንዴት ይሰራል?',
+      howItWorksStep1: '1. የመማር ዕቃዎችዎን ያስገቡ ወይም ጽሑፍ ያስገቡ።',
+      howItWorksStep2: '2. ኤአይ ይዘቱን ከፕሮፋይልዎ ጋር በመቀናቀር ይተካራል እና ይተከላለፋል።',
+      howItWorksStep3: '3. የግል ተስማሚ የጥናት ማስታወሻዎችን በፍጥነት ይያዙ።',
       generateNotes: 'ማስታወሻ አዘጋጅ',
       uploadDocument: 'ሰነድ ያስገቡ',
       loading: 'ማስታወሻዎችን በማዘጋጀት ላይ እባክዎ ይጠብቁ...',

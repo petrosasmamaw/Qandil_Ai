@@ -452,12 +452,12 @@ export default function NotesPage() {
           {/* Info Section */}
           <div className="light-box p-6 border-l-4 border-l-blue-500 shadow-sm">
             <h3 className="font-bold mb-3 flex items-center gap-2 text-blue-600">
-              <FiZap /> How It Works
+              <FiZap /> {t('notes.howItWorksTitle')}
             </h3>
             <ul className="text-sm space-y-2 opacity-80">
-              <li>1. Upload your learning materials or paste text.</li>
-              <li>2. AI analyzes content based on your {profile.level} profile.</li>
-              <li>3. Get personalized study notes instantly.</li>
+              <li>{t('notes.howItWorksStep1')}</li>
+              <li>{t('notes.howItWorksStep2').replace('{level}', profile.level)}</li>
+              <li>{t('notes.howItWorksStep3')}</li>
             </ul>
           </div>
         </div>
