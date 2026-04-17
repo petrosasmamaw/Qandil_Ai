@@ -410,7 +410,7 @@ export default function ChatBox({
             onClick={() => fileInputRef.current?.click()}
             className="px-3 py-2 rounded-xl border border-black/10 dark:border-white/10 bg-white/50 dark:bg-black/50 text-sm"
           >
-            Upload
+            {t('common.upload')}
           </button>
 
           <input
