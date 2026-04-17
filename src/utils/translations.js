@@ -219,6 +219,11 @@ export const translations = {
       emptyTitleMessage: 'Please enter a title for your assignment',
       helpTitle: 'How It Works',
       whatYouGet: 'What You Get',
+      howItWorksStep2: '2. AI analyzes requirements using your profile.',
+      howItWorksStep3: '3. Get a custom approach for your assignment.',
+      whatYouGetItem1: 'Simplified requirements',
+      whatYouGetItem2: 'Critical thinking questions',
+      whatYouGetItem3: 'Step-by-step logic map',
       getGuidedHelp: 'Get guided help for',
     },
     imageAnalyzer: {
