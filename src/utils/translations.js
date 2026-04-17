@@ -578,6 +578,11 @@ export const translations = {
       emptyTitleMessage: 'እባክዎ ለቤት ሥራዎ ርዕስ ያስገቡ',
       helpTitle: 'እንዴት ይሰራል?',
       whatYouGet: 'ምን ያገኛሉ?',
+      howItWorksStep2: '2. ኤአይ የሥራዎን መስፈርቶች በእርስዎ የተገለጸው ፕሮፋይል መሠረት ይተንተናል።',
+      howItWorksStep3: '3. ለሥራዎ የተለየ አቅጣጫ ይውሰዱ።',
+      whatYouGetItem1: 'የተሳሳተ የመረጃ ማብራሪያ (Simplified requirements)',
+      whatYouGetItem2: 'አስፈላጊ ማስተካከያ ጥያቄዎች (Critical thinking questions)',
+      whatYouGetItem3: 'ደርሶ-ደርሶ የስርአት ካርታ (Step-by-step logic map)',
       getGuidedHelp: 'የደረጃ በደረጃ ድጋፍ ያግኙ ለ',
     },
     imageAnalyzer: {
