@@ -22,9 +22,34 @@ export const Navbar = () => {
   useEffect(() => {
     setMounted(true);
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      setLoading(false);
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error('Error getting Supabase session:', error);
+          // If refresh token invalid or not found, sign out to clear stale credentials
+          if (String(error.message).toLowerCase().includes('refresh token')) {
+            try {
+              await supabase.auth.signOut();
+            } catch (e) {
+              console.error('Failed to sign out after invalid refresh token:', e);
+            }
+          }
+          setSession(null);
+        } else {
+          setSession(session);
+        }
+      } catch (err) {
+        console.error('Unexpected error getting Supabase session:', err);
+        // Defensive: clear session if anything goes wrong with auth
+        try {
+          await supabase.auth.signOut();
+        } catch (e) {
+          console.error('Failed to sign out during error handling:', e);
+        }
+        setSession(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
     getSession();
