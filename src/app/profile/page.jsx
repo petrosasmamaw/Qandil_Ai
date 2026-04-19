@@ -143,11 +143,7 @@ export default function ProfilePage() {
   };
 
   if (sessionLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-2 border-green-500 border-t-transparent"></div>
-      </div>
-    );
+    return null;
   }
 
   if (!session) return null;
