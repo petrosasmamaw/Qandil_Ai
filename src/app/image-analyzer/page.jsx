@@ -9,6 +9,7 @@ import { analyzeImage } from '@/utils/imageAnalysisService';
 import ImageAnalysisDisplay from '@/components/ImageAnalysisDisplay';
 import ChatHistory from '@/components/ChatHistory';
 import { useTranslation } from '@/hooks/useTranslation';
+import { ImageAnalyzerSkeletonLoader } from '@/components/Skeleton';
 import { FiImage, FiUploadCloud, FiInfo, FiBook } from 'react-icons/fi';
 
 // Helper function to extract first 4 words for chat title
@@ -136,14 +137,7 @@ export default function ImageAnalyzerPage() {
   };
 
   if (loading || profileLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background transition-colors duration-300">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-black/10 border-t-blue-600 mx-auto mb-4"></div>
-          <p className="opacity-70">{t('imageAnalyzer.loadingProfileMsg')}</p>
-        </div>
-      </div>
-    );
+    return <ImageAnalyzerSkeletonLoader isDark={isDark} />;
   }
 
   return (

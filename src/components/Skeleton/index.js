@@ -24,3 +24,10 @@ export {
   SkeletonInfoCards,
   AssignmentGuideSkeletonLoader
 } from './AssignmentGuideSkeletonLoader';
+export {
+  SkeletonProfileCard,
+  SkeletonProfileBar,
+  SkeletonImageUploader,
+  SkeletonAnalysisResult,
+  ImageAnalyzerSkeletonLoader
+} from './ImageAnalyzerSkeletonLoader';
