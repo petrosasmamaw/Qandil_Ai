@@ -9,3 +9,12 @@ export {
   SkeletonSidebar 
 } from './SkeletonComponents';
 export { AIAssistanceSkeletonLoader } from './AIAssistanceSkeletonLoader';
+export { 
+  SkeletonStatCard,
+  SkeletonStatsBar,
+  SkeletonFileUpload,
+  SkeletonTextForm,
+  SkeletonNoteCard,
+  SkeletonNotesSection,
+  NotesSkeletonLoader 
+} from './NotesSkeletonLoader';
