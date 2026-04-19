@@ -10,6 +10,7 @@ import { generateAssignmentGuidance, generateAssignmentGuidanceFromText } from '
 import AssignmentGuidanceDisplay from '@/components/AssignmentGuidanceDisplay';
 import ChatHistory from '@/components/ChatHistory';
 import { useTranslation } from '@/hooks/useTranslation';
+import { AssignmentGuideSkeletonLoader } from '@/components/Skeleton';
 import { FiClipboard, FiBook, FiZap, FiFileText, FiCheck } from 'react-icons/fi';
 
 // Helper function to extract first 4 words for chat title
@@ -83,14 +84,7 @@ export default function AssignmentGuidePage() {
   }, [router, dispatch, t]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background transition-colors duration-300">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-black/10 border-t-green-600 mx-auto"></div>
-          <p className="mt-4 opacity-70">{t('assignmentGuide.loading')}</p>
-        </div>
-      </div>
-    );
+    return <AssignmentGuideSkeletonLoader isDark={isDark} />;
   }
 
   if (!session || !profile) {
