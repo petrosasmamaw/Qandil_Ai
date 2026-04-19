@@ -31,3 +31,13 @@ export {
   SkeletonAnalysisResult,
   ImageAnalyzerSkeletonLoader
 } from './ImageAnalyzerSkeletonLoader';
+export {
+  SkeletonStatCard as DashboardSkeletonStatCard,
+  SkeletonStatsGrid,
+  SkeletonChart,
+  SkeletonProfileCard as DashboardSkeletonProfileCard,
+  SkeletonQuickStats,
+  SkeletonTableRow,
+  SkeletonTable,
+  DashboardSkeletonLoader
+} from './DashboardSkeletonLoader';

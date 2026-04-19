@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from '@/hooks/useTranslation';
 import { supabase } from '@/lib/supabase';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
+import { DashboardSkeletonLoader } from '@/components/Skeleton';
 import dynamic from 'next/dynamic';
 import { FiMessageSquare, FiBook, FiClipboard, FiImage, FiArrowRight } from 'react-icons/fi';
 import { IoStatsChart } from 'react-icons/io5';
@@ -110,38 +111,7 @@ export default function DashboardPage() {
   }, [user?.id]);
 
   if (!mounted || loading) {
-    return (
-      <div className="light-image-bg min-h-screen flex items-center justify-center transition-colors duration-300 relative z-0">
-        {/* DARK MODE BACKGROUND IMAGE WITH BLUR ONLY */}
-        {isDark && (
-          <div 
-            className="fixed inset-0 -z-10 pointer-events-none"
-            style={{
-              backgroundImage: `url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTAxL3Jhd3BpeGVsX29mZmljZV8zNF9taW5pbWFsX2Fic3RyYWN0X2JsdWVfYW5kX3B1cnBsZV9uZW9uX3dhdnlfZ282ZWQyZmJmMS05ZWMzLTQxNmItOWY4My0yZmJmNThjOWUyMjc1XzEuanBn.jpg')`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              filter: 'blur(8px)',
-              transform: 'scale(1.05)',
-            }}
-          />
-        )}
-        <div className="text-center">
-          <div className="flex flex-col items-center gap-4">
-            <div 
-              className="w-16 h-16 border-4 rounded-full animate-spin"
-              style={{ 
-                borderColor: isDark ? 'rgba(107, 114, 128, 0.5)' : 'rgba(26, 50, 99, 0.2)',
-                borderTopColor: isDark ? '#10B981' : '#1A3263'
-              }}
-            ></div>
-            <p style={{ color: isDark ? '#D1D5DB' : '#1A3263' }} className="font-medium">
-              {t('common.loading') || 'Loading...'}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
+    return <DashboardSkeletonLoader isDark={isDark} />;
   }
 
   // Calculate total stats
