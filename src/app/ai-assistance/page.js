@@ -12,6 +12,7 @@ import {
   createAIAssistanceChat,
   addMessageToAIChat,
 } from '@/store/slices/aiAssistanceChatSlice';
+import { AIAssistanceSkeletonLoader } from '@/components/Skeleton';
 
 import { 
   FiBook, 
@@ -124,11 +125,7 @@ export default function AIAssistance() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-16 w-16 border-4 border-black/10 border-t-green-600"></div>
-      </div>
-    );
+    return <AIAssistanceSkeletonLoader isDark={isDark} />;
   }
 
   // Same backgroundStyle logic as Home
