@@ -368,7 +368,7 @@ export const translations = {
   amh: {
     navbar: {
       home: 'ዋና ገጽ',
-      dashboard: ' dashboard',
+      dashboard: 'ዳሽቦርድ',
       aiTools: 'የኤአይ መሣሪያዎች',
       aiAssistance: 'የኤአይ (AI) አስተማሪ',
       notes: 'ማስታወሻዎች',
