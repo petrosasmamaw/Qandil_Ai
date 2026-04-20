@@ -278,9 +278,8 @@ export const Navbar = () => {
                   backgroundPosition: 'center',
                   backgroundAttachment: 'fixed',
                   backgroundRepeat: 'no-repeat',
-                  filter: 'blur(2px)',
-                  WebkitBackdropFilter: 'blur(10px)',
-                  backdropFilter: 'blur(10px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  backdropFilter: 'blur(12px)',
                 }
               : {}
           }
