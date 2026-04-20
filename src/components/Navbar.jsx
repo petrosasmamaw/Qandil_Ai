@@ -280,12 +280,13 @@ export const Navbar = () => {
                   backgroundRepeat: 'no-repeat',
                   WebkitBackdropFilter: 'blur(12px)',
                   backdropFilter: 'blur(12px)',
+                  color: '#000000',
                 }
               : {}
           }
           suppressHydrationWarning
         >
-          <div className="px-4 pt-4 pb-6 space-y-2 relative z-10">
+          <div className="px-4 pt-4 pb-6 space-y-2 relative z-10" style={mounted && theme === 'light' ? { color: '#000000' } : {}}>
             {/* Navigation Items */}
             {navItems.map((item) => (
               <Link

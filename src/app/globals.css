@@ -213,6 +213,21 @@ html.dark select:focus {
   box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.2);
 }
 
+/* Mobile Menu Light Theme - Force Black Text */
+html:not(.dark) [class*="md:hidden"][class*="absolute"] {
+  color: #000000 !important;
+}
+
+html:not(.dark) [class*="md:hidden"][class*="absolute"] a,
+html:not(.dark) [class*="md:hidden"][class*="absolute"] button,
+html:not(.dark) [class*="md:hidden"][class*="absolute"] span {
+  color: #000000 !important;
+}
+
+html:not(.dark) [class*="md:hidden"][class*="absolute"] button[class*="text-red"] {
+  color: #b91c1c !important;
+}
+
 /* Mobile Menu Animations */
 @keyframes fadeIn {
   from {
