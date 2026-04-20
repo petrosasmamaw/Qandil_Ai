@@ -18,6 +18,12 @@ export const Navbar = () => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     setMounted(true);
@@ -237,20 +243,99 @@ export const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
-            <button className="inline-flex items-center justify-center p-2 rounded-full text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 focus:outline-none transition-colors hover:bg-white/50 dark:hover:bg-gray-800/50">
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="inline-flex items-center justify-center p-2.5 rounded-full text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white focus:outline-none transition-all duration-300 hover:bg-gray-200 dark:hover:bg-gray-700/80 active:scale-95"
+              aria-expanded={mobileMenuOpen}
+            >
               <svg
-                className="h-6 w-6"
+                className={`h-6 w-6 transition-transform duration-300 ${mobileMenuOpen ? 'rotate-90' : ''}`}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                {mobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
               </svg>
             </button>
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && !loading && session?.user && (
+        <div className="md:hidden absolute top-16 left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-xl animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="px-4 pt-4 pb-6 space-y-2">
+            {/* Navigation Items */}
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 ${
+                  isActive(item.href)
+                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/60 active:scale-95'
+                }`}
+              >
+                <span className="text-lg">{item.icon}</span>
+                <span>{t(item.labelKey)}</span>
+              </Link>
+            ))}
+
+            {/* Divider */}
+            <div className="my-4 border-t border-gray-200 dark:border-gray-700"></div>
+
+            {/* Language Toggle */}
+            <button
+              onClick={() => {
+                dispatch(toggleLanguage());
+                setMobileMenuOpen(false);
+              }}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/60 active:scale-95"
+            >
+              <span className="text-lg">🌐</span>
+              <span>{language === 'eng' ? '🇺🇸 English' : '🇪🇹 Amharic'}</span>
+              <span className="ml-auto text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-full">
+                {language === 'eng' ? 'Switch to AMH' : 'Switch to ENG'}
+              </span>
+            </button>
+
+            {/* Theme Toggle */}
+            <button
+              onClick={() => {
+                dispatch(toggleTheme());
+                setMobileMenuOpen(false);
+              }}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/60 active:scale-95"
+            >
+              <span className="text-lg">
+                {theme === 'light' ? '🌙' : '☀️'}
+              </span>
+              <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
+              <span className="ml-auto text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-full">
+                {theme === 'light' ? 'Switch' : 'Switch'}
+              </span>
+            </button>
+
+            {/* Sign Out Button */}
+            <button
+              onClick={async () => {
+                await supabase.auth.signOut();
+                setMobileMenuOpen(false);
+                window.location.href = '/auth/login';
+              }}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 active:scale-95"
+            >
+              <span className="text-lg">🚪</span>
+              <span>{t('navbar.signOut')}</span>
+            </button>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
