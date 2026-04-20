@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
 import { createImageAnalyzerChat, addMessageToImageAnalyzerChat } from '@/store/slices/imageAnalyzerChatSlice';
 import { supabase } from '@/lib/supabase';
 import { analyzeImage } from '@/utils/imageAnalysisService';
 import ImageAnalysisDisplay from '@/components/ImageAnalysisDisplay';
-import ChatHistory from '@/components/ChatHistory';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ImageAnalyzerSkeletonLoader } from '@/components/Skeleton';
 import { FiImage, FiUploadCloud, FiInfo, FiBook } from 'react-icons/fi';
@@ -24,6 +24,7 @@ const getFirstFourWords = (text) => {
 
 export default function ImageAnalyzerPage() {
   const { t } = useTranslation();
+  const router = useRouter();
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.profile.profile);
   const profileLoading = useSelector((state) => state.profile.loading);
@@ -37,7 +38,6 @@ export default function ImageAnalyzerPage() {
   const [error, setError] = useState('');
   const [dragActive, setDragActive] = useState(false);
   const [isDark, setIsDark] = useState(false);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [imageChatId, setImageChatId] = useState(null);
 
   // Unified Theme Detection
@@ -175,7 +175,7 @@ export default function ImageAnalyzerPage() {
           </div>
           <div className="flex gap-3 w-full md:w-auto">
             <button
-              onClick={() => setIsHistoryOpen(true)}
+              onClick={() => router.push('/chat-history?type=imageAnalyzer')}
               className="flex-1 md:flex-none px-5 py-3 rounded-xl light-box border font-medium hover:bg-white/10 transition-all flex items-center justify-center gap-2"
             >
               <FiBook size={18} className="text-blue-500" /> {t('common.history')}
@@ -257,17 +257,6 @@ export default function ImageAnalyzerPage() {
           )}
         </div>
       </div>
-
-      <ChatHistory
-        userId={session?.user?.id}
-        chatType="imageAnalyzer"
-        onHistorySelect={(chatId) => {
-          setImageChatId(chatId);
-          setIsHistoryOpen(false);
-        }}
-        onClose={() => setIsHistoryOpen(false)}
-        isOpen={isHistoryOpen}
-      />
 
       <style jsx global>{`
         @keyframes progress {

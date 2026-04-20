@@ -271,6 +271,29 @@ html.dark [class*="bg-white/30"] {
   color: #ffffff !important;
 }
 
+/* Chat History Page Light Theme - All Text Black */
+html:not(.dark) main[class*="light-image-bg"] {
+  color: #000000;
+}
+
+html:not(.dark) main[class*="light-image-bg"] h1,
+html:not(.dark) main[class*="light-image-bg"] h2,
+html:not(.dark) main[class*="light-image-bg"] h3,
+html:not(.dark) main[class*="light-image-bg"] p,
+html:not(.dark) main[class*="light-image-bg"] span,
+html:not(.dark) main[class*="light-image-bg"] div {
+  color: #000000 !important;
+}
+
+/* Chat History Page Dark Theme - All Text White */
+html.dark main[class*="light-image-bg"] h1,
+html.dark main[class*="light-image-bg"] h2,
+html.dark main[class*="light-image-bg"] h3,
+html.dark main[class*="light-image-bg"] p,
+html.dark main[class*="light-image-bg"] span {
+  color: #ffffff !important;
+}
+
 /* Mobile Menu Animations */
 @keyframes fadeIn {
   from {

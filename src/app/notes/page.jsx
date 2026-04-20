@@ -8,7 +8,6 @@ import { fetchProfileByUserId } from '@/store/slices/profileSlice';
 import { createNotesChat, addMessageToNotesChat } from '@/store/slices/notesChatSlice';
 import { processDocument, processTextContent } from '@/utils/documentProcessingService';
 import NoteDisplay from '@/components/NoteDisplay';
-import ChatHistory from '@/components/ChatHistory';
 import { useTranslation } from '@/hooks/useTranslation';
 import { NotesSkeletonLoader } from '@/components/Skeleton';
 import { FiFileText, FiBook, FiZap, FiPlus } from 'react-icons/fi';
@@ -36,7 +35,6 @@ export default function NotesPage() {
   const [textInput, setTextInput] = useState('');
   const [textTitle, setTextTitle] = useState('');
   const [isDark, setIsDark] = useState(false);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -315,7 +313,7 @@ export default function NotesPage() {
           </div>
           <div className="flex gap-3 w-full md:w-auto">
             <button
-              onClick={() => setIsHistoryOpen(true)}
+              onClick={() => router.push('/chat-history?type=notes')}
               className="flex-1 md:flex-none px-5 py-3 rounded-xl light-box border font-medium hover:bg-white/10 transition-all flex items-center justify-center gap-2"
             >
               <FiBook size={18} className="text-blue-500" /> {t('common.history')}
@@ -456,17 +454,6 @@ export default function NotesPage() {
           </div>
         </div>
       </div>
-
-      <ChatHistory
-        userId={session?.user?.id}
-        chatType="notes"
-        onHistorySelect={(chatId) => {
-          setNotesChatId(chatId);
-          setIsHistoryOpen(false);
-        }}
-        onClose={() => setIsHistoryOpen(false)}
-        isOpen={isHistoryOpen}
-      />
     </main>
   );
 }

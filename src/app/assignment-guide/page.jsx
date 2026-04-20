@@ -8,7 +8,7 @@ import { fetchProfileByUserId } from '@/store/slices/profileSlice';
 import { createAssignmentGuideChat, addMessageToAssignmentGuideChat } from '@/store/slices/assignmentGuideChatSlice';
 import { generateAssignmentGuidance, generateAssignmentGuidanceFromText } from '@/utils/assignmentGuidanceService';
 import AssignmentGuidanceDisplay from '@/components/AssignmentGuidanceDisplay';
-import ChatHistory from '@/components/ChatHistory';
+
 import { useTranslation } from '@/hooks/useTranslation';
 import { AssignmentGuideSkeletonLoader } from '@/components/Skeleton';
 import { FiClipboard, FiBook, FiZap, FiFileText, FiCheck } from 'react-icons/fi';
@@ -36,7 +36,7 @@ export default function AssignmentGuidePage() {
   const [textInput, setTextInput] = useState('');
   const [textTitle, setTextTitle] = useState('');
   const [isDark, setIsDark] = useState(false);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -311,7 +311,7 @@ export default function AssignmentGuidePage() {
           </div>
           <div className="flex gap-3 w-full md:w-auto">
             <button
-              onClick={() => setIsHistoryOpen(true)}
+              onClick={() => router.push('/chat-history?type=assignmentGuide')}
               className="flex-1 md:flex-none px-5 py-3 rounded-xl light-box border font-medium hover:bg-white/10 transition-all flex items-center justify-center gap-2"
             >
               <FiBook size={18} className="text-blue-500" /> {t('common.history')}
@@ -475,16 +475,7 @@ export default function AssignmentGuidePage() {
         </div>
       </div>
 
-      <ChatHistory
-        userId={session?.user?.id}
-        chatType="assignmentGuide"
-        onHistorySelect={(chatId) => {
-          setAssignmentChatId(chatId);
-          setIsHistoryOpen(false);
-        }}
-        onClose={() => setIsHistoryOpen(false)}
-        isOpen={isHistoryOpen}
-      />
+
     </main>
   );
 }

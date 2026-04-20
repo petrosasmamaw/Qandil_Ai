@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import ChatBox from '@/components/ChatBox';
-import ChatHistory from '@/components/ChatHistory';
 import { useTranslation } from '@/hooks/useTranslation';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
 import {
@@ -49,7 +48,6 @@ export default function AIAssistance() {
   const [session, setSession] = useState(null);
   const [error, setError] = useState(null);
   const [currentChatId, setCurrentChatId] = useState(null);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -170,25 +168,26 @@ export default function AIAssistance() {
 
           <div className="flex gap-3 w-full md:w-auto">
             <button
-              onClick={() => setIsHistoryOpen(true)}
+              onClick={() => router.push('/chat-history?type=aiAssistance')}
               className="flex-1 md:flex-none px-5 py-3 rounded-xl light-box border font-medium hover:bg-white/10 transition-all flex items-center justify-center gap-2"
             >
               <FiBook size={18} className="text-blue-500" /> {t('common.history')}
             </button>
-            <button
-              onClick={async () => {
-                const chatAction = await dispatch(createAIAssistanceChat({
-                    userId: session?.user.id,
-                    title: t('aiAssistance.newChatTitle'),
-                }));
-                if (chatAction.payload) setCurrentChatId(chatAction.payload._id);
-              }}
-              className="flex-1 md:flex-none px-5 py-3 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 transition-all shadow-lg flex items-center justify-center gap-2"
-            >
-              <FiPlus size={20} /> {t('aiAssistance.newChat')}
-            </button>
+              <button
+                onClick={async () => {
+                  const chatAction = await dispatch(createAIAssistanceChat({
+                      userId: session?.user.id,
+                      title: t('aiAssistance.newChatTitle'),
+                  }));
+                  if (chatAction.payload) setCurrentChatId(chatAction.payload._id);
+                }}
+                className="flex-1 md:flex-none px-5 py-3 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 transition-all shadow-lg flex items-center justify-center gap-2"
+              >
+                <FiPlus size={20} /> {t('aiAssistance.newChat')}
+              </button>
+            </div>
           </div>
-        </div>
+
 
         {/* LAYOUT */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -239,17 +238,6 @@ export default function AIAssistance() {
             </button>
           </div>
         </div>
-
-        <ChatHistory
-          userId={session?.user?.id}
-          chatType="aiAssistance"
-          onHistorySelect={(chatId) => {
-            setCurrentChatId(chatId);
-            setIsHistoryOpen(false);
-          }}
-          onClose={() => setIsHistoryOpen(false)}
-          isOpen={isHistoryOpen}
-        />
       </div>
     </main>
   );
