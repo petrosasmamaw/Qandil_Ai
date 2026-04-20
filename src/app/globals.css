@@ -228,6 +228,17 @@ html:not(.dark) [class*="md:hidden"][class*="absolute"] button[class*="text-red"
   color: #b91c1c !important;
 }
 
+/* Chat History Modal Light Theme Styling */
+html:not(.dark) [class*="max-w-6xl"][class*="h-[90vh]"] {
+  background-blend-mode: overlay;
+  position: relative;
+}
+
+html:not(.dark) [class*="max-w-6xl"][class*="h-[90vh]"] > * {
+  position: relative;
+  z-index: 10;
+}
+
 /* Mobile Menu Animations */
 @keyframes fadeIn {
   from {

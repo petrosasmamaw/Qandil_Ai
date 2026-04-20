@@ -39,6 +39,8 @@ const ChatHistory = ({
   const dispatch = useDispatch();
   const [selectedChatId, setSelectedChatId] = useState(null);
   const { t } = useTranslation();
+  const [isDark, setIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // Select appropriate slice based on chatType
   const getSliceState = () => {
@@ -87,6 +89,20 @@ const ChatHistory = ({
 
   const thunks = getThunks();
 
+  // Detect dark mode
+  useEffect(() => {
+    setMounted(true);
+    const dark = document.documentElement.classList.contains('dark');
+    setIsDark(dark);
+
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     if (isOpen && userId) {
       console.log(`Fetching ${chatType} history for user:`, userId);
@@ -125,7 +141,23 @@ const ChatHistory = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl h-[90vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-white/20 dark:border-gray-800">
+      <div 
+        className="w-full max-w-6xl h-[90vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-white/20 dark:border-gray-800"
+        style={
+          mounted && !isDark
+            ? {
+                backgroundImage: `url('https://cdn.vectorstock.com/i/500p/87/24/pastel-pink-and-blue-blur-backdrop-vector-63408724.jpg')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundAttachment: 'fixed',
+                backgroundRepeat: 'no-repeat',
+                WebkitBackdropFilter: 'blur(12px)',
+                backdropFilter: 'blur(12px)',
+              }
+            : {}
+        }
+        suppressHydrationWarning
+      >
         {/* Header */}
         <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6 flex justify-between items-center">
           <div className="flex items-center gap-3">
