@@ -268,17 +268,34 @@ export const Navbar = () => {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && !loading && session?.user && (
-        <div className="md:hidden absolute top-16 left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-xl animate-in fade-in slide-in-from-top-2 duration-300">
-          <div className="px-4 pt-4 pb-6 space-y-2">
+        <div 
+          className="md:hidden absolute top-16 left-0 right-0 dark:bg-gray-800/95 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-xl animate-in fade-in slide-in-from-top-2 duration-300"
+          style={
+            mounted && theme === 'light'
+              ? {
+                  backgroundImage: `url('https://cdn.vectorstock.com/i/500p/87/24/pastel-pink-and-blue-blur-backdrop-vector-63408724.jpg')`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundAttachment: 'fixed',
+                  backgroundRepeat: 'no-repeat',
+                  filter: 'blur(2px)',
+                  WebkitBackdropFilter: 'blur(10px)',
+                  backdropFilter: 'blur(10px)',
+                }
+              : {}
+          }
+          suppressHydrationWarning
+        >
+          <div className="px-4 pt-4 pb-6 space-y-2 relative z-10">
             {/* Navigation Items */}
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 ${
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 backdrop-blur-sm ${
                   isActive(item.href)
                     ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/60 active:scale-95'
+                    : 'text-black dark:text-gray-300 hover:bg-white/40 dark:hover:bg-gray-700/60 active:scale-95 font-semibold'
                 }`}
               >
                 <span className="text-lg">{item.icon}</span>
@@ -295,11 +312,11 @@ export const Navbar = () => {
                 dispatch(toggleLanguage());
                 setMobileMenuOpen(false);
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/60 active:scale-95"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium font-semibold transition-all duration-200 text-black dark:text-gray-300 hover:bg-white/40 dark:hover:bg-gray-700/60 active:scale-95 backdrop-blur-sm"
             >
               <span className="text-lg">🌐</span>
               <span>{language === 'eng' ? '🇺🇸 English' : '🇪🇹 Amharic'}</span>
-              <span className="ml-auto text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-full">
+              <span className="ml-auto text-xs bg-black/20 dark:bg-gray-700 px-2 py-1 rounded-full text-black dark:text-gray-200 font-medium">
                 {language === 'eng' ? 'Switch to AMH' : 'Switch to ENG'}
               </span>
             </button>
@@ -310,13 +327,13 @@ export const Navbar = () => {
                 dispatch(toggleTheme());
                 setMobileMenuOpen(false);
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/60 active:scale-95"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium font-semibold transition-all duration-200 text-black dark:text-gray-300 hover:bg-white/40 dark:hover:bg-gray-700/60 active:scale-95 backdrop-blur-sm"
             >
               <span className="text-lg">
                 {theme === 'light' ? '🌙' : '☀️'}
               </span>
               <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
-              <span className="ml-auto text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-full">
+              <span className="ml-auto text-xs bg-black/20 dark:bg-gray-700 px-2 py-1 rounded-full text-black dark:text-gray-200 font-medium">
                 {theme === 'light' ? 'Switch' : 'Switch'}
               </span>
             </button>
@@ -328,7 +345,7 @@ export const Navbar = () => {
                 setMobileMenuOpen(false);
                 window.location.href = '/auth/login';
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 active:scale-95"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium font-semibold transition-all duration-200 text-red-700 dark:text-red-400 hover:bg-white/40 dark:hover:bg-red-950/30 active:scale-95 backdrop-blur-sm"
             >
               <span className="text-lg">🚪</span>
               <span>{t('navbar.signOut')}</span>
