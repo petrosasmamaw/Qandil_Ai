@@ -142,17 +142,20 @@ const ChatHistory = ({
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div 
-        className="w-full max-w-6xl h-[90vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-white/20 dark:border-gray-800"
+        className="w-full max-w-6xl h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-white/20"
         style={
-          mounted && !isDark
+          mounted
             ? {
-                backgroundImage: `url('https://cdn.vectorstock.com/i/500p/87/24/pastel-pink-and-blue-blur-backdrop-vector-63408724.jpg')`,
+                backgroundImage: isDark 
+                  ? `url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9ibWFnZXMvd2Vic2l0ZS8yMDI0LTAxL3Jhd3BpeGVsX29mZmljZV8zNF9taW5pbWFsX2Fic3RyYWN0X2JsdWVfYW5kX3B1cnBsZV9uZW9uX3dhdXlfZ282ZWQyZmJmMS05ZWMzLTQxNmItOWY4My0yZmJmNThjOWUyMjc1XzEuanBn.jpg')`
+                  : `url('https://cdn.vectorstock.com/i/500p/87/24/pastel-pink-and-blue-blur-backdrop-vector-63408724.jpg')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundAttachment: 'fixed',
                 backgroundRepeat: 'no-repeat',
                 WebkitBackdropFilter: 'blur(12px)',
                 backdropFilter: 'blur(12px)',
+                color: isDark ? '#ffffff' : '#000000',
               }
             : {}
         }
@@ -178,9 +181,9 @@ const ChatHistory = ({
         {/* Main Container */}
         <div className="flex flex-1 overflow-hidden">
           {/* Left Panel - Chat List */}
-          <div className="w-full md:w-80 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
+          <div className="w-full md:w-80 bg-transparent border-r border-white/20 backdrop-blur-sm overflow-y-auto">
             {error && (
-              <div className="bg-red-100 dark:bg-red-900 border-b border-red-300 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3">
+              <div className="bg-red-500/30 dark:bg-red-900/30 border-b border-red-300/50 dark:border-red-700/30 text-red-900 dark:text-red-200 px-4 py-3">
                 <div className="text-sm">{error}</div>
                 <button
                   onClick={() => dispatch(thunks.clearError())}
@@ -193,11 +196,11 @@ const ChatHistory = ({
 
             {loading ? (
               <div className="flex items-center justify-center h-full">
-                <p className="text-gray-600 dark:text-gray-400">{t('common.loadingHistory')}</p>
+                <p className="text-gray-700 dark:text-gray-300">{t('common.loadingHistory')}</p>
               </div>
             ) : chatHistory.length === 0 ? (
               <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500 dark:text-gray-400">{t('common.noConversations')}</p>
+                <p className="text-gray-700 dark:text-gray-300">{t('common.noConversations')}</p>
               </div>
             ) : (
               <div className="space-y-2 p-4">
@@ -205,14 +208,14 @@ const ChatHistory = ({
                   <div
                     key={chat._id}
                     onClick={() => handleSelectChat(chat._id)}
-                    className={`p-3 rounded-lg cursor-pointer transition-all border-2 ${
+                    className={`p-3 rounded-lg cursor-pointer transition-all border-2 backdrop-blur-sm ${
                       selectedChatId === chat._id
-                        ? "bg-green-100 dark:bg-green-900/30 border-green-500"
-                        : "bg-white dark:bg-gray-700 border-transparent hover:bg-gray-100 dark:hover:bg-gray-600"
+                        ? "bg-green-500/40 dark:bg-green-900/40 border-green-400 dark:border-green-500"
+                        : "bg-white/20 dark:bg-white/10 border-transparent hover:bg-white/30 dark:hover:bg-white/20"
                     }`}
                   >
                     <h3 className="font-semibold text-gray-900 dark:text-white truncate">{chat.title}</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-gray-700 dark:text-gray-300">
                       {new Date(chat.createdAt).toLocaleDateString()}
                     </p>
                   </div>
@@ -222,11 +225,11 @@ const ChatHistory = ({
           </div>
 
           {/* Right Panel - Chat Content */}
-          <div className="flex-1 flex flex-col bg-white dark:bg-gray-900">
+          <div className="flex-1 flex flex-col bg-transparent backdrop-blur-sm">
             {selectedChat ? (
               <>
                 {/* Chat Header */}
-                <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-6 border-b border-gray-200 dark:border-gray-700">
+                <div className="bg-gradient-to-r from-green-500/60 to-emerald-500/60 text-white p-6 border-b border-white/20 backdrop-blur-sm">
                   <h3 className="text-xl font-bold">{selectedChat.title}</h3>
                   <p className="text-sm text-green-100">
                     {selectedChat.messages?.length || 0} messages
@@ -242,10 +245,10 @@ const ChatHistory = ({
                         className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
                       >
                         <div
-                          className={`max-w-md px-4 py-3 rounded-lg ${
+                          className={`max-w-md px-4 py-3 rounded-lg backdrop-blur-sm ${
                             m.role === 'user'
-                              ? 'bg-green-600 text-white rounded-br-none'
-                              : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-bl-none'
+                              ? 'bg-green-500/50 text-white rounded-br-none border border-green-400/50'
+                              : 'bg-white/30 dark:bg-white/20 text-gray-900 dark:text-white rounded-bl-none border border-white/40'
                           }`}
                         >
                           <div className="text-xs font-semibold mb-1 opacity-70">
@@ -269,22 +272,22 @@ const ChatHistory = ({
                     ))
                   ) : (
                     <div className="flex items-center justify-center h-full">
-                      <p className="text-gray-400">{t('common.noConversations')}</p>
+                      <p className="text-gray-600 dark:text-gray-300">{t('common.noConversations')}</p>
                     </div>
                   )}
                 </div>
 
                 {/* Action Buttons */}
-                <div className="border-t border-gray-200 dark:border-gray-700 p-4 flex gap-3">
+                <div className="border-t border-white/20 p-4 flex gap-3 bg-white/10 dark:bg-white/5 backdrop-blur-sm">
                   <button
                     onClick={() => handleOpenChat(selectedChat._id)}
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-all"
+                    className="flex-1 bg-green-600/70 hover:bg-green-600/90 text-white font-semibold py-3 px-4 rounded-lg transition-all backdrop-blur-sm"
                   >
                     {t('common.continueChat')}
                   </button>
                   <button
                     onClick={() => handleDeleteChat(selectedChat._id)}
-                    className="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center gap-2"
+                    className="bg-red-600/70 hover:bg-red-600/90 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center gap-2 backdrop-blur-sm"
                   >
                     <FiTrash2 size={18} />
                     {t('common.delete')}
@@ -294,7 +297,7 @@ const ChatHistory = ({
             ) : (
               <div className="flex items-center justify-center h-full">
                 <div className="text-center">
-                  <p className="text-gray-500 dark:text-gray-400 text-lg">
+                  <p className="text-gray-700 dark:text-gray-300 text-lg">
                     Select a chat to view
                   </p>
                 </div>

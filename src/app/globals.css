@@ -237,6 +237,38 @@ html:not(.dark) [class*="max-w-6xl"][class*="h-[90vh]"] {
 html:not(.dark) [class*="max-w-6xl"][class*="h-[90vh]"] > * {
   position: relative;
   z-index: 10;
+  color: #000000;
+}
+
+html:not(.dark) [class*="max-w-6xl"][class*="h-[90vh]"] h2,
+html:not(.dark) [class*="max-w-6xl"][class*="h-[90vh]"] h3,
+html:not(.dark) [class*="max-w-6xl"][class*="h-[90vh]"] p,
+html:not(.dark) [class*="max-w-6xl"][class*="h-[90vh]"] span {
+  color: #000000 !important;
+}
+
+/* Chat History Modal Dark Theme Styling */
+html.dark [class*="max-w-6xl"][class*="h-[90vh]"] h2,
+html.dark [class*="max-w-6xl"][class*="h-[90vh]"] h3,
+html.dark [class*="max-w-6xl"][class*="h-[90vh]"] p,
+html.dark [class*="max-w-6xl"][class*="h-[90vh]"] span {
+  color: #ffffff !important;
+}
+
+/* Chat History Box Styling - Light Theme */
+html:not(.dark) [class*="bg-white/20"],
+html:not(.dark) [class*="bg-green-500/40"],
+html:not(.dark) [class*="bg-green-500/50"],
+html:not(.dark) [class*="bg-white/30"] {
+  color: #000000 !important;
+}
+
+/* Chat History Box Styling - Dark Theme */
+html.dark [class*="bg-white/10"],
+html.dark [class*="bg-green-900/40"],
+html.dark [class*="bg-white/20"],
+html.dark [class*="bg-white/30"] {
+  color: #ffffff !important;
 }
 
 /* Mobile Menu Animations */
