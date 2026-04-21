@@ -279,7 +279,7 @@ export default function NotesPage() {
 
   return (
     <main 
-      className="light-image-bg min-h-screen p-6 md:p-8 transition-colors duration-300 relative z-0" 
+      className="light-image-bg min-h-screen p-3 sm:p-4 md:p-6 lg:p-8 transition-colors duration-300 relative z-0" 
       style={backgroundStyle}
     >
       {/* DARK MODE BACKGROUND - Matches Home Page perfectly */}
@@ -297,44 +297,48 @@ export default function NotesPage() {
         />
       )}
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="w-full mx-auto relative z-10 pt-14 sm:pt-16 md:pt-20">
         {/* HEADER */}
-        <div className="flex justify-between items-center mb-8">
-          <div className="light-box px-6 py-4 border shadow-sm flex items-center gap-4">
-             <div className="p-3 bg-green-600/10 rounded-2xl text-green-600">
-                <FiFileText size={32} />
-             </div>
-             <div>
-                <h1 className="text-2xl font-bold leading-tight">{t('notes.title')}</h1>
-                <p className="text-sm opacity-70">
-                  {profile.name} • {t('notes.gradeText')} {profile.grade}
-                </p>
-             </div>
+        <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="light-box px-4 sm:px-5 md:px-6 py-3 sm:py-4 border shadow-sm flex items-center gap-3 sm:gap-4">
+            <div className="p-2 sm:p-3 bg-green-600/10 rounded-xl sm:rounded-2xl text-green-600 flex-shrink-0">
+              <FiFileText size={20} className="sm:hidden" />
+              <FiFileText size={28} className="hidden sm:block md:hidden" />
+              <FiFileText size={32} className="hidden md:block" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl font-bold leading-tight">{t('notes.title')}</h1>
+              <p className="text-xs sm:text-sm opacity-70 truncate">
+                {profile.name} • {t('notes.gradeText')} {profile.grade}
+              </p>
+            </div>
           </div>
-          <div className="flex gap-3 w-full md:w-auto">
+          <div className="flex gap-2 sm:gap-3">
             <button
               onClick={() => router.push('/chat-history?type=notes')}
-              className="flex-1 md:flex-none px-5 py-3 rounded-xl light-box border font-medium hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+              className="flex-1 sm:flex-none px-3 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl light-box border font-medium text-xs sm:text-sm hover:bg-white/10 transition-all flex items-center justify-center gap-1.5 sm:gap-2"
             >
-              <FiBook size={18} className="text-blue-500" /> {t('common.history')}
+              <FiBook size={16} className="sm:hidden" />
+              <FiBook size={18} className="hidden sm:block" />
+              <span className="hidden xs:inline">{t('common.history')}</span>
             </button>
           </div>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-600 dark:text-red-400 backdrop-blur-md">
+          <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-500/10 border border-red-500/20 rounded-lg sm:rounded-xl text-red-600 dark:text-red-400 backdrop-blur-md text-xs sm:text-sm">
             ⚠️ {error}
           </div>
         )}
 
         {/* Input Mode Toggle */}
-        <div className="mb-8 flex gap-2">
+        <div className="mb-6 sm:mb-8 flex gap-2 sm:gap-3">
           {['file', 'text'].map((mode) => (
             <button
               key={mode}
               onClick={() => setInputMode(mode)}
-              className={`px-6 py-3 rounded-xl font-bold transition-all ${
+              className={`px-3 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm transition-all ${
                 inputMode === mode 
                 ? 'bg-green-600 text-white shadow-lg' 
                 : 'light-box border opacity-70 hover:opacity-100'
@@ -345,7 +349,7 @@ export default function NotesPage() {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 gap-8">
+        <div className="space-y-6 sm:space-y-8">
           {/* Main Input Area */}
           <div className="w-full">
             {inputMode === 'file' ? (
@@ -354,13 +358,13 @@ export default function NotesPage() {
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
-                className={`p-12 border-2 border-dashed rounded-3xl transition-all text-center light-box ${
+                className={`p-6 sm:p-8 md:p-12 border-2 border-dashed rounded-2xl sm:rounded-3xl transition-all text-center light-box ${
                   dragActive ? 'border-green-500 bg-green-500/5' : 'border-black/10 dark:border-white/10'
                 }`}
               >
-                <div className="text-5xl mb-4">📂</div>
-                <h3 className="text-xl font-bold mb-2">{t('notes.uploadMaterials')}</h3>
-                <p className="opacity-60 mb-6">{t('notes.dragDropDescription')}</p>
+                <div className="text-3xl sm:text-4xl md:text-5xl mb-2 sm:mb-4">📂</div>
+                <h3 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2">{t('notes.uploadMaterials')}</h3>
+                <p className="opacity-60 mb-4 sm:mb-6 text-xs sm:text-sm">{t('notes.dragDropDescription')}</p>
                 <input
                   type="file"
                   multiple
@@ -372,31 +376,31 @@ export default function NotesPage() {
                 />
                 <label
                   htmlFor="file-input"
-                  className="inline-block px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold cursor-pointer transition-all"
+                  className="inline-block px-4 sm:px-8 py-2 sm:py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm cursor-pointer transition-all"
                 >
                   {processing ? t('notes.processing') : t('notes.chooseFiles')}
                 </label>
               </div>
             ) : (
-              <form onSubmit={handleTextSubmit} className="light-box p-8 border shadow-xl space-y-4">
+              <form onSubmit={handleTextSubmit} className="light-box p-4 sm:p-6 md:p-8 border shadow-xl space-y-3 sm:space-y-4 rounded-lg sm:rounded-xl">
                 <input
                   type="text"
                   value={textTitle}
                   onChange={(e) => setTextTitle(e.target.value)}
                   placeholder={t('notes.titlePlaceholder')}
-                  className="w-full p-4 rounded-xl light-box border focus:ring-2 focus:ring-green-500 transition-all"
+                  className="w-full p-3 sm:p-4 rounded-lg sm:rounded-xl light-box border focus:ring-2 focus:ring-green-500 transition-all text-sm sm:text-base"
                 />
                 <textarea
                   value={textInput}
                   onChange={(e) => setTextInput(e.target.value)}
                   placeholder={t('notes.contentPlaceholder')}
-                  rows="8"
-                  className="w-full p-4 rounded-xl light-box border focus:ring-2 focus:ring-green-500 transition-all resize-none"
+                  rows="6"
+                  className="w-full p-3 sm:p-4 rounded-lg sm:rounded-xl light-box border focus:ring-2 focus:ring-green-500 transition-all resize-none text-xs sm:text-sm"
                 />
                 <button
                   type="submit"
                   disabled={processing}
-                  className="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold transition-all shadow-lg"
+                  className="w-full py-2.5 sm:py-4 bg-green-600 hover:bg-green-700 text-white rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm transition-all shadow-lg"
                 >
                   {processing ? 'Processing...' : 'Generate Notes'}
                 </button>
@@ -405,25 +409,25 @@ export default function NotesPage() {
           </div>
 
           {/* Stats Bar */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
             {[
               { label: 'Level', value: profile.level },
               { label: 'System', value: profile.studySystem.replace(/_/g, ' ') },
               { label: 'Goal', value: profile.goal.replace(/_/g, ' ') },
               { label: 'Notes', value: notes.length }
             ].map((stat, i) => (
-              <div key={i} className="light-box p-4 border text-center">
+              <div key={i} className="light-box p-3 sm:p-4 border text-center rounded-lg sm:rounded-xl">
                 <p className="text-xs opacity-50 uppercase font-bold tracking-wider mb-1">{stat.label}</p>
-                <p className="font-bold capitalize">{stat.value}</p>
+                <p className="font-bold capitalize text-xs sm:text-sm">{stat.value}</p>
               </div>
             ))}
           </div>
 
           {/* Notes Display Section */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {notes.length > 0 ? (
               <>
-                <h2 className="text-2xl font-bold px-2">Your Generated Notes</h2>
+                <h2 className="text-xl sm:text-2xl font-bold px-2 sm:px-0">Your Generated Notes</h2>
                 {notes.map((note) => (
                   <NoteDisplay
                     key={note.id}
@@ -434,19 +438,19 @@ export default function NotesPage() {
                 ))}
               </>
             ) : (
-              <div className="light-box p-20 border text-center opacity-60">
-                <FiBook size={48} className="mx-auto mb-4 text-green-600" />
-                <p>{t('notes.noNotes') || "No notes generated yet. Upload a file to start."}</p>
+              <div className="light-box p-8 sm:p-12 md:p-20 border text-center opacity-60 rounded-lg sm:rounded-xl">
+                <FiBook size={36} className="sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 text-green-600" />
+                <p className="text-xs sm:text-sm">{t('notes.noNotes') || "No notes generated yet. Upload a file to start."}</p>
               </div>
             )}
           </div>
 
           {/* Info Section */}
-          <div className="light-box p-6 border-l-4 border-l-blue-500 shadow-sm">
-            <h3 className="font-bold mb-3 flex items-center gap-2 text-blue-600">
-              <FiZap /> {t('notes.howItWorksTitle')}
+          <div className="light-box p-4 sm:p-6 border-l-4 border-l-blue-500 shadow-sm rounded-lg sm:rounded-xl">
+            <h3 className="font-bold mb-2 sm:mb-3 flex items-center gap-2 text-blue-600 text-sm sm:text-base">
+              <FiZap size={16} className="sm:w-5 sm:h-5" /> {t('notes.howItWorksTitle')}
             </h3>
-            <ul className="text-sm space-y-2 opacity-80">
+            <ul className="text-xs sm:text-sm space-y-1 sm:space-y-2 opacity-80">
               <li>{t('notes.howItWorksStep1')}</li>
               <li>{t('notes.howItWorksStep2').replace('{level}', profile.level)}</li>
               <li>{t('notes.howItWorksStep3')}</li>

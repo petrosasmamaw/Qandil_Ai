@@ -167,12 +167,12 @@ export default function ChatHistoryPage() {
 
   return (
     <main className="light-image-bg min-h-screen transition-colors duration-300 relative z-0">
-      {/* DARK MODE BACKGROUND */}
-      {mounted && isDark && (
+      {/* DARK MODE BACKGROUND IMAGE WITH BLUR ONLY */}
+      {isDark && (
         <div 
           className="fixed inset-0 -z-10 pointer-events-none"
           style={{
-            backgroundImage: `url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9ibWFnZXMvd2Vic2l0ZS8yMDI0LTAxL3Jhd3BpeGVsX29mZmljZV8zNF9taW5pbWFsX2Fic3RyYWN0X2JsdWVfYW5kX3B1cnBsZV9uZW9uX3dhdXlfZ282ZWQyZmJmMS05ZWMzLTQxNmItOWY4My0yZmJmNThjOWUyMjc1XzEuanBn.jpg')`,
+            backgroundImage: `url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9ibWFnZXMvd2Vic2l0ZS8yMDI0LTAxL3Jhd3BpeGVsX29mZmljZV8zNF9taW5pbWFsX2Fic3RyYWN0X2JsdWVfYW5kX3B1cnBsZV9uZW9uX3dhdnlfZ282ZWQyZmJmMS05ZWMzLTQxNmItOWY4My0yZmJmNThjOWUyNzVfMS5qcGc.jpg')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',

@@ -243,67 +243,67 @@ export default function DashboardPage() {
       )}
 
       {/* Main Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12 relative z-10">
+      <div className="w-full mx-auto px-3 sm:px-4 md:px-6 lg:px-8 pt-14 sm:pt-16 md:pt-20 pb-8 sm:pb-10 md:pb-12 relative z-10">
         
         {/* Header Section */}
-        <div className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-2" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>
+        <div className="mb-8 sm:mb-10 md:mb-12">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>
             {t('dashboard.welcome')} <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-green-500">{profile?.name?.split(' ')[0] || 'Student'}</span> 👋
           </h1>
-          <p style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.tagline')}</p>
+          <p className="text-xs sm:text-sm md:text-base" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.tagline')}</p>
         </div>
 
         {/* Overview Stats - 4 Column Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 mb-6 sm:mb-8 md:mb-10">
           
           {/* AI Assistance Card */}
-          <div className="light-box p-6 rounded-2xl border hover:scale-105 transition duration-300">
-            <div className="flex items-center justify-between mb-3">
-              <FiMessageSquare className="text-green-600 w-6 h-6" />
+          <div className="light-box p-4 sm:p-5 md:p-6 rounded-lg sm:rounded-xl md:rounded-2xl border hover:scale-105 transition duration-300">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <FiMessageSquare className="text-green-600 w-5 h-5 sm:w-6 sm:h-6" />
             </div>
-            <p className="text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.stats.aiAssistance')}</p>
-            <p className="text-3xl font-bold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{chatStats.aiAssistance.chats}</p>
-            <p className="text-xs mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.aiAssistance.messages} {t('dashboard.stats.messages')}</p>
+            <p className="text-xs sm:text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.stats.aiAssistance')}</p>
+            <p className="text-xl sm:text-2xl md:text-3xl font-bold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{chatStats.aiAssistance.chats}</p>
+            <p className="text-xs mt-1 sm:mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.aiAssistance.messages} {t('dashboard.stats.messages')}</p>
           </div>
 
           {/* Notes Card */}
-          <div className="light-box p-6 rounded-2xl border hover:scale-105 transition duration-300">
-            <div className="flex items-center justify-between mb-3">
-              <FiBook className="text-green-600 w-6 h-6" />
+          <div className="light-box p-4 sm:p-5 md:p-6 rounded-lg sm:rounded-xl md:rounded-2xl border hover:scale-105 transition duration-300">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <FiBook className="text-green-600 w-5 h-5 sm:w-6 sm:h-6" />
             </div>
-            <p className="text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.stats.notes')}</p>
-            <p className="text-3xl font-bold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{chatStats.notes.chats}</p>
-            <p className="text-xs mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.notes.messages} {t('dashboard.stats.messages')}</p>
+            <p className="text-xs sm:text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.stats.notes')}</p>
+            <p className="text-xl sm:text-2xl md:text-3xl font-bold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{chatStats.notes.chats}</p>
+            <p className="text-xs mt-1 sm:mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.notes.messages} {t('dashboard.stats.messages')}</p>
           </div>
 
           {/* Assignment Guide Card */}
-          <div className="light-box p-6 rounded-2xl border hover:scale-105 transition duration-300">
-            <div className="flex items-center justify-between mb-3">
-              <FiClipboard className="text-green-600 w-6 h-6" />
+          <div className="light-box p-4 sm:p-5 md:p-6 rounded-lg sm:rounded-xl md:rounded-2xl border hover:scale-105 transition duration-300">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <FiClipboard className="text-green-600 w-5 h-5 sm:w-6 sm:h-6" />
             </div>
-            <p className="text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.stats.assignmentGuide')}</p>
-            <p className="text-3xl font-bold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{chatStats.assignmentGuide.chats}</p>
-            <p className="text-xs mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.assignmentGuide.messages} {t('dashboard.stats.messages')}</p>
+            <p className="text-xs sm:text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.stats.assignmentGuide')}</p>
+            <p className="text-xl sm:text-2xl md:text-3xl font-bold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{chatStats.assignmentGuide.chats}</p>
+            <p className="text-xs mt-1 sm:mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.assignmentGuide.messages} {t('dashboard.stats.messages')}</p>
           </div>
 
           {/* Image Analyzer Card */}
-          <div className="light-box p-6 rounded-2xl border hover:scale-105 transition duration-300">
-            <div className="flex items-center justify-between mb-3">
-              <FiImage className="text-green-600 w-6 h-6" />
+          <div className="light-box p-4 sm:p-5 md:p-6 rounded-lg sm:rounded-xl md:rounded-2xl border hover:scale-105 transition duration-300">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <FiImage className="text-green-600 w-5 h-5 sm:w-6 sm:h-6" />
             </div>
-            <p className="text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.stats.imageAnalyzer')}</p>
-            <p className="text-3xl font-bold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{chatStats.imageAnalyzer.chats}</p>
-            <p className="text-xs mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.imageAnalyzer.messages} {t('dashboard.stats.messages')}</p>
+            <p className="text-xs sm:text-sm font-medium mb-1" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.stats.imageAnalyzer')}</p>
+            <p className="text-xl sm:text-2xl md:text-3xl font-bold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{chatStats.imageAnalyzer.chats}</p>
+            <p className="text-xs mt-1 sm:mt-2" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{chatStats.imageAnalyzer.messages} {t('dashboard.stats.messages')}</p>
           </div>
         </div>
 
         {/* Main Content - 2 Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8 md:mb-10">
           
           {/* Left Column - Chat Distribution */}
-          <div className="lg:col-span-2 light-box p-6 rounded-2xl border">
-            <h3 className="text-lg font-semibold mb-6" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.charts.chatDistribution')}</h3>
-            <div className="h-80 -mx-6">
+          <div className="lg:col-span-2 light-box p-4 sm:p-5 md:p-6 rounded-lg sm:rounded-xl md:rounded-2xl border">
+            <h3 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.charts.chatDistribution')}</h3>
+            <div className="h-60 sm:h-72 md:h-80 -mx-4 sm:-mx-5 md:-mx-6 px-2 sm:px-3">
               <Plot
                 data={[
                   {
@@ -335,8 +335,8 @@ export default function DashboardPage() {
                 layout={{
                   plot_bgcolor: 'rgba(0,0,0,0)',
                   paper_bgcolor: 'rgba(0,0,0,0)',
-                  font: { color: isDark ? '#ededed' : '#111827' },
-                  margin: { l: 40, r: 20, t: 20, b: 40 },
+                  font: { color: isDark ? '#ededed' : '#111827', size: 10 },
+                  margin: { l: 35, r: 15, t: 10, b: 30 },
                   xaxis: { showgrid: false },
                   yaxis: { showgrid: true, gridcolor: isDark ? 'rgba(200,200,200,0.1)' : 'rgba(200,200,200,0.2)' },
                 }}
@@ -347,105 +347,105 @@ export default function DashboardPage() {
           </div>
 
           {/* Right Column - Profile & Stats */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-5 md:space-y-6">
             
             {/* Profile Card */}
-            <div className="light-box p-6 rounded-2xl border">
-              <div className="flex justify-center mb-6">
-                <div className="w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white text-5xl font-bold shadow-lg">
+            <div className="light-box p-4 sm:p-5 md:p-6 rounded-lg sm:rounded-xl md:rounded-2xl border">
+              <div className="flex justify-center mb-4 sm:mb-6">
+                <div className="w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white text-3xl sm:text-4xl md:text-5xl font-bold shadow-lg">
                   {profile?.name?.charAt(0).toUpperCase() || '👤'}
                 </div>
               </div>
-              <div className="text-center mb-6 border-b border-gray-200 dark:border-gray-700 pb-6">
-                <p className="text-lg font-semibold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{profile?.name || 'Student'}</p>
-                <p className="text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.profile.grade')} {profile?.grade || 'N/A'}</p>
+              <div className="text-center mb-4 sm:mb-6 border-b border-gray-200 dark:border-gray-700 pb-4 sm:pb-6">
+                <p className="text-base sm:text-lg font-semibold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{profile?.name || 'Student'}</p>
+                <p className="text-xs sm:text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.profile.grade')} {profile?.grade || 'N/A'}</p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.profile.level')}</span>
-                  <span className="text-sm font-semibold text-green-600 dark:text-green-400 capitalize">{profile?.level || 'N/A'}</span>
+                  <span className="text-xs sm:text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.profile.level')}</span>
+                  <span className="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400 capitalize">{profile?.level || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.profile.totalChats')}</span>
-                  <span className="text-sm font-semibold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{totalChats}</span>
+                  <span className="text-xs sm:text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.profile.totalChats')}</span>
+                  <span className="text-xs sm:text-sm font-semibold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{totalChats}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.profile.totalMessages')}</span>
-                  <span className="text-sm font-semibold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{totalMessages}</span>
+                  <span className="text-xs sm:text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.profile.totalMessages')}</span>
+                  <span className="text-xs sm:text-sm font-semibold" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{totalMessages}</span>
                 </div>
               </div>
             </div>
 
             {/* Quick Stats */}
-            <div className="light-box bg-gradient-to-br from-green-500/10 to-green-600/10 dark:from-green-500/5 dark:to-green-600/5 rounded-2xl border border-green-200/50 dark:border-green-800/30 p-6 text-gray-900 dark:text-white">
-              <h3 className="text-sm font-medium opacity-90 mb-2" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.charts.learningActivity')}</h3>
-              <p className="text-3xl font-bold mb-4" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{totalMessages}</p>
+            <div className="light-box bg-gradient-to-br from-green-500/10 to-green-600/10 dark:from-green-500/5 dark:to-green-600/5 rounded-lg sm:rounded-xl md:rounded-2xl border border-green-200/50 dark:border-green-800/30 p-4 sm:p-5 md:p-6 text-gray-900 dark:text-white">
+              <h3 className="text-xs sm:text-sm font-medium opacity-90 mb-2" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.charts.learningActivity')}</h3>
+              <p className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{totalMessages}</p>
               <p className="text-xs opacity-75" style={{ color: isDark ? '#9CA3AF' : '#1A3263' }}>{t('dashboard.charts.activityDesc')}</p>
             </div>
           </div>
         </div>
 
         {/* Learning Sessions Table */}
-        <div className="light-box p-6 rounded-2xl border">
-          <h3 className="text-lg font-semibold mb-6" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.table.title')}</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full">
+        <div className="light-box p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl md:rounded-2xl border">
+          <h3 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 px-2 sm:px-0" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.table.title')}</h3>
+          <div className="overflow-x-auto -mx-3 sm:-mx-4 md:-mx-6 px-3 sm:px-4 md:px-6">
+            <table className="w-full min-w-max">
               <thead className="border-b border-gray-200 dark:border-gray-700">
                 <tr>
-                  <th className="text-left py-4 px-4 font-semibold text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.table.type')}</th>
-                  <th className="text-left py-4 px-4 font-semibold text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.table.chats')}</th>
-                  <th className="text-left py-4 px-4 font-semibold text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.table.messages')}</th>
-                  <th className="text-left py-4 px-4 font-semibold text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.table.status')}</th>
+                  <th className="text-left py-3 sm:py-4 px-2 sm:px-4 font-semibold text-xs sm:text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.table.type')}</th>
+                  <th className="text-left py-3 sm:py-4 px-2 sm:px-4 font-semibold text-xs sm:text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.table.chats')}</th>
+                  <th className="text-left py-3 sm:py-4 px-2 sm:px-4 font-semibold text-xs sm:text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.table.messages')}</th>
+                  <th className="text-left py-3 sm:py-4 px-2 sm:px-4 font-semibold text-xs sm:text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{t('dashboard.table.status')}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition">
-                  <td className="py-4 px-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-green-600 rounded-full"></div>
-                      <span className="font-medium" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.stats.aiAssistance')}</span>
+                  <td className="py-3 sm:py-4 px-2 sm:px-4">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-600 rounded-full"></div>
+                      <span className="font-medium text-xs sm:text-sm" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.stats.aiAssistance')}</span>
                     </div>
                   </td>
-                  <td className="py-4 px-4" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.aiAssistance.chats}</td>
-                  <td className="py-4 px-4" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.aiAssistance.messages}</td>
-                  <td className="py-4 px-4">
-                    <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-medium">{t('dashboard.table.active')}</span>
+                  <td className="py-3 sm:py-4 px-2 sm:px-4 text-xs sm:text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.aiAssistance.chats}</td>
+                  <td className="py-3 sm:py-4 px-2 sm:px-4 text-xs sm:text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.aiAssistance.messages}</td>
+                  <td className="py-3 sm:py-4 px-2 sm:px-4">
+                    <span className="px-2 sm:px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-medium">{t('dashboard.table.active')}</span>
                   </td>
                 </tr>
                 <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition">
-                  <td className="py-4 px-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="font-medium" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.stats.notes')}</span>
+                  <td className="py-3 sm:py-4 px-2 sm:px-4">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full"></div>
+                      <span className="font-medium text-xs sm:text-sm" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.stats.notes')}</span>
                     </div>
                   </td>
-                  <td className="py-4 px-4" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.notes.chats}</td>
-                  <td className="py-4 px-4" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.notes.messages}</td>
-                  <td className="py-4 px-4">
-                    <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-medium">{t('dashboard.table.active')}</span>
+                  <td className="py-3 sm:py-4 px-2 sm:px-4 text-xs sm:text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.notes.chats}</td>
+                  <td className="py-3 sm:py-4 px-2 sm:px-4 text-xs sm:text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.notes.messages}</td>
+                  <td className="py-3 sm:py-4 px-2 sm:px-4">
+                    <span className="px-2 sm:px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-medium">{t('dashboard.table.active')}</span>
                   </td>
                 </tr>
                 <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition">
-                  <td className="py-4 px-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                      <span className="font-medium" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.stats.assignmentGuide')}</span>
+                  <td className="py-3 sm:py-4 px-2 sm:px-4">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full"></div>
+                      <span className="font-medium text-xs sm:text-sm" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.stats.assignmentGuide')}</span>
                     </div>
                   </td>
-                  <td className="py-4 px-4" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.assignmentGuide.chats}</td>
-                  <td className="py-4 px-4" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.assignmentGuide.messages}</td>
-                  <td className="py-4 px-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${chatStats.assignmentGuide.chats > 0 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-400'}`}>
+                  <td className="py-3 sm:py-4 px-2 sm:px-4 text-xs sm:text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.assignmentGuide.chats}</td>
+                  <td className="py-3 sm:py-4 px-2 sm:px-4 text-xs sm:text-sm" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.assignmentGuide.messages}</td>
+                  <td className="py-3 sm:py-4 px-2 sm:px-4">
+                    <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${chatStats.assignmentGuide.chats > 0 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-400'}`}>
                       {chatStats.assignmentGuide.chats > 0 ? t('dashboard.table.active') : t('dashboard.table.notStarted')}
                     </span>
                   </td>
                 </tr>
                 <tr className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition">
-                  <td className="py-4 px-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-green-300 rounded-full"></div>
-                      <span className="font-medium" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.stats.imageAnalyzer')}</span>
+                  <td className="py-3 sm:py-4 px-2 sm:px-4">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-300 rounded-full"></div>
+                      <span className="font-medium text-xs sm:text-sm" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{t('dashboard.stats.imageAnalyzer')}</span>
                     </div>
                   </td>
                   <td className="py-4 px-4" style={{ color: isDark ? '#D1D5DB' : '#1A3263' }}>{chatStats.imageAnalyzer.chats}</td>

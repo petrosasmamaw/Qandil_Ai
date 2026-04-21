@@ -149,7 +149,7 @@ export default function ProfilePage() {
   if (!session) return null;
 
   return (
-    <main className="light-image-bg min-h-screen transition-colors duration-300 relative z-0 py-12 px-4">
+    <main className="light-image-bg min-h-screen transition-colors duration-300 relative z-0 py-8 sm:py-10 md:py-12 px-3 sm:px-4 md:px-6">
       {isDark && (
         <div 
           className="fixed inset-0 -z-10 pointer-events-none"
@@ -163,50 +163,50 @@ export default function ProfilePage() {
         />
       )}
 
-      <div className="relative z-10 max-w-2xl mx-auto">
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-green-500 mb-2">
+      <div className="relative z-10 w-full max-w-2xl mx-auto pt-6 sm:pt-8 md:pt-10">
+        <div className="mb-6 sm:mb-8 text-center">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-green-500 mb-1 sm:mb-2">
              {isEditing ? t('profile.updateProfile') : t('profile.createProfileTitle')}
           </h1>
-          <p className="text-lg opacity-80" style={{ color: isDark ? '#fff' : '#000' }} suppressHydrationWarning>
+          <p className="text-xs sm:text-sm md:text-lg opacity-80" style={{ color: isDark ? '#fff' : '#000' }} suppressHydrationWarning>
             {isEditing ? t('profile.updatePrefsDesc') : t('profile.setupDesc')}
           </p>
         </div>
 
         {success && (
-          <div className="mb-6 p-4 rounded-xl border border-green-500/30 bg-green-500/10 backdrop-blur-md">
-            <p className="text-green-600 dark:text-green-400 font-medium flex items-center gap-2">
-              <FiCheck size={18} /> {successMessage}
+          <div className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-green-500/30 bg-green-500/10 backdrop-blur-md">
+            <p className="text-green-600 dark:text-green-400 font-medium text-xs sm:text-sm flex items-center gap-2">
+              <FiCheck size={16} className="sm:w-5 sm:h-5" /> {successMessage}
             </p>
           </div>
         )}
 
         {error && (
-          <div className="mb-6 p-4 rounded-xl border border-red-500/30 bg-red-500/10 backdrop-blur-md flex justify-between">
-            <p className="text-red-600 dark:text-red-400 font-medium">✕ {error}</p>
-            <button onClick={() => dispatch(clearError())}><FiX /></button>
+          <div className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-red-500/30 bg-red-500/10 backdrop-blur-md flex justify-between items-start gap-2">
+            <p className="text-red-600 dark:text-red-400 font-medium text-xs sm:text-sm">✕ {error}</p>
+            <button onClick={() => dispatch(clearError())} className="flex-shrink-0"><FiX size={16} /></button>
           </div>
         )}
 
-        <div className="light-box p-8 border shadow-sm">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="light-box p-4 sm:p-6 md:p-8 border shadow-sm rounded-lg sm:rounded-xl">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div>
-              <label className="block text-sm font-semibold mb-2">{t('profile.fullNameLabel')}</label>
+              <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2">{t('profile.fullNameLabel')}</label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
                 required
-                className="w-full"
+                className="w-full text-xs sm:text-sm"
                 placeholder={t('profile.fullNamePlaceholder')}
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
               <div>
-                <label className="block text-sm font-semibold mb-2">{t('profile.gradeSelectLabel')}</label>
-                <select name="grade" value={formData.grade} onChange={handleInputChange} className="w-full">
+                <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2">{t('profile.gradeSelectLabel')}</label>
+                <select name="grade" value={formData.grade} onChange={handleInputChange} className="w-full text-xs sm:text-sm">
                   <option value={9}>{t('profile.grade9')}</option>
                   <option value={10}>{t('profile.grade10')}</option>
                   <option value={11}>{t('profile.grade11')}</option>
@@ -215,20 +215,20 @@ export default function ProfilePage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-2">Preferred Language</label>
+                <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2">Preferred Language</label>
                 <input
                   type="text"
                   name="preferredLanguage"
                   value={formData.preferredLanguage}
                   onChange={handleInputChange}
-                  className="w-full"
+                  className="w-full text-xs sm:text-sm"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">Study System</label>
-              <select name="studySystem" value={formData.studySystem} onChange={handleInputChange} className="w-full">
+              <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2">Study System</label>
+              <select name="studySystem" value={formData.studySystem} onChange={handleInputChange} className="w-full text-xs sm:text-sm">
                 <option value="theoretical">{t('profile.sysTheoretical')}</option>
                 <option value="conceptual">{t('profile.sysConceptual')}</option>
                 <option value="exam_oriented">{t('profile.sysExamOriented')}</option>
@@ -238,8 +238,8 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">{t('profile.goal')}</label>
-              <select name="goal" value={formData.goal} onChange={handleInputChange} className="w-full">
+              <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2">{t('profile.goal')}</label>
+              <select name="goal" value={formData.goal} onChange={handleInputChange} className="w-full text-xs sm:text-sm">
                 <option value="pass_exam">{t('profile.goalPassExam')}</option>
                 <option value="high_grades">{t('profile.goalHighGrades')}</option>
                 <option value="deep_understanding">{t('profile.goalDeepUnder')}</option>
@@ -247,7 +247,7 @@ export default function ProfilePage() {
               </select>
             </div>
 
-            <div className="inner-box p-6 border-l-4 border-l-green-500">
+            <div className="inner-box p-4 sm:p-6 border-l-4 border-l-green-500 rounded-lg sm:rounded-xl">
               <label className="block text-sm font-semibold mb-3 flex items-center gap-2">
                 <FiTarget size={18} className="text-green-600" /> 
                 {t('profile.level')}: <span className="capitalize text-green-600">{formData.level}</span>

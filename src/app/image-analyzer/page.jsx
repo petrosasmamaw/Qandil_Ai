@@ -142,7 +142,7 @@ export default function ImageAnalyzerPage() {
 
   return (
     <main 
-      className="light-image-bg min-h-screen p-6 md:p-8 transition-colors duration-300 relative z-0"
+      className="light-image-bg min-h-screen p-3 sm:p-4 md:p-6 lg:p-8 transition-colors duration-300 relative z-0"
       style={{ '--light-bg-image': "url('https://cdn.vectorstock.com/i/500p/87/24/pastel-pink-and-blue-blur-backdrop-vector-63408724.jpg')" }}
     >
       {/* DARK MODE BACKGROUND - Matches global style */}
@@ -159,42 +159,46 @@ export default function ImageAnalyzerPage() {
         />
       )}
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="w-full mx-auto relative z-10 pt-14 sm:pt-16 md:pt-20">
         {/* HEADER */}
-        <div className="flex justify-between items-center mb-10">
-          <div className="light-box px-6 py-4 border shadow-sm flex items-center gap-4">
-            <div className="p-3 bg-blue-600/10 rounded-2xl text-blue-600">
-              <FiImage size={32} />
+        <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 md:mb-10">
+          <div className="light-box px-4 sm:px-5 md:px-6 py-3 sm:py-4 border shadow-sm flex items-center gap-3 sm:gap-4">
+            <div className="p-2 sm:p-3 bg-blue-600/10 rounded-xl sm:rounded-2xl text-blue-600 flex-shrink-0">
+              <FiImage size={20} className="sm:hidden" />
+              <FiImage size={28} className="hidden sm:block md:hidden" />
+              <FiImage size={32} className="hidden md:block" />
             </div>
-            <div>
-              <h1 className="text-2xl font-bold leading-tight">{t('imageAnalyzer.title')}</h1>
-              <p className="text-sm opacity-70">
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl font-bold leading-tight">{t('imageAnalyzer.title')}</h1>
+              <p className="text-xs sm:text-sm opacity-70 truncate">
                 {profile && `${t('imageAnalyzer.uploadAnalysisFor')} ${profile.name}`}
               </p>
             </div>
           </div>
-          <div className="flex gap-3 w-full md:w-auto">
+          <div className="flex gap-2 sm:gap-3">
             <button
               onClick={() => router.push('/chat-history?type=imageAnalyzer')}
-              className="flex-1 md:flex-none px-5 py-3 rounded-xl light-box border font-medium hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+              className="flex-1 sm:flex-none px-3 sm:px-5 py-2 sm:py-3 rounded-lg sm:rounded-xl light-box border font-medium text-xs sm:text-sm hover:bg-white/10 transition-all flex items-center justify-center gap-1.5 sm:gap-2"
             >
-              <FiBook size={18} className="text-blue-500" /> {t('common.history')}
+              <FiBook size={16} className="sm:hidden" />
+              <FiBook size={18} className="hidden sm:block" />
+              <span className="hidden xs:inline">{t('common.history')}</span>
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-8">
+        <div className="space-y-4 sm:space-y-6 md:space-y-8">
           {/* Profile Status Bar */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
             {[
               { label: t('imageAnalyzer.studentNameCard'), value: profile?.name },
               { label: t('imageAnalyzer.learningLevelCard'), value: profile?.level },
               { label: t('imageAnalyzer.studySystemCard'), value: profile?.studySystem },
               { label: t('imageAnalyzer.learningGoalCard'), value: profile?.goal }
             ].map((stat, i) => (
-              <div key={i} className="light-box p-4 border text-center">
-                <p className="text-[10px] opacity-50 uppercase font-black tracking-widest mb-1">{stat.label}</p>
-                <p className="font-bold capitalize text-sm truncate">{stat.value}</p>
+              <div key={i} className="light-box p-3 sm:p-4 border text-center rounded-lg sm:rounded-xl">
+                <p className="text-[8px] sm:text-[10px] opacity-50 uppercase font-black tracking-widest mb-1">{stat.label}</p>
+                <p className="font-bold capitalize text-xs sm:text-sm truncate">{stat.value}</p>
               </div>
             ))}
           </div>

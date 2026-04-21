@@ -37,24 +37,24 @@ export default function DashboardStatCard({
   if (!mounted) return null;
 
   return (
-    <div className={`bg-gradient-to-br ${colorSchemes[color]} backdrop-blur-lg border rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1`}>
+    <div className={`bg-gradient-to-br ${colorSchemes[color]} backdrop-blur-lg border rounded-lg sm:rounded-xl md:rounded-2xl p-4 sm:p-5 md:p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1`}>
       {/* Icon */}
-      <div className={`w-14 h-14 rounded-lg ${iconBgSchemes[color]} flex items-center justify-center mb-4`}>
+      <div className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-lg ${iconBgSchemes[color]} flex items-center justify-center mb-3 sm:mb-4`}>
         {icon}
       </div>
 
       {/* Title and Count */}
-      <div className="mb-4">
-        <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">
+      <div className="mb-3 sm:mb-4">
+        <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm font-medium mb-0.5 sm:mb-1">
           {title}
         </p>
-        <p className="text-4xl font-bold text-gray-900 dark:text-white">
+        <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
           {count}
         </p>
       </div>
 
       {/* Subtitle and Trend */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <span className="text-xs text-gray-500 dark:text-gray-500">
           {subtitle}
         </span>

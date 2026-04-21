@@ -64,7 +64,7 @@ export default function AIToolsPage() {
         {/* header intentionally removed per UX request */}
 
         <section className="w-full mb-6 sticky top-6 z-50">
-          <div className="mx-auto max-w-3xl light-box rounded-2xl p-3 border shadow-sm flex flex-wrap justify-center gap-3">
+          <div className="mx-auto max-w-3xl light-box rounded-2xl p-3 border shadow-sm grid grid-cols-4 justify-center gap-3">
             {tools.map((tool) => (
               <button
                 key={tool.id}

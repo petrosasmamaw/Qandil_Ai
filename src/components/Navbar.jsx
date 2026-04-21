@@ -116,140 +116,141 @@ export const Navbar = () => {
       {/* Glassmorphic navbar background - amazing light theme */}
       <div className="absolute inset-0 bg-white/20 dark:bg-gray-800/40 backdrop-blur-md border-b border-white/30 dark:border-gray-700/30 rounded-bl-xl rounded-br-xl shadow-sm"></div>
       
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo with Animation */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center gap-3 group cursor-pointer focus:outline-none">
-              <div className="logo-animate p-1.5 bg-white/85 dark:bg-gray-800/70 rounded-full border border-gray-200/70 dark:border-gray-600/50 shadow-md">
-                <Image
-                  src="/qandil-logo.png"
-                  alt="Qandil AI Logo"
-                  width={34}
-                  height={34}
-                  loading="eager"
-                  className="transition-transform duration-300 group-hover:scale-110 w-8 h-8"
-                />
-              </div>
-              <span 
-                className="text-xl font-bold transition-all duration-300"
-                style={mounted ? (theme === 'light' ? { color: 'black', textShadow: 'none', background: 'none', WebkitTextFillColor: 'black' } : { color: 'white', textShadow: 'none', background: 'none' }) : { color: 'black', textShadow: 'none', background: 'none', WebkitTextFillColor: 'black' }}
-                suppressHydrationWarning
-              >
-                Qandil AI
-              </span>
-            </Link>
-          </div>
-
-          {/* Center Navigation - Glassmorphic Pills */}
-          {!loading && session?.user && (
-            <div className="hidden md:flex items-center gap-1.5 bg-gray-900/10 dark:bg-gray-800/50 backdrop-blur-md rounded-full px-1.5 py-1.5 border border-gray-900/10 dark:border-gray-700/30 shadow-sm">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 ${
-                    isActive(item.href)
-                      ? 'bg-gray-900/80 dark:bg-gray-700/80 text-white dark:text-white shadow-md scale-105'
-                      : 'text-gray-900 dark:text-gray-300 hover:text-black dark:hover:text-gray-100 hover:bg-gray-900/20 dark:hover:bg-gray-600/50'
-                  }`}
+      <div className="relative w-full">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-14 sm:h-16 md:h-16">
+            {/* Logo with Animation */}
+            <div className="flex-shrink-0">
+              <Link href="/" className="flex items-center gap-2 sm:gap-3 group cursor-pointer focus:outline-none">
+                <div className="logo-animate p-1 sm:p-1.5 bg-white/85 dark:bg-gray-800/70 rounded-full border border-gray-200/70 dark:border-gray-600/50 shadow-md">
+                  <Image
+                    src="/qandil-logo.png"
+                    alt="Qandil AI Logo"
+                    width={34}
+                    height={34}
+                    loading="eager"
+                    className="transition-transform duration-300 group-hover:scale-110 w-6 h-6 sm:w-8 sm:h-8"
+                  />
+                </div>
+                <span 
+                  className="text-base sm:text-lg md:text-xl font-bold transition-all duration-300 hidden xs:inline"
+                  style={mounted ? (theme === 'light' ? { color: 'black', textShadow: 'none', background: 'none', WebkitTextFillColor: 'black' } : { color: 'white', textShadow: 'none', background: 'none' }) : { color: 'black', textShadow: 'none', background: 'none', WebkitTextFillColor: 'black' }}
+                  suppressHydrationWarning
                 >
-                  {item.icon}
-                  <span>{t(item.labelKey)}</span>
-                </Link>
-              ))}
+                  Qandil AI
+                </span>
+              </Link>
             </div>
-          )}
 
-          {/* Auth Buttons Section */}
-          <div className="flex items-center gap-3 text-black">
-            {/* Language Toggle Button */}
-            {mounted && session?.user && (
-              <button
-                onClick={() => dispatch(toggleLanguage())}
-                className="px-4 py-1.5 rounded-full text-sm font-medium bg-gray-900/10 dark:bg-gray-800/50 border border-gray-900/20 dark:border-blue-600/50 text-gray-900 dark:text-blue-100 hover:bg-gray-900/20 dark:hover:bg-blue-950/20 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-                title="Toggle language"
-              >
-                {language === 'eng' ? '🇺🇸 ENG' : '🇪🇹 AMH'}
-              </button>
-            )}
-
-            {/* Theme Toggle Button */}
-            {mounted && (
-              <button
-                onClick={() => dispatch(toggleTheme())}
-                className="p-2.5 rounded-full text-sm font-medium bg-gray-900/10 dark:bg-gray-800/50 border border-gray-900/20 dark:border-gray-600/50 text-gray-900 dark:text-gray-100 hover:bg-gray-900/20 dark:hover:bg-gray-700/70 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-                title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-                suppressHydrationWarning
-              >
-                {theme === 'light' ? (
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                  </svg>
-                ) : (
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.536l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.121-10.121l.707-.707a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.464 5.464a1 1 0 00-1.414-1.414l-.707.707A1 1 0 004.757 6.17l.707-.707zm1.414 8.828a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
-                  </svg>
-                )}
-              </button>
-            )}
-
-            {/* Sign Out Button - Right Side */}
+            {/* Center Navigation - Glassmorphic Pills - Desktop Only */}
             {!loading && session?.user && (
-              <button
-                onClick={async () => {
-                  await supabase.auth.signOut();
-                  window.location.href = '/auth/login';
-                }}
-                className="px-4 py-1.5 rounded-full text-sm font-medium text-red-600 dark:text-red-400 bg-red-50/80 dark:bg-gray-800/50 border-2 border-red-300 dark:border-red-600 hover:bg-red-100 dark:hover:bg-red-950/20 hover:border-red-500 dark:hover:border-red-500 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+              <div className="hidden lg:flex items-center gap-1 bg-gray-900/10 dark:bg-gray-800/50 backdrop-blur-md rounded-full px-1 py-1 border border-gray-900/10 dark:border-gray-700/30 shadow-sm">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 ${
+                      isActive(item.href)
+                        ? 'bg-gray-900/80 dark:bg-gray-700/80 text-white dark:text-white shadow-md scale-105'
+                        : 'text-gray-900 dark:text-gray-300 hover:text-black dark:hover:text-gray-100 hover:bg-gray-900/20 dark:hover:bg-gray-600/50'
+                    }`}
+                  >
+                    {item.icon}
+                    <span>{t(item.labelKey)}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            {/* Auth Buttons Section */}
+            <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 text-black">
+              {/* Language Toggle Button - Hidden on mobile */}
+              {mounted && session?.user && (
+                <button
+                  onClick={() => dispatch(toggleLanguage())}
+                  className="hidden sm:block px-2 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-gray-900/10 dark:bg-gray-800/50 border border-gray-900/20 dark:border-blue-600/50 text-gray-900 dark:text-blue-100 hover:bg-gray-900/20 dark:hover:bg-blue-950/20 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+                  title="Toggle language"
+                >
+                  {language === 'eng' ? '🇺🇸 ENG' : '🇪🇹 AMH'}
+                </button>
+              )}
+
+              {/* Theme Toggle Button */}
+              {mounted && (
+                <button
+                  onClick={() => dispatch(toggleTheme())}
+                  className="p-1.5 sm:p-2 sm:p-2.5 rounded-full text-xs sm:text-sm font-medium bg-gray-900/10 dark:bg-gray-800/50 border border-gray-900/20 dark:border-gray-600/50 text-gray-900 dark:text-gray-100 hover:bg-gray-900/20 dark:hover:bg-gray-700/70 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+                  title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+                  suppressHydrationWarning
+                >
+                  {theme === 'light' ? (
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.536l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.121-10.121l.707-.707a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.464 5.464a1 1 0 00-1.414-1.414l-.707.707A1 1 0 004.757 6.17l.707-.707zm1.414 8.828a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </button>
+              )}
+
+              {/* Sign Out Button - Hidden on small screens */}
+              {!loading && session?.user && (
+                <button
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    window.location.href = '/auth/login';
+                  }}
+                  className="hidden sm:block px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium text-red-600 dark:text-red-400 bg-red-50/80 dark:bg-gray-800/50 border-2 border-red-300 dark:border-red-600 hover:bg-red-100 dark:hover:bg-red-950/20 hover:border-red-500 dark:hover:border-red-500 transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+                >
+                  {t('navbar.signOut')}
+                </button>
+              )}
+
+              {loading ? (
+                <div className="text-xs sm:text-sm dark:text-gray-400" style={{ color: mounted && theme === 'light' ? 'black' : undefined }} suppressHydrationWarning>Loading...</div>
+              ) : session?.user ? (
+                <div className="flex items-center gap-1.5 sm:gap-3">
+                  {/* Sign In/Sign Up - shown when not logged in */}
+                </div>
+              ) : (
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <Link
+                    href="/auth/login"
+                    className="px-2.5 sm:px-5 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none"
+                    style={mounted ? (theme === 'light' 
+                      ? { color: 'black', backgroundColor: '#f3f4f6', border: '1px solid #9ca3af' }
+                      : { color: 'white', backgroundColor: 'rgba(55,65,81,0.6)', border: '1px solid rgba(107,114,128,0.5)' }
+                    ) : { color: 'black', backgroundColor: '#f3f4f6', border: '1px solid #9ca3af' }}
+                    suppressHydrationWarning
+                  >
+                    {t('navbar.signIn')}
+                  </Link>
+                  <Link
+                    href="/auth/register"
+                    className="hidden sm:inline px-2.5 sm:px-5 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none"
+                    style={mounted ? (theme === 'light'
+                      ? { color: 'white', backgroundColor: 'black', border: '1px solid black' }
+                      : { color: '#111827', backgroundImage: 'linear-gradient(to right, #d1d5db, #9ca3af)', border: 'none' }
+                    ) : { color: 'white', backgroundColor: 'black', border: '1px solid black' }}
+                    suppressHydrationWarning
+                  >
+                    {t('navbar.signUp')}
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="lg:hidden ml-2">
+              <button 
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="inline-flex items-center justify-center p-1.5 sm:p-2 rounded-full text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white focus:outline-none transition-all duration-300 hover:bg-gray-200 dark:hover:bg-gray-700/80 active:scale-95"
+                aria-expanded={mobileMenuOpen}
               >
-                {t('navbar.signOut')}
-              </button>
-            )}
-
-            {loading ? (
-              <div className="text-sm dark:text-gray-400" style={{ color: mounted && theme === 'light' ? 'black' : undefined }} suppressHydrationWarning>Loading...</div>
-            ) : session?.user ? (
-              <div className="flex items-center gap-3">
-                {/* Sign In/Sign Up - shown when not logged in */}
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/auth/login"
-                  className="px-5 py-1.5 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none"
-                  style={mounted ? (theme === 'light' 
-                    ? { color: 'black', backgroundColor: '#f3f4f6', border: '1px solid #9ca3af' }
-                    : { color: 'white', backgroundColor: 'rgba(55,65,81,0.6)', border: '1px solid rgba(107,114,128,0.5)' }
-                  ) : { color: 'black', backgroundColor: '#f3f4f6', border: '1px solid #9ca3af' }}
-                  suppressHydrationWarning
-                >
-                  {t('navbar.signIn')}
-                </Link>
-                <Link
-                  href="/auth/register"
-                  className="px-5 py-1.5 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none"
-                  style={mounted ? (theme === 'light'
-                    ? { color: 'white', backgroundColor: 'black', border: '1px solid black' }
-                    : { color: '#111827', backgroundImage: 'linear-gradient(to right, #d1d5db, #9ca3af)', border: 'none' }
-                  ) : { color: 'white', backgroundColor: 'black', border: '1px solid black' }}
-                  suppressHydrationWarning
-                >
-                  {t('navbar.signUp')}
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="inline-flex items-center justify-center p-2.5 rounded-full text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white focus:outline-none transition-all duration-300 hover:bg-gray-200 dark:hover:bg-gray-700/80 active:scale-95"
-              aria-expanded={mobileMenuOpen}
-            >
               <svg
-                className={`h-6 w-6 transition-transform duration-300 ${mobileMenuOpen ? 'rotate-90' : ''}`}
+                className={`h-5 w-5 sm:h-6 sm:w-6 transition-transform duration-300 ${mobileMenuOpen ? 'rotate-90' : ''}`}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -265,11 +266,12 @@ export const Navbar = () => {
           </div>
         </div>
       </div>
+      </div>
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && !loading && session?.user && (
         <div 
-          className="md:hidden absolute top-16 left-0 right-0 dark:bg-gray-800/95 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-xl animate-in fade-in slide-in-from-top-2 duration-300"
+          className="lg:hidden absolute top-14 sm:top-16 left-0 right-0 dark:bg-gray-800/95 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-xl animate-in fade-in slide-in-from-top-2 duration-300 max-h-[calc(100vh-4rem)] overflow-y-auto"
           style={
             mounted && theme === 'light'
               ? {
@@ -286,25 +288,25 @@ export const Navbar = () => {
           }
           suppressHydrationWarning
         >
-          <div className="px-4 pt-4 pb-6 space-y-2 relative z-10" style={mounted && theme === 'light' ? { color: '#000000' } : {}}>
+          <div className="px-3 sm:px-4 pt-3 sm:pt-4 pb-4 sm:pb-6 space-y-1.5 sm:space-y-2 relative z-10" style={mounted && theme === 'light' ? { color: '#000000' } : {}}>
             {/* Navigation Items */}
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 backdrop-blur-sm ${
+                className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium transition-all duration-200 backdrop-blur-sm ${
                   isActive(item.href)
                     ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md'
                     : 'text-black dark:text-gray-300 hover:bg-white/40 dark:hover:bg-gray-700/60 active:scale-95 font-semibold'
                 }`}
               >
-                <span className="text-lg">{item.icon}</span>
+                <span className="text-base sm:text-lg">{item.icon}</span>
                 <span>{t(item.labelKey)}</span>
               </Link>
             ))}
 
             {/* Divider */}
-            <div className="my-4 border-t border-gray-200 dark:border-gray-700"></div>
+            <div className="my-2 sm:my-4 border-t border-gray-200 dark:border-gray-700"></div>
 
             {/* Language Toggle */}
             <button
@@ -312,12 +314,12 @@ export const Navbar = () => {
                 dispatch(toggleLanguage());
                 setMobileMenuOpen(false);
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium font-semibold transition-all duration-200 text-black dark:text-gray-300 hover:bg-white/40 dark:hover:bg-gray-700/60 active:scale-95 backdrop-blur-sm"
+              className="w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium font-semibold transition-all duration-200 text-black dark:text-gray-300 hover:bg-white/40 dark:hover:bg-gray-700/60 active:scale-95 backdrop-blur-sm"
             >
-              <span className="text-lg">🌐</span>
-              <span>{language === 'eng' ? '🇺🇸 English' : '🇪🇹 Amharic'}</span>
-              <span className="ml-auto text-xs bg-black/20 dark:bg-gray-700 px-2 py-1 rounded-full text-black dark:text-gray-200 font-medium">
-                {language === 'eng' ? 'Switch to AMH' : 'Switch to ENG'}
+              <span className="text-base sm:text-lg">🌐</span>
+              <span className="flex-1 text-left">{language === 'eng' ? '🇺🇸 English' : '🇪🇹 Amharic'}</span>
+              <span className="text-xs bg-black/20 dark:bg-gray-700 px-2 py-1 rounded-full text-black dark:text-gray-200 font-medium whitespace-nowrap">
+                {language === 'eng' ? 'Switch' : 'Switch'}
               </span>
             </button>
 
@@ -327,13 +329,13 @@ export const Navbar = () => {
                 dispatch(toggleTheme());
                 setMobileMenuOpen(false);
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium font-semibold transition-all duration-200 text-black dark:text-gray-300 hover:bg-white/40 dark:hover:bg-gray-700/60 active:scale-95 backdrop-blur-sm"
+              className="w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium font-semibold transition-all duration-200 text-black dark:text-gray-300 hover:bg-white/40 dark:hover:bg-gray-700/60 active:scale-95 backdrop-blur-sm"
             >
-              <span className="text-lg">
+              <span className="text-base sm:text-lg">
                 {theme === 'light' ? '🌙' : '☀️'}
               </span>
-              <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
-              <span className="ml-auto text-xs bg-black/20 dark:bg-gray-700 px-2 py-1 rounded-full text-black dark:text-gray-200 font-medium">
+              <span className="flex-1 text-left">{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
+              <span className="text-xs bg-black/20 dark:bg-gray-700 px-2 py-1 rounded-full text-black dark:text-gray-200 font-medium whitespace-nowrap">
                 {theme === 'light' ? 'Switch' : 'Switch'}
               </span>
             </button>
@@ -345,10 +347,10 @@ export const Navbar = () => {
                 setMobileMenuOpen(false);
                 window.location.href = '/auth/login';
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium font-semibold transition-all duration-200 text-red-700 dark:text-red-400 hover:bg-white/40 dark:hover:bg-red-950/30 active:scale-95 backdrop-blur-sm"
+              className="w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium font-semibold transition-all duration-200 text-red-700 dark:text-red-400 hover:bg-white/40 dark:hover:bg-red-950/30 active:scale-95 backdrop-blur-sm"
             >
-              <span className="text-lg">🚪</span>
-              <span>{t('navbar.signOut')}</span>
+              <span className="text-base sm:text-lg">🚪</span>
+              <span className="flex-1 text-left">{t('navbar.signOut')}</span>
             </button>
           </div>
         </div>
