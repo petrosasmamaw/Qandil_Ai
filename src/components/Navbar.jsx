@@ -9,6 +9,7 @@ import { toggleTheme } from '@/store/slices/themeSlice';
 import { toggleLanguage } from '@/store/slices/languageSlice';
 import { useTranslation } from '@/hooks/useTranslation';
 import { supabase } from '@/lib/supabase';
+import { Globe, Moon, Sun, SignOut } from 'phosphor-react';
 
 export const Navbar = () => {
   const pathname = usePathname();
@@ -316,7 +317,7 @@ export const Navbar = () => {
               }}
               className="w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium font-semibold transition-all duration-200 text-black dark:text-gray-300 hover:bg-white/40 dark:hover:bg-gray-700/60 active:scale-95 backdrop-blur-sm"
             >
-              <span className="text-base sm:text-lg">🌐</span>
+              <Globe size={20} weight="fill" className="text-blue-600 dark:text-blue-400" />
               <span className="flex-1 text-left">{language === 'eng' ? '🇺🇸 English' : '🇪🇹 Amharic'}</span>
               <span className="text-xs bg-black/20 dark:bg-gray-700 px-2 py-1 rounded-full text-black dark:text-gray-200 font-medium whitespace-nowrap">
                 {language === 'eng' ? 'Switch' : 'Switch'}
@@ -331,9 +332,11 @@ export const Navbar = () => {
               }}
               className="w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium font-semibold transition-all duration-200 text-black dark:text-gray-300 hover:bg-white/40 dark:hover:bg-gray-700/60 active:scale-95 backdrop-blur-sm"
             >
-              <span className="text-base sm:text-lg">
-                {theme === 'light' ? '🌙' : '☀️'}
-              </span>
+              {theme === 'light' ? (
+                <Moon size={20} weight="fill" className="text-yellow-500" />
+              ) : (
+                <Sun size={20} weight="fill" className="text-yellow-400" />
+              )}
               <span className="flex-1 text-left">{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
               <span className="text-xs bg-black/20 dark:bg-gray-700 px-2 py-1 rounded-full text-black dark:text-gray-200 font-medium whitespace-nowrap">
                 {theme === 'light' ? 'Switch' : 'Switch'}
@@ -349,7 +352,7 @@ export const Navbar = () => {
               }}
               className="w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium font-semibold transition-all duration-200 text-red-700 dark:text-red-400 hover:bg-white/40 dark:hover:bg-red-950/30 active:scale-95 backdrop-blur-sm"
             >
-              <span className="text-base sm:text-lg">🚪</span>
+              <SignOut size={20} weight="fill" className="text-red-600 dark:text-red-400" />
               <span className="flex-1 text-left">{t('navbar.signOut')}</span>
             </button>
           </div>
