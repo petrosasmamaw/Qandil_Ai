@@ -189,11 +189,6 @@ export default function Home() {
         </Link>
       </section>
 
-      {/* FOOTER */}
-      <footer className="text-center py-6 sm:py-8 border-t border-black/10 text-xs sm:text-sm px-4">
-        © {new Date().getFullYear()} QandilAI. {t('home.empoweringStudents')}
-      </footer>
-
     </main>
   );
 }

@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { ReduxProvider } from "@/providers/ReduxProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import "./globals.css";
@@ -48,7 +49,10 @@ export default function RootLayout({ children }) {
         <ReduxProvider>
           <ThemeProvider>
             <Navbar />
-            {children}
+            <div className="flex-1">
+              {children}
+            </div>
+            <Footer />
             <script type="module" />
             {/* Persistent AI Tools widget shown on all pages */}
             <div id="__ai_tools_widget_root" />
