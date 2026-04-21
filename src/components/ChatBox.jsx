@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { sendChatMessage, getInitialGreeting } from '@/utils/educationalChatService';
 import { speakText, stopSpeaking, isSpeaking } from '@/utils/tts';
 import { translations } from '@/utils/translations';
-import { FiAward, FiZap, FiSend } from 'react-icons/fi';
+import { FiAward, FiZap, FiSend, FiMic, FiMicOff } from 'react-icons/fi';
+import { useVoiceRecording } from '@/hooks/useVoiceRecording';
 
 export default function ChatBox({ 
   studentProfile, 
@@ -20,15 +21,46 @@ export default function ChatBox({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isDark, setIsDark] = useState(false);
+  const [voiceError, setVoiceError] = useState(null);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const dispatch = useDispatch();
   
   const language = useSelector((state) => state.language?.language || 'eng');
   
+  // Initialize voice recording hook
+  const {
+    isListening,
+    transcript,
+    interimTranscript,
+    error: voiceRecognitionError,
+    isSupported: isVoiceSupported,
+    startListening,
+    stopListening,
+    clearTranscript: clearVoiceTranscript,
+  } = useVoiceRecording(language);
+  
   const t = (key) => {
     return key.split('.').reduce((obj, k) => obj && obj[k], translations[language]) || key;
   };
+
+  // Update input when voice transcript changes
+  useEffect(() => {
+    if (transcript.trim()) {
+      setInputValue(transcript.trim());
+      setVoiceError(null);
+    }
+  }, [transcript]);
+
+  // Handle voice recognition errors
+  useEffect(() => {
+    if (voiceRecognitionError) {
+      setVoiceError(voiceRecognitionError);
+      // Auto clear error after 5 seconds
+      const timer = setTimeout(() => setVoiceError(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [voiceRecognitionError]);
 
   useEffect(() => {
     const checkDark = () => setIsDark(document.documentElement.classList.contains('dark'));
@@ -393,6 +425,22 @@ export default function ChatBox({
         </div>
       )}
 
+      {/* Voice Error Message */}
+      {voiceError && (
+        <div className="mx-6 mb-2 p-3 bg-orange-500/10 border border-orange-500/20 rounded-xl text-orange-600 dark:text-orange-400 text-xs font-medium animate-pulse">
+          🎤 {voiceError}
+        </div>
+      )}
+
+      {/* Recording Status Indicator */}
+      {isListening && (
+        <div className="mx-6 mb-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-600 dark:text-blue-400 text-xs font-medium flex items-center gap-2">
+          <span className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></span>
+          Recording... ({language === 'ara' || language === 'arGulf' || language === 'mahraic' ? 'Arabic/Mahraic' : 'English'})
+          {interimTranscript && <span className="ml-2 opacity-75 italic">{interimTranscript}</span>}
+        </div>
+      )}
+
       {/* Input Area - Integrated Glass Design */}
       <div className="p-4 md:p-6 bg-black/5 dark:bg-white/5 border-t border-black/5 dark:border-white/10 backdrop-blur-xl">
         <form onSubmit={handleSendMessage} className="relative group flex items-center gap-2">
@@ -408,9 +456,48 @@ export default function ChatBox({
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="px-3 py-2 rounded-xl border border-black/10 dark:border-white/10 bg-white/50 dark:bg-black/50 text-sm"
+            className="px-3 py-2 rounded-xl border border-black/10 dark:border-white/10 bg-white/50 dark:bg-black/50 text-sm hover:bg-white/70 dark:hover:bg-black/70 transition-colors"
           >
             {t('common.upload')}
+          </button>
+
+          {/* Voice Recording Button */}
+          <button
+            type="button"
+            onClick={() => {
+              if (isListening) {
+                stopListening();
+              } else {
+                if (!isVoiceSupported) {
+                  setVoiceError('Voice recording is not supported in your browser. Please use Chrome, Edge, or Safari.');
+                  return;
+                }
+                setVoiceError(null);
+                clearVoiceTranscript();
+                startListening();
+              }
+            }}
+            disabled={loading}
+            className={`px-3 py-2 rounded-xl border transition-all flex items-center justify-center gap-2 text-sm font-medium ${
+              isListening
+                ? 'bg-red-500 text-white border-red-600 hover:bg-red-600 shadow-lg shadow-red-500/30'
+                : isVoiceSupported
+                ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30 hover:bg-blue-500/30 dark:hover:bg-blue-500/40'
+                : 'bg-gray-300 text-gray-600 border-gray-400 cursor-not-allowed opacity-50'
+            } disabled:opacity-50`}
+            title={isListening ? 'Stop recording' : 'Start voice recording'}
+          >
+            {isListening ? (
+              <>
+                <FiMicOff size={16} />
+                <span className="hidden sm:inline">Stop</span>
+              </>
+            ) : (
+              <>
+                <FiMic size={16} />
+                <span className="hidden sm:inline">Voice</span>
+              </>
+            )}
           </button>
 
           <input
