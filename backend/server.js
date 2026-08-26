@@ -7,13 +7,14 @@ import aiAssistanceChatRoutes from "./routes/aiAssistanceChatRoutes.js";
 import notesChatRoutes from "./routes/notesChatRoutes.js";
 import assignmentGuideChatRoutes from "./routes/assignmentGuideChatRoutes.js";
 import imageAnalyzerChatRoutes from "./routes/imageAnalyzerChatRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 
 // Initialize Express app
 const app = express();
 
-// Connect to MongoDB
+// Connect to Neon PostgreSQL
 connectDB();
 
 // Middleware
@@ -30,6 +31,7 @@ app.get("/api/health", (req, res) => {
 });
 
 // API Routes
+app.use("/api/auth", authRoutes);
 app.use("/api/profiles", profileRoutes);
 app.use("/api/ai-assistance-chat", aiAssistanceChatRoutes);
 app.use("/api/notes-chat", notesChatRoutes);

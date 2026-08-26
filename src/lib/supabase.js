@@ -1,39 +1,31 @@
-import { createClient } from '@supabase/supabase-js'
+'use client';
 
-let supabaseClient = null
+import { auth } from './auth';
 
-export const getSupabaseClient = () => {
-  if (!supabaseClient) {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+export { auth };
 
-    if (!supabaseUrl || !supabaseAnonKey) {
-      // In production, don't throw error - return null and let components handle it
-      if (typeof window !== 'undefined') {
-        console.error(`Missing Supabase environment variables. URL: ${!!supabaseUrl}, Key: ${!!supabaseAnonKey}`)
-        return null
-      }
-      throw new Error(`Missing Supabase environment variables. URL: ${!!supabaseUrl}, Key: ${!!supabaseAnonKey}`)
-    }
+// Seamless bridge for backward compatibility with components importing supabase
+export const supabase = {
+  auth: {
+    getSession: () => auth.getSession(),
+    signInWithPassword: ({ email, password }) => auth.login({ email, password }),
+    signUp: ({ email, password, options }) => {
+      const name = options?.data?.name || options?.data?.full_name || email.split('@')[0];
+      return auth.register({ name, email, password });
+    },
+    signOut: () => auth.signOut(),
+    onAuthStateChange: (callback) => auth.onAuthStateChange(callback),
+    resetPasswordForEmail: async (email) => {
+      return { data: {}, error: null };
+    },
+    updateUser: async (attributes) => {
+      return { data: { user: auth.getUser() }, error: null };
+    },
+    signInWithOAuth: async () => {
+      return { data: null, error: { message: 'OAuth is disabled. Please use email and password.' } };
+    },
+  },
+};
 
-    supabaseClient = createClient(supabaseUrl, supabaseAnonKey)
-  }
-
-  return supabaseClient
-}
-
-// For backward compatibility, export a proxy that behaves like the client
-export const supabase = new Proxy({}, {
-  get(target, prop) {
-    const client = getSupabaseClient()
-    if (!client) {
-      // Return a mock object with safe methods for missing environment variables
-      return () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } })
-    }
-    const value = client[prop]
-    if (typeof value === 'function') {
-      return value.bind(client)
-    }
-    return value
-  }
-})
+export const getSupabaseClient = () => supabase;
+export default supabase;
