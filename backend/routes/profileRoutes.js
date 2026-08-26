@@ -1,5 +1,5 @@
 import express from "express";
-import { validateProfile, handleValidationErrors } from "../middleware/validation.js";
+import { validateProfile, validateProfileUpdate, handleValidationErrors } from "../middleware/validation.js";
 import {
   createProfile,
   getAllProfiles,
@@ -24,7 +24,7 @@ router.get("/user/:userId", getProfileByUserId);
 router.get("/:id", getProfileById);
 
 // Update profile
-router.put("/:id", validateProfile, handleValidationErrors, updateProfile);
+router.put("/:id", validateProfileUpdate, handleValidationErrors, updateProfile);
 
 // Delete profile
 router.delete("/:id", deleteProfile);

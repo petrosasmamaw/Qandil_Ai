@@ -1,6 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
+import { sendChatMessageWithFallback } from './geminiClient';
 
 export const createEducationalChatSession = (studentProfile, appLanguage = 'eng') => {
   if (!studentProfile) {
@@ -53,31 +51,25 @@ export const sendChatMessage = async (studentProfile, conversationHistory, userM
 
     const systemPrompt = createEducationalChatSession(studentProfile, appLanguage);
 
-    const model = genAI.getGenerativeModel({ 
-      model: 'gemini-3.1-flash-lite-preview',
-      systemInstruction: systemPrompt
-    });
-
     // Format conversation history for the API
     const formattedHistory = conversationHistory.map(msg => ({
       role: msg.sender === 'ai' ? 'model' : 'user',
       parts: [{ text: msg.content }]
     }));
 
-    const chat = model.startChat({
+    const { text } = await sendChatMessageWithFallback({
+      systemInstruction: systemPrompt,
       history: formattedHistory,
+      userMessage,
       generationConfig: {
         maxOutputTokens: 1024,
         temperature: 0.7,
       },
     });
 
-    const response = await chat.sendMessage(userMessage);
-    const responseText = response.response.text();
-
     return {
       success: true,
-      message: responseText,
+      message: text,
     };
   } catch (error) {
     console.error('Error sending chat message:', error);

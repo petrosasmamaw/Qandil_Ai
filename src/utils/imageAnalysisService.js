@@ -1,36 +1,31 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
+import { generateContentWithFallback } from './geminiClient';
 
 export const analyzeImage = async (imageFile, studentProfile, appLanguage = 'eng') => {
   try {
     // Create analysis prompt based on student profile
     const systemPrompt = createAnalysisPrompt(studentProfile, appLanguage);
-    const model = genAI.getGenerativeModel({ 
-      model: 'gemini-3.1-flash-lite-preview',
-      systemInstruction: systemPrompt
-    });
 
     // Read file as base64
     const fileData = await readFileAsBase64(imageFile);
     const mimeType = imageFile.type;
 
-    // Analyze image
-    const response = await model.generateContent([
-      {
-        inlineData: {
-          data: fileData,
-          mimeType: mimeType,
+    // Analyze image using Gemini with fallback
+    const { text } = await generateContentWithFallback({
+      systemInstruction: systemPrompt,
+      contents: [
+        {
+          inlineData: {
+            data: fileData,
+            mimeType: mimeType,
+          },
         },
-      },
-      "Please analyze this image based on my profile.",
-    ]);
-
-    const responseText = response.response.text();
+        "Please analyze this image based on my profile.",
+      ],
+    });
 
     return {
       success: true,
-      analysis: responseText,
+      analysis: text,
       fileName: imageFile.name,
       analyzedAt: new Date(),
     };

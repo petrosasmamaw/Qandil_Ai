@@ -1,11 +1,10 @@
 import AssignmentGuideChat from "../models/AssignmentGuideChat.js";
-import mongoose from "mongoose";
 
 export const createAssignmentGuideChat = async (req, res) => {
   try {
-    const { userId, title } = req.body;
+    const { userId, title, assignmentType } = req.body;
 
-    console.log('createAssignmentGuideChat controller called with:', { userId, title });
+    console.log('createAssignmentGuideChat controller called with:', { userId, title, assignmentType });
 
     if (!userId) {
       console.error('Error: userId is missing');
@@ -15,12 +14,11 @@ export const createAssignmentGuideChat = async (req, res) => {
       });
     }
 
-    const chat = new AssignmentGuideChat({
+    const chat = await AssignmentGuideChat.create({
       userId,
       title: title || "Assignment Guidance",
+      assignmentType: assignmentType || null,
     });
-
-    await chat.save();
     
     console.log('Assignment guide chat created successfully:', { chatId: chat._id, userId, title });
 
@@ -53,16 +51,6 @@ export const addMessageToAssignmentGuideChat = async (req, res) => {
       });
     }
 
-    // Validate ObjectId format
-    if (!mongoose.Types.ObjectId.isValid(chatId)) {
-      console.error('Invalid ObjectId format:', chatId);
-      return res.status(400).json({
-        success: false,
-        message: "Invalid chat ID format",
-      });
-    }
-
-    // Verify chat exists first
     const existingChat = await AssignmentGuideChat.findById(chatId);
     console.log('Existing chat found:', !!existingChat);
 
@@ -109,9 +97,7 @@ export const getAssignmentGuideChatHistory = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // Return full chats including messages so frontend can display contents in history modal
-    const chats = await AssignmentGuideChat.find({ userId })
-      .sort({ createdAt: -1 });
+    const chats = await AssignmentGuideChat.find({ userId });
 
     res.status(200).json({
       success: true,

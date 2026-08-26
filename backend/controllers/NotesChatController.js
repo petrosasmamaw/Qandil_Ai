@@ -1,11 +1,10 @@
 import NotesChat from "../models/NotesChat.js";
-import mongoose from "mongoose";
 
 export const createNotesChat = async (req, res) => {
   try {
-    const { userId, title } = req.body;
+    const { userId, title, subject } = req.body;
 
-    console.log('createNotesChat controller called with:', { userId, title });
+    console.log('createNotesChat controller called with:', { userId, title, subject });
 
     if (!userId) {
       console.error('Error: userId is missing');
@@ -15,12 +14,11 @@ export const createNotesChat = async (req, res) => {
       });
     }
 
-    const chat = new NotesChat({
+    const chat = await NotesChat.create({
       userId,
       title: title || "New Notes",
+      subject: subject || null,
     });
-
-    await chat.save();
     
     console.log('Notes chat created successfully:', { chatId: chat._id, userId, title });
 
@@ -53,16 +51,6 @@ export const addMessageToNotesChat = async (req, res) => {
       });
     }
 
-    // Validate ObjectId format
-    if (!mongoose.Types.ObjectId.isValid(chatId)) {
-      console.error('Invalid ObjectId format:', chatId);
-      return res.status(400).json({
-        success: false,
-        message: "Invalid chat ID format",
-      });
-    }
-
-    // Verify chat exists first
     const existingChat = await NotesChat.findById(chatId);
     console.log('Existing chat found:', !!existingChat);
 
@@ -109,9 +97,7 @@ export const getNotesChatHistory = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // Return full chats including messages so frontend can display contents in history modal
-    const chats = await NotesChat.find({ userId })
-      .sort({ createdAt: -1 });
+    const chats = await NotesChat.find({ userId });
 
     res.status(200).json({
       success: true,

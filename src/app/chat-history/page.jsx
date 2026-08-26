@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { FiArrowLeft, FiTrash2, FiClock } from "react-icons/fi";
@@ -31,7 +31,7 @@ import {
   clearError as clearImageError,
 } from "@/store/slices/imageAnalyzerChatSlice";
 
-export default function ChatHistoryPage() {
+function ChatHistoryContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
@@ -328,5 +328,13 @@ export default function ChatHistoryPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function ChatHistoryPage() {
+  return (
+    <Suspense fallback={<div className="flex h-screen items-center justify-center">Loading chat history...</div>}>
+      <ChatHistoryContent />
+    </Suspense>
   );
 }

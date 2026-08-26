@@ -1,5 +1,4 @@
 import AIAssistanceChat from "../models/AIAssistanceChat.js";
-import mongoose from "mongoose";
 
 export const createAIAssistanceChat = async (req, res) => {
   try {
@@ -15,12 +14,10 @@ export const createAIAssistanceChat = async (req, res) => {
       });
     }
 
-    const chat = new AIAssistanceChat({
+    const chat = await AIAssistanceChat.create({
       userId,
       title: title || "New Chat",
     });
-
-    await chat.save();
     
     console.log('Chat created successfully:', { chatId: chat._id, userId, title });
 
@@ -52,18 +49,7 @@ export const addMessageToAIChat = async (req, res) => {
         message: "Chat ID is required",
       });
     }
-
-    // Convert string ID to ObjectId if needed
-    let objectId = chatId;
-    if (!mongoose.Types.ObjectId.isValid(chatId)) {
-      console.error('Invalid ObjectId format:', chatId);
-      return res.status(400).json({
-        success: false,
-        message: "Invalid chat ID format",
-      });
-    }
     
-    // Verify chat exists first
     const existingChat = await AIAssistanceChat.findById(chatId);
     console.log('Existing chat found:', !!existingChat);
     if (existingChat) {
@@ -115,9 +101,7 @@ export const getAIAssistanceChatHistory = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // Return full chats including messages so frontend can display contents in history modal
-    const chats = await AIAssistanceChat.find({ userId })
-      .sort({ createdAt: -1 });
+    const chats = await AIAssistanceChat.find({ userId });
 
     res.status(200).json({
       success: true,

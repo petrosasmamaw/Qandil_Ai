@@ -3,8 +3,7 @@ import Profile from "../models/Profile.js";
 // Create a new profile
 export const createProfile = async (req, res) => {
   try {
-    const profile = new Profile(req.body);
-    const savedProfile = await profile.save();
+    const savedProfile = await Profile.create(req.body);
     res.status(201).json({
       success: true,
       message: "Profile created successfully",

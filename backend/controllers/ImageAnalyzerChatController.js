@@ -1,11 +1,10 @@
 import ImageAnalyzerChat from "../models/ImageAnalyzerChat.js";
-import mongoose from "mongoose";
 
 export const createImageAnalyzerChat = async (req, res) => {
   try {
-    const { userId, title } = req.body;
+    const { userId, title, imageCount } = req.body;
 
-    console.log('createImageAnalyzerChat controller called with:', { userId, title });
+    console.log('createImageAnalyzerChat controller called with:', { userId, title, imageCount });
 
     if (!userId) {
       console.error('Error: userId is missing');
@@ -15,12 +14,11 @@ export const createImageAnalyzerChat = async (req, res) => {
       });
     }
 
-    const chat = new ImageAnalyzerChat({
+    const chat = await ImageAnalyzerChat.create({
       userId,
       title: title || "Image Analysis",
+      imageCount: imageCount || 0,
     });
-
-    await chat.save();
     
     console.log('Image analyzer chat created successfully:', { chatId: chat._id, userId, title });
 
@@ -53,16 +51,6 @@ export const addMessageToImageAnalyzerChat = async (req, res) => {
       });
     }
 
-    // Validate ObjectId format
-    if (!mongoose.Types.ObjectId.isValid(chatId)) {
-      console.error('Invalid ObjectId format:', chatId);
-      return res.status(400).json({
-        success: false,
-        message: "Invalid chat ID format",
-      });
-    }
-
-    // Verify chat exists first
     const existingChat = await ImageAnalyzerChat.findById(chatId);
     console.log('Existing chat found:', !!existingChat);
 
@@ -109,9 +97,7 @@ export const getImageAnalyzerChatHistory = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // Return full chats including messages so frontend can display contents in history modal
-    const chats = await ImageAnalyzerChat.find({ userId })
-      .sort({ createdAt: -1 });
+    const chats = await ImageAnalyzerChat.find({ userId });
 
     res.status(200).json({
       success: true,

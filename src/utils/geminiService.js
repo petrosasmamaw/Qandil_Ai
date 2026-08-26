@@ -1,31 +1,9 @@
 'use client';
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
-
-// Retry logic for handling high demand
-const retryWithBackoff = async (fn, maxRetries = 3, baseDelay = 1000) => {
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (error) {
-      if (attempt === maxRetries - 1) throw error;
-      if (error.message.includes('503') || error.message.includes('high demand')) {
-        const delay = baseDelay * Math.pow(2, attempt);
-        console.log(`Rate limited. Retrying in ${delay}ms...`);
-        await new Promise((resolve) => setTimeout(resolve, delay));
-      } else {
-        throw error;
-      }
-    }
-  }
-};
+import { generateContentWithFallback } from './geminiClient';
 
 export const generateLearningLevelQuiz = async (profileData) => {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' });
-
     const prompt = `You are an educational assessment expert. Based on the student's profile information, generate exactly 10 multiple-choice quiz questions to assess their learning level.
 
 Student Profile:
@@ -57,11 +35,12 @@ Format your response as a JSON array. Each question should have this structure:
 
 Only respond with the JSON array, no additional text.`;
 
-    const result = await retryWithBackoff(() => model.generateContent(prompt));
-    const responseText = result.response.text();
+    const { text } = await generateContentWithFallback({
+      contents: prompt,
+    });
     
     // Clean up the response in case it has markdown code blocks
-    let cleanedText = responseText.replace(/```json\n?|\n?```/g, '').trim();
+    let cleanedText = text.replace(/```json\n?|\n?```/g, '').trim();
     
     const questions = JSON.parse(cleanedText);
     return questions;
@@ -73,8 +52,6 @@ Only respond with the JSON array, no additional text.`;
 
 export const determineLearningLevel = async (profileData, quizAnswers, questions) => {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' });
-
     const answersText = questions
       .map((q, index) => `Q${index + 1}: ${q.question}\nCorrect Answer: ${q.correctAnswer}\nStudent's Answer: ${quizAnswers[index]}`)
       .join('\n\n');
@@ -107,11 +84,12 @@ Respond with ONLY the learning level name (foundation, guided, independent, or a
 
 Only respond with JSON, no additional text.`;
 
-    const result = await retryWithBackoff(() => model.generateContent(prompt));
-    const responseText = result.response.text();
+    const { text } = await generateContentWithFallback({
+      contents: prompt,
+    });
     
     // Clean up the response in case it has markdown code blocks
-    let cleanedText = responseText.replace(/```json\n?|\n?```/g, '').trim();
+    let cleanedText = text.replace(/```json\n?|\n?```/g, '').trim();
     
     const levelData = JSON.parse(cleanedText);
     return levelData;

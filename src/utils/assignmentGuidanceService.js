@@ -1,36 +1,31 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
+import { generateContentWithFallback } from './geminiClient';
 
 export const generateAssignmentGuidance = async (file, studentProfile, appLanguage = 'eng') => {
   try {
     // Create guidance prompt based on student profile
     const systemPrompt = createGuidancePrompt(studentProfile, appLanguage);
-    const model = genAI.getGenerativeModel({ 
-      model: 'gemini-3.1-flash-lite-preview',
-      systemInstruction: systemPrompt
-    });
 
     // Read file as base64
     const fileData = await readFileAsBase64(file);
     const mimeType = getMimeType(file.type);
 
-    // Upload file and process
-    const response = await model.generateContent([
-      {
-        inlineData: {
-          data: fileData,
-          mimeType: mimeType,
+    // Upload file and process using Gemini with fallback
+    const { text } = await generateContentWithFallback({
+      systemInstruction: systemPrompt,
+      contents: [
+        {
+          inlineData: {
+            data: fileData,
+            mimeType: mimeType,
+          },
         },
-      },
-      "Please provide assignment guidance for this document based on my profile.",
-    ]);
-
-    const responseText = response.response.text();
+        "Please provide assignment guidance for this document based on my profile.",
+      ],
+    });
 
     return {
       success: true,
-      guidance: responseText,
+      guidance: text,
       fileName: file.name,
       processedAt: new Date(),
     };
@@ -44,20 +39,17 @@ export const generateAssignmentGuidanceFromText = async (text, title, studentPro
   try {
     // Create guidance prompt based on student profile
     const systemPrompt = createGuidancePrompt(studentProfile, appLanguage);
-    const model = genAI.getGenerativeModel({ 
-      model: 'gemini-3.1-flash-lite-preview',
-      systemInstruction: systemPrompt
+
+    // Process text content using Gemini with fallback
+    const { text: responseText } = await generateContentWithFallback({
+      systemInstruction: systemPrompt,
+      contents: [
+        {
+          text: text,
+        },
+        "Please provide assignment guidance for this text based on my profile.",
+      ],
     });
-
-    // Process text content
-    const response = await model.generateContent([
-      {
-        text: text,
-      },
-      "Please provide assignment guidance for this text based on my profile.",
-    ]);
-
-    const responseText = response.response.text();
 
     return {
       success: true,
