@@ -1,14 +1,12 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// Gemini model hierarchy from highest recommended to resilient fallbacks
+// Fast, low-latency Gemini model priority hierarchy
 export const GEMINI_MODELS = [
-  'gemini-3.7-flash',
-  'gemini-3.6-flash',
-  'gemini-3.5-flash',
-  'gemini-3.1-flash-lite-preview',
-  'gemini-3.1-pro-preview',
-  'gemini-flash-latest',
-  'gemini-pro-latest',
+  'gemini-3.1-flash-lite-preview', // Ultra fast, low-latency (1-3s)
+  'gemini-3.6-flash',              // High-quality fast multimodal
+  'gemini-3.7-flash',              // Deep reasoning flash
+  'gemini-3.1-pro-preview',        // Pro grade fallback
+  'gemini-flash-latest',           // Generic latest flash
 ];
 
 const getApiKey = () => {
@@ -26,9 +24,9 @@ export const getGenAIClient = () => {
 };
 
 /**
- * Retries a function with exponential backoff for transient issues
+ * Retries a function with backoff for transient issues
  */
-const retryWithBackoff = async (fn, maxRetries = 2, baseDelay = 1000) => {
+const retryWithBackoff = async (fn, maxRetries = 2, baseDelay = 500) => {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       return await fn();
@@ -55,8 +53,6 @@ const retryWithBackoff = async (fn, maxRetries = 2, baseDelay = 1000) => {
 
 /**
  * Executes a Gemini request with automatic fallback through the model list
- * @param {Function} taskFn - Receives (genAI, modelName) and returns a promise
- * @param {Array<string>} customModels - Optional custom model priority list
  */
 export const executeWithModelFallback = async (taskFn, customModels = GEMINI_MODELS) => {
   const genAI = getGenAIClient();
@@ -65,12 +61,11 @@ export const executeWithModelFallback = async (taskFn, customModels = GEMINI_MOD
   for (let i = 0; i < customModels.length; i++) {
     const modelName = customModels[i];
     try {
-      // Execute the task with retry logic per model
       const result = await retryWithBackoff(() => taskFn(genAI, modelName));
       return { result, usedModel: modelName };
     } catch (error) {
       lastError = error;
-      console.warn(`[Gemini Fallback] Model '${modelName}' encountered an issue: ${error.message}. Trying next best model...`);
+      console.warn(`[Gemini Fallback] Model '${modelName}' issue: ${error.message}. Trying fallback...`);
     }
   }
 
@@ -91,19 +86,25 @@ export const generateContentWithFallback = async ({
     if (systemInstruction) {
       modelOptions.systemInstruction = systemInstruction;
     }
+    if (generationConfig) {
+      modelOptions.generationConfig = generationConfig;
+    }
 
     const model = genAI.getGenerativeModel(modelOptions);
 
     let requestParam;
     if (typeof contents === 'string') {
-      requestParam = generationConfig ? { contents: [{ role: 'user', parts: [{ text: contents }] }], generationConfig } : contents;
+      requestParam = generationConfig
+        ? { contents: [{ role: 'user', parts: [{ text: contents }] }], generationConfig }
+        : contents;
     } else if (Array.isArray(contents)) {
-      // If contents is array of parts or strings
-      const parts = contents.map(item => {
+      const parts = contents.map((item) => {
         if (typeof item === 'string') return { text: item };
         return item;
       });
-      requestParam = generationConfig ? { contents: [{ role: 'user', parts }], generationConfig } : parts;
+      requestParam = generationConfig
+        ? { contents: [{ role: 'user', parts }], generationConfig }
+        : parts;
     } else {
       requestParam = contents;
     }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { FiZap, FiCheckCircle } from 'react-icons/fi';
+import { FiZap, FiCheckCircle, FiX, FiAward, FiArrowRight, FiArrowLeft } from 'react-icons/fi';
 import { generateLearningLevelQuiz, determineLearningLevel } from '@/utils/geminiService';
 
 export default function LearningLevelQuiz({ profileData, onLevelDetermined, onClose }) {
@@ -17,35 +17,46 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
 
   // Load quiz questions
   useEffect(() => {
+    let isMounted = true;
     const loadQuiz = async () => {
       try {
         setLoading(true);
         setError(null);
         const generatedQuestions = await generateLearningLevelQuiz(profileData);
-        setQuestions(generatedQuestions);
-        setAnswers(new Array(generatedQuestions.length).fill(null));
+        if (isMounted) {
+          setQuestions(generatedQuestions);
+          setAnswers(new Array(generatedQuestions.length).fill(null));
+        }
       } catch (err) {
-        setError(err.message || 'Failed to load quiz');
+        if (isMounted) {
+          setError(err.message || 'Failed to load quiz');
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     loadQuiz();
+    return () => {
+      isMounted = false;
+    };
   }, [profileData]);
 
-  // Auto-scroll to bottom
+  // Auto-scroll to bottom on question change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [currentQuestionIndex, questions]);
 
   const handleAnswerSelect = (optionIndex) => {
     setSelectedAnswer(optionIndex);
+    setError(null);
   };
 
   const handleSubmitAnswer = async () => {
     if (selectedAnswer === null) {
-      setError('Please select an answer');
+      setError('Please select an option to continue');
       return;
     }
 
@@ -54,12 +65,16 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
     setAnswers(newAnswers);
 
     if (currentQuestionIndex < questions.length - 1) {
-      // Move to next question
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedAnswer(null);
+      // If user had previously selected an answer on that next question, preserve it
+      const nextStoredAns = newAnswers[currentQuestionIndex + 1];
+      if (nextStoredAns && questions[currentQuestionIndex + 1]) {
+        setSelectedAnswer(questions[currentQuestionIndex + 1].options.indexOf(nextStoredAns));
+      } else {
+        setSelectedAnswer(null);
+      }
       setError(null);
     } else {
-      // All questions answered, determine level
       await evaluateLearningLevel(newAnswers);
     }
   };
@@ -77,53 +92,83 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
     }
   };
 
+  // Loading state
   if (loading) {
     return (
-      <div className="fixed inset-0 z-[100] p-4 flex items-center justify-center bg-black/40 dark:bg-black/60 backdrop-blur-sm">
-        <div className="light-box shadow-2xl relative z-10 p-8 max-w-2xl w-full rounded-2xl">
-          <div className="flex flex-col items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-gray-100 mb-4"></div>
-            <p className="text-gray-600 dark:text-gray-400 text-center">
-              Generating personalized quiz questions based on your profile...
-            </p>
+      <div className="fixed inset-0 z-[100] p-4 flex items-center justify-center bg-black/60 dark:bg-black/80 backdrop-blur-md transition-all">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl relative z-10 p-8 max-w-md w-full rounded-2xl flex flex-col items-center justify-center text-center">
+          <div className="relative mb-5">
+            <div className="w-16 h-16 rounded-full border-4 border-blue-500/20 border-t-blue-600 animate-spin"></div>
+            <div className="absolute inset-0 flex items-center justify-center text-blue-600 dark:text-blue-400">
+              <FiZap size={22} />
+            </div>
           </div>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
+            Generating Smart Assessment...
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs">
+            Tailoring Ethiopian curriculum questions to your grade and study profile.
+          </p>
         </div>
       </div>
     );
   }
 
+  // Completed result modal
   if (quizResult) {
-    const scoreColor = quizResult.score >= 5 ? 'text-green-500' : 'text-orange-500';
+    const total = quizResult.total || questions.length || 5;
+    const score = quizResult.score !== undefined ? quizResult.score : 0;
+    const isPassing = score >= Math.ceil(total / 2);
+    const scoreColor = isPassing ? 'text-emerald-500' : 'text-amber-500';
+
     return (
-      <div className="fixed inset-0 z-[100] p-4 flex items-center justify-center bg-black/40 dark:bg-black/60 backdrop-blur-sm">
-        <div className="light-box shadow-2xl relative z-10 p-8 max-w-lg w-full rounded-2xl flex flex-col items-center justify-center text-center">
-          <div className={`p-4 rounded-full bg-opacity-10 mb-4 ${scoreColor.replace('text', 'bg')} bg-black/5 dark:bg-white/5`}>
-             <FiCheckCircle size={48} className={scoreColor} />
-          </div>
-          <h2 className="text-3xl font-black mb-2 text-gray-900 dark:text-gray-100">Quiz Completed!</h2>
-          <div className="mb-6 flex flex-col items-center">
-            <span className="text-sm font-bold uppercase tracking-widest opacity-60 mb-2 text-gray-900 dark:text-gray-100">Your Score</span>
-            <span className={`text-6xl font-black ${scoreColor}`}>
-              {quizResult.score !== undefined ? `${quizResult.score}/10` : 'Done'}
-            </span>
-          </div>
-          
-          <div className="w-full bg-black/5 dark:bg-white/5 p-4 rounded-xl border border-black/10 dark:border-white/10 mb-6">
-            <span className="text-sm font-bold uppercase tracking-widest opacity-60 block mb-1 text-gray-900 dark:text-gray-100">Determined Level</span>
-            <span className="text-xl font-bold uppercase text-blue-600 dark:text-blue-400">
-              {quizResult.level}
-            </span>
+      <div className="fixed inset-0 z-[100] p-4 flex items-center justify-center bg-black/60 dark:bg-black/80 backdrop-blur-md animate-fadeIn">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl relative z-10 p-6 md:p-8 max-w-lg w-full rounded-2xl flex flex-col items-center justify-center text-center">
+          <div className="p-4 rounded-full bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 mb-4 inline-flex items-center justify-center">
+            <FiCheckCircle size={44} />
           </div>
 
-          <p className="text-sm md:text-base opacity-80 leading-relaxed mb-8 text-balance text-gray-900 dark:text-gray-100">
-            {quizResult.explanation}
+          <h2 className="text-2xl md:text-3xl font-black mb-1 text-slate-900 dark:text-white">
+            Quiz Completed!
+          </h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
+            Your learning baseline has been successfully calculated.
           </p>
+
+          <div className="grid grid-cols-2 gap-3 w-full mb-6">
+            <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/60">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1">
+                Your Score
+              </span>
+              <span className={`text-3xl md:text-4xl font-black ${scoreColor}`}>
+                {score}/{total}
+              </span>
+            </div>
+
+            <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/60">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1">
+                Learning Level
+              </span>
+              <span className="text-xl md:text-2xl font-black uppercase text-blue-600 dark:text-blue-400 block truncate">
+                {quizResult.level}
+              </span>
+            </div>
+          </div>
+
+          <div className="w-full bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200/60 dark:border-blue-800/50 p-4 rounded-xl mb-6 text-left">
+            <div className="flex items-center gap-2 mb-1 text-blue-700 dark:text-blue-300 font-semibold text-xs uppercase tracking-wider">
+              <FiAward size={14} /> AI Recommendation
+            </div>
+            <p className="text-xs md:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+              {quizResult.explanation}
+            </p>
+          </div>
 
           <button
             onClick={() => onLevelDetermined(quizResult)}
-            className="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-all shadow-lg flex justify-center items-center gap-2"
+            className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/25 flex justify-center items-center gap-2"
           >
-            Continue Profile Setup
+            Apply & Save Profile <FiArrowRight size={18} />
           </button>
         </div>
       </div>
@@ -131,89 +176,99 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
   }
 
   const currentQuestion = questions[currentQuestionIndex];
-  const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
+  const progressPercentage = questions.length > 0
+    ? ((currentQuestionIndex + 1) / questions.length) * 100
+    : 0;
 
   return (
-    <div className="fixed inset-0 z-[100] p-4 flex items-center justify-center bg-black/40 dark:bg-black/60 backdrop-blur-sm">
-      <div className="light-box shadow-2xl relative z-10 max-w-2xl w-full rounded-2xl flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-[100] p-4 flex items-center justify-center bg-black/60 dark:bg-black/80 backdrop-blur-md animate-fadeIn">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl relative z-10 max-w-2xl w-full rounded-2xl flex flex-col max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-gray-700 p-6 flex justify-between items-center">
+        <div className="border-b border-slate-200 dark:border-slate-800 p-5 md:p-6 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Learning Level Assessment
-            </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">
+                Grade {profileData?.grade || 10}
+              </span>
+              <h2 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">
+                Level Assessment Quiz
+              </h2>
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Question {currentQuestionIndex + 1} of {questions.length}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl"
+            className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            title="Close"
           >
-            ✕
+            <FiX size={20} />
           </button>
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full h-1 bg-gray-200 dark:bg-gray-700">
+        <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800">
           <div
-            className="h-1 bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-300 dark:to-gray-400 transition-all duration-300"
+            className="h-1.5 bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-300 rounded-r-full"
             style={{ width: `${progressPercentage}%` }}
           ></div>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
+        {/* Question & Options Content */}
+        <div className="flex-1 overflow-y-auto p-5 md:p-6 space-y-5">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <p className="text-red-800 dark:text-red-300 font-medium">✕ {error}</p>
+            <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 rounded-xl text-red-600 dark:text-red-400 text-xs md:text-sm font-medium">
+              {error}
             </div>
           )}
 
           {currentQuestion && (
-            <div className="space-y-6">
-              {/* Question */}
+            <div className="space-y-4">
               <div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                <h3 className="text-base md:text-lg font-semibold text-slate-900 dark:text-white leading-snug mb-3">
                   {currentQuestion.question}
                 </h3>
 
                 {currentQuestion.hint && (
-                  <div className="mb-4 p-3 bg-blue-50/75 dark:bg-blue-900/20 border border-blue-200/70 dark:border-blue-800 rounded flex items-start gap-2 backdrop-blur-md">
+                  <div className="p-3 bg-blue-50/80 dark:bg-blue-950/30 border border-blue-200/70 dark:border-blue-800/40 rounded-xl flex items-start gap-2.5">
                     <FiZap size={16} className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-blue-800 dark:text-blue-300">
-                      Hint: {currentQuestion.hint}
+                    <p className="text-xs text-blue-800 dark:text-blue-300">
+                      <span className="font-semibold">Hint:</span> {currentQuestion.hint}
                     </p>
                   </div>
                 )}
               </div>
 
               {/* Options */}
-              <div className="space-y-3">
-                {currentQuestion.options.map((option, index) => (
-                  <label
-                    key={index}
-                    onClick={() => handleAnswerSelect(index)}
-                    className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                      selectedAnswer === index
-                        ? 'border-gray-900 bg-gray-100 dark:border-white dark:bg-white/10'
-                        : 'border-gray-200 dark:border-gray-700 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="answer"
-                      value={index}
-                      checked={selectedAnswer === index}
-                      onChange={() => handleAnswerSelect(index)}
-                      className="w-4 h-4 cursor-pointer text-gray-900 dark:text-white"
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                    <span className="ml-3 text-gray-900 dark:text-white font-medium">
-                      {String.fromCharCode(65 + index)}) {option}
-                    </span>
-                  </label>
-                ))}
+              <div className="space-y-2.5">
+                {currentQuestion.options.map((option, index) => {
+                  const isSelected = selectedAnswer === index;
+                  return (
+                    <div
+                      key={index}
+                      onClick={() => handleAnswerSelect(index)}
+                      className={`flex items-center p-3.5 md:p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                        isSelected
+                          ? 'border-blue-600 dark:border-blue-500 bg-blue-50/80 dark:bg-blue-950/40 text-blue-950 dark:text-blue-100 shadow-sm'
+                          : 'border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 hover:border-slate-300 dark:hover:border-slate-700 text-slate-800 dark:text-slate-200'
+                      }`}
+                    >
+                      <div
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold mr-3 flex-shrink-0 transition-colors ${
+                          isSelected
+                            ? 'bg-blue-600 text-white dark:bg-blue-500'
+                            : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                        }`}
+                      >
+                        {String.fromCharCode(65 + index)}
+                      </div>
+                      <span className="text-xs md:text-sm font-medium flex-1">
+                        {option}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -221,41 +276,47 @@ export default function LearningLevelQuiz({ profileData, onLevelDetermined, onCl
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Footer */}
-        <div className="border-t border-gray-200 dark:border-gray-700 p-6 flex justify-between items-center gap-4">
+        {/* Footer Actions */}
+        <div className="border-t border-slate-200 dark:border-slate-800 p-4 md:p-5 flex justify-between items-center gap-3 bg-slate-50/50 dark:bg-slate-900/50">
           <button
             onClick={() => {
               if (currentQuestionIndex > 0) {
-                setCurrentQuestionIndex(currentQuestionIndex - 1);
-                setSelectedAnswer(
-                  answers[currentQuestionIndex - 1] !== null
-                    ? questions[currentQuestionIndex - 1].options.indexOf(
-                        answers[currentQuestionIndex - 1]
-                      )
-                    : null
-                );
+                const prevIndex = currentQuestionIndex - 1;
+                setCurrentQuestionIndex(prevIndex);
+                const prevAns = answers[prevIndex];
+                if (prevAns && questions[prevIndex]) {
+                  setSelectedAnswer(questions[prevIndex].options.indexOf(prevAns));
+                } else {
+                  setSelectedAnswer(null);
+                }
               }
             }}
-            disabled={currentQuestionIndex === 0}
-            className="px-6 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            disabled={currentQuestionIndex === 0 || evaluating}
+            className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs md:text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
           >
-            Previous
+            <FiArrowLeft size={16} /> Previous
           </button>
 
           <button
             onClick={handleSubmitAnswer}
             disabled={selectedAnswer === null || evaluating}
-            className="px-8 py-2 bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-300 dark:to-gray-400 hover:from-gray-900 hover:to-black dark:hover:from-gray-200 dark:hover:to-gray-300 text-white dark:text-gray-900 font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs md:text-sm font-bold rounded-xl transition-all shadow-md shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {evaluating ? (
-              <span className="flex items-center gap-2">
-                <div className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white dark:border-gray-900"></div>
-                Evaluating...
-              </span>
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Evaluating...</span>
+              </>
             ) : currentQuestionIndex === questions.length - 1 ? (
-              'Complete Quiz'
+              <>
+                <span>Complete Quiz</span>
+                <FiCheckCircle size={16} />
+              </>
             ) : (
-              'Next'
+              <>
+                <span>Next</span>
+                <FiArrowRight size={16} />
+              </>
             )}
           </button>
         </div>
