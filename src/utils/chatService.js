@@ -1,31 +1,33 @@
 "use client";
 
-/**
- * Creates a new chat and returns the chat ID
- */
-export async function createNewChat(type, userId, title = "") {
+import { getApiBaseUrl } from "./apiUrl";
+
+const getEndpointUrl = (type, path = "") => {
   const endpoints = {
     aiAssistance: "ai-assistance-chat",
     notes: "notes-chat",
     assignmentGuide: "assignment-guide-chat",
     imageAnalyzer: "image-analyzer-chat",
   };
+  const base = getApiBaseUrl();
+  const endpoint = endpoints[type];
+  return path ? `${base}/${endpoint}/${path}` : `${base}/${endpoint}`;
+};
 
+/**
+ * Creates a new chat and returns the chat ID
+ */
+export async function createNewChat(type, userId, title = "") {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/api/${
-        endpoints[type]
-      }/create`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, title }),
-      }
-    );
+    const response = await fetch(getEndpointUrl(type, "create"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, title }),
+    });
 
     const data = await response.json();
     if (!response.ok) throw new Error(data.message);
-    return data.data._id;
+    return data.data._id || data.data.id;
   } catch (error) {
     console.error("Error creating chat:", error);
     throw error;
@@ -42,24 +44,12 @@ export async function saveMessageToBackend(
   content,
   fileNames = []
 ) {
-  const endpoints = {
-    aiAssistance: "ai-assistance-chat",
-    notes: "notes-chat",
-    assignmentGuide: "assignment-guide-chat",
-    imageAnalyzer: "image-analyzer-chat",
-  };
-
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/api/${
-        endpoints[type]
-      }/message`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chatId, role, content, fileNames }),
-      }
-    );
+    const response = await fetch(getEndpointUrl(type, "message"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chatId, role, content, fileNames }),
+    });
 
     const data = await response.json();
     if (!response.ok) throw new Error(data.message);
@@ -74,20 +64,8 @@ export async function saveMessageToBackend(
  * Fetches chat history for a user
  */
 export async function fetchChatHistory(type, userId) {
-  const endpoints = {
-    aiAssistance: "ai-assistance-chat",
-    notes: "notes-chat",
-    assignmentGuide: "assignment-guide-chat",
-    imageAnalyzer: "image-analyzer-chat",
-  };
-
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/api/${
-        endpoints[type]
-      }/history/${userId}`
-    );
-
+    const response = await fetch(getEndpointUrl(type, `history/${userId}`));
     const data = await response.json();
     if (!response.ok) throw new Error(data.message);
     return data.data;
@@ -101,20 +79,8 @@ export async function fetchChatHistory(type, userId) {
  * Fetches a specific chat by ID
  */
 export async function fetchChatById(type, chatId) {
-  const endpoints = {
-    aiAssistance: "ai-assistance-chat",
-    notes: "notes-chat",
-    assignmentGuide: "assignment-guide-chat",
-    imageAnalyzer: "image-analyzer-chat",
-  };
-
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/api/${
-        endpoints[type]
-      }/${chatId}`
-    );
-
+    const response = await fetch(getEndpointUrl(type, chatId));
     const data = await response.json();
     if (!response.ok) throw new Error(data.message);
     return data.data;
@@ -128,22 +94,10 @@ export async function fetchChatById(type, chatId) {
  * Deletes a chat
  */
 export async function deleteChat(type, chatId) {
-  const endpoints = {
-    aiAssistance: "ai-assistance-chat",
-    notes: "notes-chat",
-    assignmentGuide: "assignment-guide-chat",
-    imageAnalyzer: "image-analyzer-chat",
-  };
-
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/api/${
-        endpoints[type]
-      }/${chatId}`,
-      {
-        method: "DELETE",
-      }
-    );
+    const response = await fetch(getEndpointUrl(type, chatId), {
+      method: "DELETE",
+    });
 
     const data = await response.json();
     if (!response.ok) throw new Error(data.message);

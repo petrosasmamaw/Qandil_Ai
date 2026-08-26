@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from '@/hooks/useTranslation';
 import { supabase } from '@/lib/supabase';
 import { fetchProfileByUserId } from '@/store/slices/profileSlice';
+import { getApiBaseUrl } from '@/utils/apiUrl';
 import { DashboardSkeletonLoader } from '@/components/Skeleton';
 import dynamic from 'next/dynamic';
 import { FiMessageSquare, FiBook, FiClipboard, FiImage, FiArrowRight } from 'react-icons/fi';
@@ -69,7 +70,7 @@ export default function DashboardPage() {
       if (!user?.id) return;
 
       try {
-        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000/api';
+        const backendUrl = getApiBaseUrl();
 
         // Fetch all chat types
         const [aiRes, notesRes, assignmentRes, imageRes] = await Promise.all([

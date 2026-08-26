@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getApiBaseUrl } from "@/utils/apiUrl";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api";
+const BACKEND_URL = getApiBaseUrl();
 
 // Async Thunks
 export const createNotesChat = createAsyncThunk(

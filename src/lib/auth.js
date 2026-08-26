@@ -1,13 +1,10 @@
-'use client';
+import { getApiBaseUrl } from '../utils/apiUrl';
 
 const TOKEN_KEY = 'qandil_auth_token';
 const USER_KEY = 'qandil_auth_user';
 
-const getBackendUrl = () => {
-  let url = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-  // Remove trailing slash if present
-  return url.replace(/\/+$/, '');
-};
+const getBackendUrl = () => getApiBaseUrl();
+
 
 class AuthClient {
   constructor() {
