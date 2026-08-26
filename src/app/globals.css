@@ -93,13 +93,20 @@ html:not(.dark) body {
 }
 
 /* Light theme boxes */
-html:not(.dark) main [class*="bg-white"],
+html:not(.dark) main [class*="bg-white"]:not(.quiz-modal-card):not([class*="fixed"]),
 html:not(.dark) nav [class*="bg-white"],
-html:not(.dark) .light-box {
+html:not(.dark) .light-box:not(.quiz-modal-card) {
   background-color: transparent !important; /* Fully transparent */
   border: 1px solid rgba(0,0,0,0.15);
   border-radius: 12px;
   backdrop-filter: blur(6px);
+}
+
+/* Quiz modal card solid backgrounds */
+html:not(.dark) .quiz-modal-card {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0 !important;
 }
 
 /* Small inner boxes with blur */
